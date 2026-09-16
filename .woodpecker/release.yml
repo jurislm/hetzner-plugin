@@ -18,5 +18,6 @@ steps:
     commands:
       - apk add --no-cache git
       - trap 'rm -f "$HOME/.npmrc"' EXIT
+      - bun pm pack --dry-run
       - printf '//registry.npmjs.org/:_authToken=%s\n' "$NPM_TOKEN" > "$HOME/.npmrc"
       - bun publish --access public
