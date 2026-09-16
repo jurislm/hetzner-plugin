@@ -1,9 +1,11 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetzner-plugin",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Portable Hetzner Cloud and Storage Box MCP plugin using local stdio tools generated from official OpenAPI contracts.",
-  "author": { "name": "JurisLM" },
+  "author": {
+    "name": "JurisLM"
+  },
   "license": "MIT",
   "extensions": {
     "com.openai": {
@@ -13,8 +15,13 @@
         "longDescription": "Generated local stdio tools for Hetzner Cloud and Storage Box APIs.",
         "developerName": "JurisLM",
         "category": "Developer Tools",
-        "capabilities": ["MCP", "Local"],
-        "defaultPrompt": ["List my Hetzner Cloud servers."]
+        "capabilities": [
+          "MCP",
+          "Local"
+        ],
+        "defaultPrompt": [
+          "List my Hetzner Cloud servers."
+        ]
       }
     }
   }
