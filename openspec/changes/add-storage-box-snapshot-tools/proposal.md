@@ -22,7 +22,7 @@ Issue #8 acceptance 要求至少實作 Storage Box snapshot 三件套（list / c
 
 ## Impact
 
-- 程式碼：`src/types.ts`（新 schemas）、`src/tools/storage-boxes.ts`（新 3 個 tool）；`src/api.ts` 不需新增 client（沿用 `makeStorageBoxApiRequest`）
+- 程式碼：`src/types.ts`（新 schemas）、`src/tools/storage-boxes.ts`（新 3 個 tool）；由 `ApiRequest` 注入 `registerStorageBoxTools(server, apiRequest)`，不使用 module-level client
 - 測試：active Bun tests under `src/` cover snapshot behavior, pagination, errors, and destructive annotations
 - 文件：`CLAUDE.md`（工具清單 17→20）、`README.md`（同步）、`openspec/specs/storage-boxes.md`（新 requirements）
 - API：使用既有 `HETZNER_API_TOKEN_UNIFIED`，無新 credential 需求

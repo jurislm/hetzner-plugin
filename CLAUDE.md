@@ -1,6 +1,6 @@
 # CLAUDE.md — JurisLM Hetzner local stdio plugin
 
-Hetzner Cloud 管理 MCP Server，提供 40 個工具用於伺服器管理（建立、電源控制、SSH 金鑰、Storage Boxes 完整 CRUD、Snapshots、Actions、Cloud Volumes、Server Metrics、RAM via SSH）。
+`@jurislm/hetzner-plugin` 提供 264 個工具：222 個 OpenAPI generated operations，加上 42 個 retained tools（包含 Storage Box stats/space assertion 與 RAM via SSH）。
 
 ## 常用命令
 
@@ -45,7 +45,7 @@ src/
 `openapi/` contains committed API snapshots; `api/manifest.json` is the single canonical provenance manifest.
 ```
 
-## 工具清單（40 個）
+## 工具清單（42 個 retained；另有 222 個 generated，合計 264 個）
 
 ### Servers（7 tools）
 - `hetzner_list_servers` — 列出專案所有伺服器
@@ -67,7 +67,7 @@ src/
 - `hetzner_list_images` — 列出可用 OS 映像檔
 - `hetzner_list_locations` — 列出可用資料中心位置
 
-### Storage Boxes（20 tools）
+### Storage Boxes（22 tools）
 - `hetzner_list_storage_boxes` — 列出所有 Storage Box（支援分頁）
 - `hetzner_get_storage_box` — 取得單一 Storage Box 詳情（容量、protocols、狀態）
 - `hetzner_create_storage_box` — 建立新 Storage Box（**會產生費用**）
@@ -88,6 +88,8 @@ src/
 - `hetzner_update_storage_box_access_settings` — 更新 SSH / Samba / WebDAV / ZFS / 外部連線設定
 - `hetzner_enable_storage_box_snapshot_plan` — 啟用自動 snapshot 計畫
 - `hetzner_disable_storage_box_snapshot_plan` — 停用自動 snapshot 計畫
+- `hetzner_get_storage_box_stats` — 取得包含 snapshots 的容量統計
+- `hetzner_assert_storage_box_space` — 在備份前檢查可用容量
 
 ### Cloud Volumes（4 tools）
 - `hetzner_list_volumes` — 列出所有 Cloud Volumes（含掛載路徑、attached server）
@@ -129,8 +131,4 @@ src/
 
 ## 版本發布
 
-1. PR `develop` → `main` merge
-2. Release Please 自動建立版本 PR
-3. 合併版本 PR 後：
-   1. **先 pull 最新版本**（`git checkout main && git pull --ff-only origin main`），確保本地包含 Release Please 合併後的版本號與 CHANGELOG；使用 `--ff-only` 讓本地與遠端分歧時直接失敗，避免默默產生 merge commit 造成發布工作目錄不乾淨
-   2. 再於最新版本上**手動執行** `bun publish --access public`
+PR merge 與 Release Please 版本更新後，tag release 由 `.woodpecker/release.yml` 負責版本 tag verify 與 public publish。

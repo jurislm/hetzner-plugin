@@ -17,13 +17,13 @@ Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is check
 
 ## Changed files
 
-- Packaging and plugin registration: `package.json`, `bun.lock`, `plugin.json`, `mcp.json`, `.mcp.json`, `.mcp.json.example`, `.app.json.example`, `.codex-plugin/plugin.json`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`.
+- Packaging and plugin registration: `package.json`, `bun.lock`, `.release-please-manifest.json`, `plugin.json`, `mcp.json`, `.mcp.json`, `.mcp.json.example`, `.app.json.example`, `.codex-plugin/plugin.json`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`.
 - OpenAPI: `openapi/hetzner-cloud-openapi.json`, `openapi/hetzner-unified-openapi.json`, `api/manifest.json`, `scripts/update-openapi.ts`, `scripts/check-openapi.ts`, `scripts/check-release-tag.ts`, `scripts/generate-openapi.ts`, `src/openapi-integrity.ts`.
 - Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, retained registrar files under `src/tools/`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
-- Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/release-tag.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root test suite and `vitest.config.ts`.
+- Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/package-contents.test.ts`, `src/release-tag.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root test suite and `vitest.config.ts`.
 - CI: removed `.github/workflows/ci.yml` and `.github/workflows/release.yml`; `.woodpecker/ci.yml` and `.woodpecker/release.yml` are the remaining CI/release definitions.
 - Active documentation: `CLAUDE.md`, `.github/copilot-instructions.md`, `docs/index.html`, `openspec/config.yaml`, `openspec/specs/{overview.md,storage-boxes.md}`, active OpenSpec change records, `skills/hetzner/references/authentication.md`.
-- Distribution/operations: `skills/hetzner/SKILL.md`, `skills/hetzner/references/authentication.md`, `.woodpecker/ci.yml`, `.woodpecker/release.yml`, `scripts/validate-plugin-manifests.ts`, `scripts/package-contents-check.ts`.
+- Distribution/operations: `skills/hetzner/SKILL.md`, `skills/hetzner/references/authentication.md`, `.woodpecker/ci.yml`, `.woodpecker/release.yml`, `scripts/validate-plugin-manifests.ts`, `scripts/package-contents.ts`, `scripts/package-contents-check.ts`.
 
 Existing v1.5 focused capabilities remain registered through the common envelope/annotation adapter: Cloud servers, SSH keys, volumes, reference/metrics, unified Storage Boxes, Storage Box stats/space assertion, and explicit server-RAM-over-SSH.
 
@@ -37,14 +37,14 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 | `bun run api:check` | 0 | Offline hash verification passed for both snapshots, then regeneration caused no diff in tracked snapshot/generated artifacts. |
 | `bun run manifest:check` | 0 | Portable/root/compatibility manifests, local stdio boundary, public package, and exact pins validated. |
 | `bun run typecheck` | 0 | TypeScript source check passed. |
-| `bun run clean && bun run build && bun test` | 0 | Already-built `dist/index.js` served stdio; 20 passing Bun tests, 57 assertions. |
+| `bun run clean && bun run build && bun test` | 0 | Already-built `dist/index.js` served stdio; 23 passing Bun tests, 65 assertions. |
 | `bun run build` | 0 | `dist` emitted. |
-| `bun run check` | 0 | Full manifest, typecheck, build-before-test, active Bun test, package check, and npm pack gate passed; 20 tests and 57 assertions passed. |
-| `npm pack --dry-run` | 0 | Fresh JSON readback contained 98 files (`jurislm-hetzner-plugin-0.1.0.tgz`), package size 542,620 bytes, unpacked size 9,040,496 bytes. |
+| `bun run check` | 0 | Full manifest, typecheck, build-before-test, active Bun test, package check, and Bun pack gate passed; 23 tests and 65 assertions passed. |
+| `bun pm pack --dry-run` | 0 | Fresh Bun output contained 98 files and 9.0MB unpacked size. |
 | `bun run package:check` | 0 | Required package contents present; credential-file paths rejected. |
 | `git diff --check` | 0 | No whitespace errors. |
 
-## Fix round 1, round 2, round 3, round 4, and round 5 evidence
+## Fix round 1, round 2, round 3, round 4, round 5, and round 7 evidence
 
 - Snapshot hashes now cover exactly the bytes persisted to disk, including an appended final newline. The Bun regression suite verifies the live committed manifest and rejects a tampered offline fixture.
 - `formatToolError` and `redactErrorText` centralize generated and retained error output. The server regression test injects both bearer tokens into provider errors and verifies neither appears in either generated or retained tool output.
@@ -58,6 +58,9 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Round 5 added the Woodpecker Alpine git prerequisite, tag/version verification, public npm release job, `publishConfig.access=public`, and npm pack coverage in `check`. The canonical manifest is now `api/manifest.json`; `openapi/` contains snapshots only.
 - Round 5 fresh pack readback and command evidence are recorded after the canonical manifest migration; no publish or provider verification was performed.
 - Retained injection refactor: every registrar accepts an `ApiRequest`; `createServer` builds Cloud/Unified requests from its config and injected fetch; pagination factories are registrar-local; retained requests no longer load process config or global fetch. The no-process-credentials `createServer` regression passes.
+- Round 7 replaced the package checker’s npm subprocess with Bun’s `bun pm pack --dry-run` output parser and kept required-file, exact-one-manifest, and credential-file checks.
+- Generated handlers now parse `operation.responseSchema` before returning structured content; malformed provider responses return redacted `isError`. Generated destructive metadata covers poweroff, reboot, rebuild, shutdown, rollback, delete/remove/destroy, reset, and revoke patterns.
+- `.release-please-manifest.json` is aligned to `0.1.0`; active OpenSpec, CLAUDE, Copilot, landing page, and API reference text now describe `@jurislm/hetzner-plugin`, Bun/`src`, `.woodpecker`, 264 total tools (222 generated + 42 retained), and the Unified auth variable.
 
 ## Unresolved concerns
 

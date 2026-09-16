@@ -9,8 +9,8 @@
 ## Implementation
 
 - **File**: `src/tools/reference.ts`
-- **Register function**: `registerReferenceTools(server: McpServer)`
-- **API client**: `makeApiRequest<T>()` from `src/api.ts`
+- **Register function**: `registerReferenceTools(server: McpServer, apiRequest: ApiRequest)`
+- **API client**: injected `ApiRequest` from `src/api.ts`; `createServer` supplies the config/fetch-bound factory
 
 ## Types（src/types.ts）
 

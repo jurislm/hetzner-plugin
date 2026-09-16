@@ -74,7 +74,7 @@ for (const source of specs) {
     if (bodyType) properties.push(`body: ${schemaText(bodyContent[bodyType]?.schema, schemas, !requestBody.required)}`);
     const response = responseInfo(operation, schemas);
     const description = String(operation.summary ?? operation.operationId ?? `${method.toUpperCase()} ${path}`);
-    const destructive = method === "delete" || /delete|reset|revoke|remove|destroy/iu.test(description);
+    const destructive = method === "delete" || /power[_-]?off|poweroff|reboot|rebuild|shutdown|rollback|delete|remove|destroy|reset|revoke/iu.test(`${operationId} ${path} ${description}`);
     generated.push(`  { source: ${quote(source.source)}, name: ${quote(name)}, method: ${quote(method.toUpperCase())}, path: ${quote(path)}, description: ${quote(description)}, inputSchema: z.object({ ${properties.join(", ")} }), responseSchema: ${response.schema}, responseKind: ${quote(response.kind)}, parameters: [${parameterMeta.join(", ")}], annotations: { readOnlyHint: ${method === "get" || method === "head"}, destructiveHint: ${destructive}, idempotentHint: ${["get", "head", "put", "delete", "options"].includes(method)}, openWorldHint: false } }`);
   }
 }

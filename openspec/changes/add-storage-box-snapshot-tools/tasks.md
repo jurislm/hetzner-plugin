@@ -43,4 +43,4 @@
 - [ ] 6.2 push `develop` 並開 PR `develop → main`
 - [ ] 6.3 PR labels 設 `enhancement`、assignee 設 `terry90918`
 - [ ] 6.4 等 Claude Bot review 通過後 merge
-- [ ] 6.5 Release Please 版本 PR merge 後手動 `bun publish --access public`
+- [ ] 6.5 Release Please 版本 PR merge 後建立 tag，由 `.woodpecker/release.yml` verify 並 publish

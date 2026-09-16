@@ -1,6 +1,6 @@
 ## Context
 
-MCP server 目前對 Storage Box 的覆蓋率為讀取 + snapshot 管理，缺少完整的寫入能力。所有 14 個缺口均為 Unified API（`https://api.hetzner.com/v1`），需使用 `makeStorageBoxApiRequest`。現有 `storage-boxes.ts` 已有成熟的模式（`makeStorageBoxApiRequest`、`handleApiError`、`formatStorageBox`），新工具直接沿用。
+MCP server 目前對 Storage Box 的覆蓋率為讀取 + snapshot 管理，缺少完整的寫入能力。所有 14 個缺口均為 Unified API（`https://api.hetzner.com/v1`），由 `ApiRequest` 注入 `registerStorageBoxTools(server, apiRequest)`。現有 `storage-boxes.ts` 已有成熟的模式（injected request、`handleApiError`、`formatStorageBox`），新工具直接沿用。
 
 ## Goals / Non-Goals
 
@@ -16,9 +16,9 @@ MCP server 目前對 Storage Box 的覆蓋率為讀取 + snapshot 管理，缺�
 
 ## Decisions
 
-### D-1：所有新工具統一使用 `makeStorageBoxApiRequest`
+### D-1：所有新工具統一使用 injected `ApiRequest`
 
-所有 Storage Box 端點均位於 Unified API，與現有 6 個工具一致。無需新增 API client function。
+所有 Storage Box 端點均位於 Unified API，與現有工具一致。由 `createServer` 建立 Unified request factory 後傳入 registrar；不在工具 module 讀取 process config 或 global fetch。
 
 ### D-2：Response schema 策略
 

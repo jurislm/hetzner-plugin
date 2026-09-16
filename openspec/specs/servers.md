@@ -9,8 +9,8 @@
 ## Implementation
 
 - **File**: `src/tools/servers.ts`
-- **Register function**: `registerServerTools(server: McpServer)`
-- **API client**: `makeApiRequest<T>()` from `src/api.ts`
+- **Register function**: `registerServerTools(server: McpServer, apiRequest: ApiRequest)`
+- **API client**: injected `ApiRequest` from `src/api.ts`; `createServer` supplies the config/fetch-bound factory
 
 ## Tools
 

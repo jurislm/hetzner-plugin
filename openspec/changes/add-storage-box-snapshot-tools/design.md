@@ -3,7 +3,7 @@
 `@jurislm/hetzner-plugin` 的 retained Storage Box surface 已提供 read tools；本變更補上 snapshot 管理。Issue #8 acceptance 要求「至少 list + get + snapshot 三件套」。Hetzner Unified API 支援 Storage Box snapshot 端點，透過 native-fetch adapter 與 `HETZNER_API_TOKEN_UNIFIED` 呼叫。
 
 當前模組分布：
-- `src/api.ts`：`makeStorageBoxApiRequest` 已支援 GET/POST/PUT/DELETE，Zod 驗證在邊界
+- `src/api.ts`：`ApiRequest` factory 以 config/fetch 注入，支援 GET/POST/PUT/DELETE，Zod 驗證在邊界
 - `src/types.ts`：Storage Box / Subaccount schemas 完整
 - `src/tools/storage-boxes.ts`：含 `paginatedFetch` helper、`PartialFailure` 結構、`formatStorageBox`/`formatSubaccount` formatter
 
@@ -29,7 +29,7 @@ Hetzner changelog 明示：`snapshot_id` 將於 2026-04-21 移除，新欄位 `s
 
 **Alternatives：** 雙欄位並存 → 否決（增加複雜度、deprecated 路徑無實質價值）。
 
-### D2：snapshot list 重用 `paginatedFetch`，create/rollback 直接呼叫 `makeStorageBoxApiRequest`
+### D2：snapshot list 重用 registrar-local `paginatedFetch`，create/rollback 直接呼叫 injected `ApiRequest`
 
 list 端點同樣返回 `meta.pagination`，重用既有 helper 確保行為一致（5 pages × 50 cap、partial-failure 結構）。create/rollback 是 single-shot POST，無分頁需求。
 
@@ -57,7 +57,7 @@ create snapshot 與 rollback 都回傳 `{ action: { id, command, status, progres
 1. 在 `develop` worktree 完成實作
 2. PR `develop → main`，經 Claude Bot review 後 merge
 3. Release Please 自動產生 `feat:` minor bump（v1.0.0 → v1.1.0）
-4. main merge 後手動 `bun publish --access public`
+4. tag 建立後由 `.woodpecker/release.yml` verify `CI_COMMIT_TAG` 並 publish
 5. 更新 `jurislm/CLAUDE.md` 工具計數 17→20
 
 無 rollback 步驟需求（純 additive，不動既有 tool 簽章）。

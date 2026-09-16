@@ -54,7 +54,8 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
   }, async (input) => {
     try {
       const envelope = await client.request(operation, input as Record<string, unknown>);
-      const structuredContent = redactSensitive(envelope) as unknown as Record<string, unknown>;
+      const data = operation.responseSchema.parse(envelope.data);
+      const structuredContent = redactSensitive({ ...envelope, data }) as unknown as Record<string, unknown>;
       return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
     } catch (error) {
       const details = formatToolError(error, [config.cloudToken, config.unifiedToken]);

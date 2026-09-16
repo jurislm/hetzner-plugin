@@ -9,8 +9,8 @@
 ## Implementation
 
 - **File**: `src/tools/ssh-keys.ts`
-- **Register function**: `registerSSHKeyTools(server: McpServer)`
-- **API client**: `makeApiRequest<T>()` from `src/api.ts`
+- **Register function**: `registerSSHKeyTools(server: McpServer, apiRequest: ApiRequest)`
+- **API client**: injected `ApiRequest` from `src/api.ts`; `createServer` supplies the config/fetch-bound factory
 
 ## Types（src/types.ts）
 

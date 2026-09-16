@@ -5,10 +5,11 @@ import { operations } from "./generated/operations.js";
 import { createServer } from "./server.js";
 
 const config = { cloudToken: "cloud", unifiedToken: "unified", timeoutMs: 30_000 };
+const emptyServers = { servers: [], meta: { pagination: { page: 1, per_page: 25, previous_page: null, next_page: null, last_page: 1, total_entries: 0 } } };
 
 describe("generated Hetzner MCP server", () => {
   test("registers the combined official contract with safe annotations", async () => {
-    const server = createServer(config, async () => new Response(JSON.stringify({ servers: [] }), { headers: { "content-type": "application/json" } }));
+    const server = createServer(config, async () => new Response(JSON.stringify(emptyServers), { headers: { "content-type": "application/json" } }));
     const client = new Client({ name: "test", version: "0.0.0" });
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
@@ -25,12 +26,12 @@ describe("generated Hetzner MCP server", () => {
   });
 
   test("returns a ToolEnvelope through a generated Cloud operation", async () => {
-    const server = createServer(config, async () => new Response(JSON.stringify({ servers: [] }), { headers: { "content-type": "application/json" } }));
+    const server = createServer(config, async () => new Response(JSON.stringify(emptyServers), { headers: { "content-type": "application/json" } }));
     const client = new Client({ name: "test", version: "0.0.0" });
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
     const result = await client.callTool({ name: "hetzner_cloud_list_servers", arguments: {} });
-    expect(result.structuredContent).toEqual({ data: { servers: [] }, status: 200, request: { method: "GET", path: "/servers" } });
+    expect(result.structuredContent).toEqual({ data: emptyServers, status: 200, request: { method: "GET", path: "/servers" } });
     await client.close();
     await server.close();
   });
@@ -55,6 +56,18 @@ describe("generated Hetzner MCP server", () => {
     } finally {
       globalThis.fetch = originalFetch;
     }
+  });
+
+  test("turns a malformed generated response into a redacted tool error", async () => {
+    const server = createServer(config, async () => new Response(JSON.stringify({ servers: [{ id: "not-a-number" }] }), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const result = await client.callTool({ name: "hetzner_cloud_list_servers", arguments: {} });
+    expect(result.isError).toBe(true);
+    expect(JSON.stringify(result)).not.toContain("cloud");
+    await client.close();
+    await server.close();
   });
 
   test("routes a retained tool through createServer injection without process credentials", async () => {

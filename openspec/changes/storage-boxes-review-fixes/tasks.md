@@ -29,5 +29,5 @@
 ## 5. Validation
 
 - [x] 5.1 Build before running the canonical `bun test`; stdio tests launch the already-built `dist/index.js` from `mcp.json`.
-- [x] 5.2 Run `bun run check`, `bun run build`, `npm pack --dry-run`, and `git diff --check`.
+- [x] 5.2 Run `bun run check`, `bun run build`, `bun pm pack --dry-run`, and `git diff --check`.
 - [x] 5.3 Do not claim live Hetzner acceptance without provider credentials.
