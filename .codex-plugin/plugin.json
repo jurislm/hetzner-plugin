@@ -1,7 +1,7 @@
 {
   "name": "hetzner-plugin",
   "version": "0.1.0",
-  "description": "Fallback Codex metadata for local stdio Hetzner tools.",
+  "description": "Codex compatibility manifest for local stdio Hetzner tools; the root portable plugin manifest is canonical.",
   "author": { "name": "JurisLM" },
   "license": "MIT",
   "skills": "./skills/",
