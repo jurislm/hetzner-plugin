@@ -4,7 +4,7 @@
     "module": "Node16",
     "moduleResolution": "Node16",
     "lib": ["ES2022"],
-    "types": ["node"],
+    "types": ["bun"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -17,5 +17,5 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }

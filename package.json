@@ -1,70 +1,35 @@
 {
-  "name": "@jurislm/hetzner-mcp",
-  "version": "1.5.0",
-  "description": "MCP server for managing Hetzner Cloud infrastructure",
+  "name": "@jurislm/hetzner-plugin",
+  "version": "0.1.0",
+  "description": "Portable local stdio MCP plugin for Hetzner Cloud and Storage Box APIs",
   "type": "module",
-  "main": "dist/index.js",
-  "bin": {
-    "hetzner-mcp": "dist/index.js"
-  },
+  "bin": { "hetzner-plugin": "dist/index.js" },
+  "files": ["dist", "README.md", "LICENSE", "plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", ".codex-plugin", "skills", "openapi"],
+  "engines": { "bun": ">=1.1.0" },
   "scripts": {
-    "start": "bun dist/index.js",
-    "dev": "bun --watch src/index.ts",
-    "build": "tsc",
-    "prepare": "bun run build",
-    "lint": "eslint --max-warnings=0",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "clean": "rm -rf dist",
-    "prepublishOnly": "bun run build"
+    "build": "bun run clean && tsc",
+    "start": "bun dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src",
+    "api:fetch": "bun scripts/update-openapi.ts",
+    "api:generate": "bun scripts/generate-openapi.ts",
+    "api:check": "bun run api:generate && git diff --exit-code -- openapi src/generated",
+    "manifest:check": "bun scripts/validate-plugin-manifests.ts",
+    "package:check": "bun scripts/package-contents-check.ts",
+    "check": "bun run api:check && bun run manifest:check && bun run typecheck && bun run test && bun run build && bun run package:check",
+    "prepublishOnly": "bun run check"
   },
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "hetzner",
-    "cloud",
-    "server-management"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jurislm/hetzner-mcp.git"
-  },
-  "homepage": "https://github.com/jurislm/hetzner-mcp#readme",
-  "bugs": {
-    "url": "https://github.com/jurislm/hetzner-mcp/issues"
-  },
-  "license": "MIT",
-  "engines": {
-    "bun": ">=1.1.0"
-  },
-  "packageManager": "bun@1.3.9",
-  "files": [
-    "dist",
-    "README.md"
-  ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "axios": "^1.18.1",
-    "zod": "^4.3.0"
-  },
-  "overrides": {
-    "fast-uri": "3.1.2",
-    "brace-expansion": "5.0.6",
-    "qs": "6.15.2",
-    "hono": "4.12.25",
-    "ip-address": "10.2.0",
-    "form-data": "4.0.6"
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^25.0.0",
-    "@vitest/coverage-v8": "^4.1.5",
-    "eslint": "^10.4.0",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.4.0",
-    "typescript": "^6.0.0",
-    "typescript-eslint": "^8.58.1",
-    "vitest": "^4.1.0"
-  }
+    "@types/bun": "1.4.2",
+    "json-schema-to-zod": "2.8.1",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "yaml": "2.9.1"
+  },
+  "packageManager": "bun@1.3.14"
 }

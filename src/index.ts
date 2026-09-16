@@ -1,61 +1,15 @@
-#!/usr/bin/env node
-/**
- * Hetzner Cloud MCP Server
- *
- * This MCP server provides tools to manage Hetzner Cloud infrastructure
- * including servers, SSH keys, and reference data (server types, images, locations).
- */
+#!/usr/bin/env bun
+import { loadConfig } from "./config.js";
+import { createServer } from "./server.js";
+import { createStdioTransport } from "./transports/stdio.js";
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-import { registerReferenceTools } from "./tools/reference.js";
-import { registerSSHKeyTools } from "./tools/ssh-keys.js";
-import { registerServerTools } from "./tools/servers.js";
-import { registerStorageBoxTools } from "./tools/storage-boxes.js";
-import { registerVolumeTools } from "./tools/volumes.js";
-import { registerMetricsTools } from "./tools/metrics.js";
-import { registerServerSshTools } from "./tools/server-ssh.js";
-import { formatStartupError } from "./utils.js";
-
-// Create MCP server instance
-const server = new McpServer({
-  name: "hetzner-mcp-server",
-  version: "1.0.0"
-});
-
-// Register all tools
-registerReferenceTools(server);
-registerSSHKeyTools(server);
-registerServerTools(server);
-registerStorageBoxTools(server);
-registerVolumeTools(server);
-registerMetricsTools(server);
-registerServerSshTools(server);
-
-// Main function
 async function main(): Promise<void> {
-  // Check for API token
-  if (!process.env.HETZNER_API_TOKEN) {
-    console.error("ERROR: HETZNER_API_TOKEN environment variable is required");
-    console.error("");
-    console.error("To get an API token:");
-    console.error("1. Go to https://console.hetzner.cloud/projects");
-    console.error("2. Select your project");
-    console.error("3. Go to Security > API Tokens");
-    console.error("4. Generate a new token with Read & Write permissions");
-    process.exit(1);
-  }
-
-  // Start server with stdio transport
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-
-  // Log to stderr (stdout is reserved for MCP protocol)
-  console.error("Hetzner MCP server running via stdio");
+  const server = createServer(loadConfig());
+  await server.connect(createStdioTransport());
+  console.error("Hetzner plugin running via stdio");
 }
 
 main().catch((error: unknown) => {
-  console.error("Server error:", formatStartupError(error));
-  process.exit(1);
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
 });

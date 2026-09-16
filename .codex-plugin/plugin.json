@@ -1,0 +1,17 @@
+{
+  "name": "hetzner-plugin",
+  "version": "0.1.0",
+  "description": "Fallback Codex metadata for local stdio Hetzner tools.",
+  "author": { "name": "JurisLM" },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Hetzner",
+    "shortDescription": "Local Hetzner API tools",
+    "longDescription": "Generated local stdio tools for Hetzner Cloud and Storage Box APIs.",
+    "developerName": "JurisLM",
+    "category": "Developer Tools",
+    "capabilities": ["MCP", "Local"],
+    "defaultPrompt": ["List my Hetzner Cloud servers."]
+  }
+}

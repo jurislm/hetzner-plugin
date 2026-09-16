@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "hetzner": { "type": "stdio", "command": "bun", "args": ["dist/index.js"], "cwd": "./" }
+  }
+}
