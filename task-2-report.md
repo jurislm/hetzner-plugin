@@ -74,6 +74,11 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Tag push: `.woodpecker/npm-release.yml` verifies `v<package.version>` and runs Bun-native pack before token-scoped public publish.
 - `release-please-config.json` synchronizes `package.json`, `plugin.json`, and `.codex-plugin/plugin.json`; local release workflow tests are included in `bun run check`.
 
+## Woodpecker readback
+
+- `jurislm/hetzner-plugin` is active and public as Woodpecker repo `22`.
+- Secret metadata is configured without value readback: `npm_token` for `tag`, and `personal_access_tokens_fine_grained_tokens_jurislm` for `push`.
+
 ## Unresolved concerns
 
 - No live Hetzner request was made: no credentials were used or available for provider acceptance. The completed tests use injected local fetch responses and the local stdio process only.
