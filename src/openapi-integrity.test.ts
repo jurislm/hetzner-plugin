@@ -17,7 +17,8 @@ describe("OpenAPI snapshot integrity", () => {
       await mkdir(join(root, "openapi"));
       await Bun.write(join(root, "openapi/hetzner-cloud-openapi.json"), "{}\n");
       await Bun.write(join(root, "openapi/hetzner-unified-openapi.json"), "{}\n");
-      await Bun.write(join(root, "openapi/manifest.json"), JSON.stringify({
+      await mkdir(join(root, "api"));
+      await Bun.write(join(root, "api/manifest.json"), JSON.stringify({
         cloud: { sha256: "wrong", operationCount: 190 }, unified: { sha256: "wrong", operationCount: 32 },
       }));
       await expect(verifyOpenApiManifest(root)).rejects.toThrow("cloud OpenAPI snapshot hash does not match manifest");

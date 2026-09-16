@@ -24,7 +24,7 @@ The plugin also needs a reproducible native-fetch client, generated contract cov
 ## Impact
 
 - Code: `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, and retained tool registration seams.
-- Tests: active Bun tests under `src/`; obsolete unrun root Vitest suite removed.
+- Tests: active Bun tests under `src/`; obsolete root test suite removed.
 - Docs: package README, `CLAUDE.md`, and active OpenSpec artifacts use the current token and transport boundary.
 - External APIs: no endpoint change; only credential selection and request implementation are standardized.
 - Runtime: local stdio only; no live provider acceptance is claimed.

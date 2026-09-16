@@ -26,5 +26,5 @@ Hetzner Unified API 提供完整的 Storage Box 管理端點，但 MCP server �
 
 - **`src/types.ts`**：新增 CreateStorageBoxResponse、UpdateStorageBoxResponse、CreateSubaccountResponse、UpdateSubaccountResponse、SnapshotActionResponse、各 action response schema
 - **`src/tools/storage-boxes.ts`**：新增 14 個 MCP tools（`hetzner_create_storage_box`、`hetzner_update_storage_box`、`hetzner_delete_storage_box`、`hetzner_list_storage_box_folders`、`hetzner_create_storage_box_subaccount`、`hetzner_update_storage_box_subaccount`、`hetzner_delete_storage_box_subaccount`、`hetzner_delete_storage_box_snapshot`、`hetzner_change_storage_box_protection`、`hetzner_change_storage_box_type`、`hetzner_reset_storage_box_password`、`hetzner_update_storage_box_access_settings`、`hetzner_enable_storage_box_snapshot_plan`、`hetzner_disable_storage_box_snapshot_plan`）
-- **`tests/tools/storage-boxes.test.ts`**：各新工具補充測試
+- **active Bun tests under `src/`**：各 retained tool boundary 補充測試
 - **`docs/hetzner-api-reference.md`**：更新實作覆蓋率，14 個 ❌ 改為 ✅

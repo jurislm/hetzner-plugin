@@ -24,7 +24,7 @@
 
 - [x] 4.1 Use the portable root plugin manifest, local stdio MCP manifest, compatibility Codex manifest, examples, skill, references, README, LICENSE, and Woodpecker CI/release files.
 - [x] 4.2 Document Cloud startup credentials and lazy Unified Storage Box credentials in active README, `CLAUDE.md`, and OpenSpec artifacts.
-- [x] 4.3 Remove obsolete unrun root `tests/` artifacts that import the former request library or assert the old token behavior.
+- [x] 4.3 Remove obsolete root test artifacts; keep active retained behavior tests under `src/`.
 
 ## 5. Validation
 

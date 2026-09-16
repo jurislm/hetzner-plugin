@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hetzner MCP Server</title>
-  <meta name="description" content="An MCP server that gives Claude Code 40 tools to manage Hetzner Cloud — servers, SSH keys, Cloud Volumes, Storage Boxes, and live metrics." />
+  <title>Hetzner local MCP plugin</title>
+  <meta name="description" content="A public Bun local-stdio MCP plugin with generated and retained tools for Hetzner Cloud, Storage Boxes, SSH keys, volumes, and metrics." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -200,19 +200,19 @@
 
 <header>
   <div class="container">
-    <div class="badge"><span class="dot"></span> v1.3.3 on npm</div>
-    <h1>Hetzner <span>MCP</span> Server</h1>
-    <p class="tagline" data-i18n="tagline">Give Claude Code 40 tools to manage your Hetzner Cloud infrastructure — from your chat window.</p>
+    <div class="badge"><span class="dot"></span> @jurislm/hetzner-plugin · Bun · stdio</div>
+    <h1>Hetzner <span>local plugin</span></h1>
+    <p class="tagline" data-i18n="tagline">Generated and retained Bun tools for Hetzner Cloud and Storage Boxes — through local stdio.</p>
 
     <div class="install-box" onclick="copyInstall(this)" title="Click to copy">
-      <code>npm install -g @jurislm/hetzner-mcp</code>
+      <code>bun add -g @jurislm/hetzner-plugin</code>
       <span class="copy-icon" data-i18n="copy">⎘ Copy</span>
     </div>
 
     <div class="hero-links">
-      <a class="btn btn-primary" href="https://github.com/jurislm/hetzner-mcp">★ GitHub</a>
-      <a class="btn" href="https://www.npmjs.com/package/@jurislm/hetzner-mcp">npm</a>
-      <a class="btn" href="https://github.com/jurislm/hetzner-mcp#readme" data-i18n="docs">Docs</a>
+      <a class="btn btn-primary" href="https://github.com/jurislm/hetzner-plugin">★ GitHub</a>
+      <a class="btn" href="https://www.npmjs.com/package/@jurislm/hetzner-plugin">npm</a>
+      <a class="btn" href="https://github.com/jurislm/hetzner-plugin#readme" data-i18n="docs">Docs</a>
     </div>
   </div>
 </header>
@@ -328,8 +328,8 @@
   <span class="key">"mcpServers"</span>: {
     <span class="key">"hetzner"</span>: {
       <span class="key">"type"</span>: <span class="str">"stdio"</span>,
-      <span class="key">"command"</span>: <span class="str">"npx"</span>,
-      <span class="key">"args"</span>: [<span class="str">"@jurislm/hetzner-mcp"</span>],
+      <span class="key">"command"</span>: <span class="str">"bun"</span>,
+      <span class="key">"args"</span>: [<span class="str">"/absolute/path/to/hetzner-plugin/dist/index.js"</span>],
       <span class="key">"env"</span>: {
         <span class="key">"HETZNER_API_TOKEN"</span>: <span class="str">"your-api-token"</span>,
         <span class="comment" data-i18n="code-comment">// Storage Boxes only — unified token from console.hetzner.com</span>
@@ -355,9 +355,9 @@
 <footer>
   <div class="container">
     <p>
-      <a href="https://github.com/jurislm/hetzner-mcp">jurislm/hetzner-mcp</a>
+      <a href="https://github.com/jurislm/hetzner-plugin">jurislm/hetzner-plugin</a>
       &nbsp;·&nbsp; MIT License &nbsp;·&nbsp;
-      <a href="https://www.npmjs.com/package/@jurislm/hetzner-mcp">@jurislm/hetzner-mcp on npm</a>
+      <a href="https://www.npmjs.com/package/@jurislm/hetzner-plugin">@jurislm/hetzner-plugin on npm</a>
     </p>
   </div>
 </footer>
@@ -365,7 +365,7 @@
 <script>
 const TRANSLATIONS = {
   en: {
-    tagline: "Give Claude Code 40 tools to manage your Hetzner Cloud infrastructure — from your chat window.",
+    tagline: "Generated and retained Bun tools for Hetzner Cloud and Storage Boxes — through local stdio.",
     copy: "⎘ Copy",
     copied: "✓ Copied",
     docs: "Docs",
@@ -499,7 +499,7 @@ function setLang(lang) {
 }
 
 function copyInstall(el) {
-  navigator.clipboard.writeText('npm install -g @jurislm/hetzner-mcp').then(() => {
+  navigator.clipboard.writeText('bun add -g @jurislm/hetzner-plugin').then(() => {
     const t = TRANSLATIONS[currentLang];
     el.classList.add('copied');
     el.querySelector('.copy-icon').textContent = t.copied || '✓ Copied';

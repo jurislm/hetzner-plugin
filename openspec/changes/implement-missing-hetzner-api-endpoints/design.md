@@ -6,7 +6,7 @@ MCP server 目前對 Storage Box 的覆蓋率為讀取 + snapshot 管理，缺�
 
 **Goals:**
 - 實作全部 14 個缺口端點，使覆蓋率達到 100%（Storage Box 分類）
-- 每個新工具有對應 Vitest 測試
+- 每個 retained boundary 由 active Bun tests under `src/` 覆蓋
 - 破壞性操作（DELETE、rollback-like actions）標記 `destructiveHint: true`
 
 **Non-Goals:**
@@ -79,7 +79,7 @@ API 回傳 `{ action: {...}, password: string }`。response schema 擴充 action
 
 ### D-5：測試 mock 模式
 
-沿用現有模式：`vi.mock("../../src/api.js", async (importOriginal) => ({ ...actual, makeStorageBoxApiRequest: vi.fn() }))`。每個新工具至少測試：success（markdown）、success（json）、API error（isError: true）。破壞性工具額外測試確認訊息格式。
+沿用目前 native-fetch adapter 的 injected request boundary。每個 retained boundary 至少測試：success（markdown/json）、API error（isError: true）。破壞性工具額外測試確認 annotation 與訊息格式。
 
 ## Risks / Trade-offs
 

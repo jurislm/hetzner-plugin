@@ -9,6 +9,7 @@ const methods = new Set(["get", "put", "post", "delete", "patch", "head", "optio
 
 const manifest: Record<string, unknown> = {};
 await mkdir("openapi", { recursive: true });
+await mkdir("api", { recursive: true });
 for (const source of sources) {
   const response = await fetch(source.url);
   if (!response.ok) throw new Error(`OpenAPI download failed for ${source.name}: ${response.status} ${response.statusText}`);
@@ -26,5 +27,5 @@ for (const source of sources) {
   };
   await Bun.write(source.path, text);
 }
-await Bun.write("openapi/manifest.json", `${JSON.stringify(manifest, null, 2)}\n`);
+await Bun.write("api/manifest.json", `${JSON.stringify(manifest, null, 2)}\n`);
 console.error(`Fetched ${sources.length} Hetzner OpenAPI snapshots`);

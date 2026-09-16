@@ -38,7 +38,7 @@
 - [x] 5.5 Implement `hetzner_enable_storage_box_snapshot_plan` — POST /storage_boxes/{id}/actions/enable_snapshot_plan; params: `id`, `hour`, optional `minute`/`day_of_week`/`day_of_month`
 - [x] 5.6 Implement `hetzner_disable_storage_box_snapshot_plan` — POST /storage_boxes/{id}/actions/disable_snapshot_plan; params: `id`
 
-## 6. Tests (`tests/tools/storage-boxes.test.ts`)
+## 6. Tests (active Bun tests under `src/`)
 
 - [x] 6.1 Add tests for Task 2 tools (create, update, delete, list folders) — success markdown, success JSON, isError
 - [x] 6.2 Add tests for Task 3 tools (subaccount create, update, delete) — success markdown, success JSON, isError

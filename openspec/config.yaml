@@ -5,6 +5,8 @@ context: |
   Runtime: Bun (not Node.js) — use `bun -e` for inline scripts, `bun test` for tests
   Checks: generated contract integrity, typecheck, Bun tests, build, and package contents
   Transport: stdio (MCP server launched as subprocess)
+  CI: Woodpecker only (`.woodpecker/ci.yml`, `.woodpecker/release.yml`)
+  API provenance: `api/manifest.json` is canonical; `openapi/` contains snapshots only
 
   Project: Hetzner local stdio plugin (@jurislm/hetzner-plugin)
   Tools: generated Cloud/Unified operations plus retained focused tools across servers, ssh-keys, reference, storage-boxes, volumes, metrics, and RAM-over-SSH

@@ -4,8 +4,9 @@
   "description": "Portable local stdio MCP plugin for Hetzner Cloud and Storage Box APIs",
   "type": "module",
   "bin": { "hetzner-plugin": "dist/index.js" },
-  "files": ["dist", "README.md", "LICENSE", "plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", ".codex-plugin", "skills", "openapi"],
+  "files": ["dist", "README.md", "LICENSE", "plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", ".codex-plugin", "skills", "api", "openapi"],
   "engines": { "bun": ">=1.1.0" },
+  "publishConfig": { "access": "public" },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "bun run clean && tsc",
@@ -14,10 +15,10 @@
     "test": "bun test",
     "api:fetch": "bun scripts/update-openapi.ts",
     "api:generate": "bun scripts/generate-openapi.ts",
-    "api:check": "bun scripts/check-openapi.ts && bun run api:generate && git diff --exit-code -- openapi src/generated",
+    "api:check": "bun scripts/check-openapi.ts && bun run api:generate && git diff --exit-code -- openapi src/generated api/manifest.json",
     "manifest:check": "bun scripts/validate-plugin-manifests.ts",
     "package:check": "bun scripts/package-contents-check.ts",
-    "check": "bun run api:check && bun run manifest:check && bun run typecheck && bun run build && bun run test && bun run package:check",
+    "check": "bun run api:check && bun run manifest:check && bun run typecheck && bun run build && bun run test && bun run package:check && npm pack --dry-run",
     "prepublishOnly": "bun run check"
   },
   "dependencies": {

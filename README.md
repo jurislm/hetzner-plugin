@@ -16,7 +16,7 @@ bun run check
 
 ## OpenAPI contract
 
-`openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are official snapshots. `openapi/manifest.json` records source URL, fetch time, SHA-256, OpenAPI version, path count, and operation count.
+`openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are official snapshots. `api/manifest.json` is the single canonical manifest recording source URL, fetch time, SHA-256, OpenAPI version, path count, and operation count.
 
 ```sh
 bun run api:fetch

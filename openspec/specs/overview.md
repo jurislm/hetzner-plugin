@@ -1,47 +1,41 @@
-# Hetzner MCP Server — Overview Spec
+# Hetzner Plugin — Overview Spec
 
 ## Purpose
 
-Hetzner Cloud 管理 MCP Server，透過 stdio transport 提供 17 個 MCP tools，讓 AI agent 能管理 Hetzner Cloud 基礎設施（伺服器、SSH 金鑰、Storage Boxes）。
+`@jurislm/hetzner-plugin` is a public Bun local-stdio MCP plugin. It exposes generated Cloud and Unified operations together with retained focused tools for Hetzner infrastructure and Storage Boxes.
 
 ## Architecture
 
 ```
 src/
-├── index.ts           # McpServer 初始化、HETZNER_API_TOKEN 驗證、stdio transport 啟動
-├── api.ts             # makeApiRequest<T>()、makeStorageBoxApiRequest<T>()、handleApiError()
-├── types.ts           # HetznerServer、HetznerSSHKey、HetznerStorageBox 等介面（Zod schema）
-└── tools/
-    ├── servers.ts       # 7 tools — registerServerTools(server)
-    ├── ssh-keys.ts      # 4 tools — registerSSHKeyTools(server)
-    ├── reference.ts     # 3 tools — registerReferenceTools(server)
-    └── storage-boxes.ts # 3 tools — registerStorageBoxTools(server)
+├── index.ts                 # MCP server entry and local stdio startup
+├── client.ts                # native-fetch generated-operation client
+├── api.ts                   # retained-tool adapter over the shared client
+├── errors.ts                # shared error formatting and redaction
+├── server.ts                # generated and retained MCP registration
+├── generated/               # OpenAPI-generated types and operation registry
+└── tools/                   # retained focused tools
+api/manifest.json            # single canonical API provenance manifest
+openapi/                     # committed Cloud and Unified snapshots only
 ```
 
-## Tool Inventory（17 tools）
+## Operation inventory
 
-| Category | Tools | Spec |
-|---|---|---|
-| Servers | 7 | [servers.md](./servers.md) |
-| SSH Keys | 4 | [ssh-keys.md](./ssh-keys.md) |
-| Reference | 3 | [reference.md](./reference.md) |
-| Storage Boxes | 3 | [storage-boxes.md](./storage-boxes.md) |
+The generated registry contains 190 Cloud operations and 32 Unified operations. Retained tools remain available for servers, SSH keys, references, Storage Boxes, volumes, metrics, and RAM-over-SSH.
 
 ## Environment Variables
 
 | Variable | Required | Description |
 |---|---|---|
-| `HETZNER_API_TOKEN` | ✓ | Cloud API token（Read & Write），從 console.hetzner.cloud 生成 |
-| `HETZNER_API_TOKEN_UNIFIED` | Storage Box 呼叫時必需 | Unified API token，Storage Box 端點（`api.hetzner.com/v1`）在 operation 執行前需要此 token；Cloud project token 不可代替 |
+| `HETZNER_API_TOKEN` | Startup | Cloud API token from `console.hetzner.cloud`. |
+| `HETZNER_API_TOKEN_UNIFIED` | Storage Box operation | Unified API token from `console.hetzner.com/account/security/api-tokens`; checked immediately before the request and never interchangeable with the Cloud token. |
 
-MCP Server 為非互動式子進程，兩個 token 均必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
+## Naming and output
 
-## Naming Conventions
+- Generated names use `hetzner_cloud_` or `hetzner_unified_` plus the operation name.
+- Retained names use the `hetzner_` prefix and snake case.
+- Generated and retained handlers return the shared `ToolEnvelope` shape and use shared error redaction.
 
-- Tool ID：`hetzner_` 前綴 + `snake_case`（例：`hetzner_create_server`）
-- Register function：`register<Category>Tools(server: McpServer)`
-- Error handling：所有 API 呼叫透過 `handleApiError()` 統一轉換錯誤訊息
+## Transport and CI
 
-## Transport
-
-stdio（標準輸入/輸出）。stdout 保留給 MCP 協定，log 一律寫 stderr。
+The plugin is local stdio only. stdout is reserved for MCP frames; logs go to stderr. CI and tag release flow are Woodpecker-only through `.woodpecker/ci.yml` and `.woodpecker/release.yml`; remote MCP, OAuth, and hosting flows are out of scope.

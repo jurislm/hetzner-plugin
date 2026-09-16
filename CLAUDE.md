@@ -41,6 +41,8 @@ src/
     ├── volumes.ts       # 4 個 Cloud Volume 工具
     ├── metrics.ts       # 1 個 Server Metrics 工具
     └── server-ssh.ts    # 1 個 SSH RAM 工具
+
+`openapi/` contains committed API snapshots; `api/manifest.json` is the single canonical provenance manifest.
 ```
 
 ## 工具清單（40 個）
@@ -117,13 +119,13 @@ src/
 
 工具命名規則：`hetzner_` 前綴 + `snake_case`（例：`hetzner_resize_server`）
 
-## GitHub Actions
+## Woodpecker CI
 
 | Workflow | 觸發條件 | 用途 |
 |----------|---------|------|
-| `claude-code-review.yml` | PR 開啟／更新 | Claude Bot 自動 Code Review，繁體中文格式 |
-| `claude.yml` | `@claude` mention | 在 issue / PR 評論中觸發 Claude Code 執行任務 |
-| `release.yml` | push to main | Release Please 自動建立版本 PR |
+| `.woodpecker/ci.yml` | push / pull request | 安裝 git 後執行 package check |
+| `.woodpecker/release.yml` verify | tag | 驗證 `CI_COMMIT_TAG=v<package.version>` 並執行完整 check |
+| `.woodpecker/release.yml` publish | tag | 使用 `npm_token` secret 執行 `bun publish --access public` |
 
 ## 版本發布
 

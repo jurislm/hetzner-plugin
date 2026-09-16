@@ -1,6 +1,6 @@
 ## Context
 
-`hetzner-mcp` v1.0.0 已暴露 17 個 tools（含 3 個 Storage Box read tools），但無 snapshot 管理。Issue #8 acceptance 要求「至少 list + get + snapshot 三件套」，list/get 已實作，缺 snapshot trio。Hetzner Cloud Unified API 已支援 Storage Box snapshot 端點（與既有 list/get 同 base URL），認證沿用 `HETZNER_API_TOKEN_UNIFIED`。
+`@jurislm/hetzner-plugin` 的 retained Storage Box surface 已提供 read tools；本變更補上 snapshot 管理。Issue #8 acceptance 要求「至少 list + get + snapshot 三件套」。Hetzner Unified API 支援 Storage Box snapshot 端點，透過 native-fetch adapter 與 `HETZNER_API_TOKEN_UNIFIED` 呼叫。
 
 當前模組分布：
 - `src/api.ts`：`makeStorageBoxApiRequest` 已支援 GET/POST/PUT/DELETE，Zod 驗證在邊界
@@ -14,7 +14,7 @@
 - 重用既有 `paginatedFetch` 與 `handleApiError` 基礎建設
 - rollback 使用新的 `snapshot` body 欄位（name 或 id），避開 2026-04-21 deprecated 的 `snapshot_id`
 - destructive 行為（rollback）正確標記 `destructiveHint: true`
-- 80%+ 測試覆蓋率，ESLint 0 warnings
+- active Bun tests under `src/` cover the retained snapshot boundaries
 
 **Non-Goals:**
 - snapshot plan（enable/disable）— 留待後續 issue

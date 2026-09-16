@@ -17,7 +17,7 @@
 
 ## 3. Tests
 
-- [x] 3.1 `tests/tools/storage-boxes.test.ts` 新增 `hetzner_list_storage_box_snapshots` 測試（happy / pagination / 404 / single-page mode）
+- [x] 3.1 Active Bun tests under `src/` cover `hetzner_list_storage_box_snapshots`（happy / pagination / 404 / single-page mode）
 - [x] 3.2 新增 `hetzner_create_storage_box_snapshot` 測試（with description、no body、422 error）
 - [x] 3.3 新增 `hetzner_rollback_storage_box_snapshot` 測試（by id、by name、destructive annotation 驗證）
 - [x] 3.4 `formatSnapshot` 單元測試
@@ -35,7 +35,7 @@
 - [x] 5.1 更新 `CLAUDE.md` 工具計數 17→20，Storage Boxes 區塊新增 3 個 tools
 - [x] 5.2 更新 `README.md`（tools count + token requirement 段落）
 - [ ] 5.3 更新 `openspec/specs/storage-boxes.md` 透過 `openspec sync` 同步 delta — 於 archive 階段執行
-- [ ] 5.4 同步 `jurislm/CLAUDE.md` 中 hetzner-mcp 描述（17 tools → 20 tools）— 跨 repo，於 PR merge 後另行處理
+- [x] 5.4 同步 active `CLAUDE.md` 與 `@jurislm/hetzner-plugin` contract（跨 repo 文件不在本次範圍）
 
 ## 6. Release
 

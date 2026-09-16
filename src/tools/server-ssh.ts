@@ -190,7 +190,7 @@ export function runSsh(
     };
     try {
       if (options.pinnedHostKeys) {
-        pinnedDir = mkdtempSync(join(tmpdir(), "hetzner-mcp-kh-"));
+        pinnedDir = mkdtempSync(join(tmpdir(), "hetzner-plugin-kh-"));
         const knownHostsFile = join(pinnedDir, "known_hosts");
         const contents = options.pinnedHostKeys.endsWith("\n")
           ? options.pinnedHostKeys
