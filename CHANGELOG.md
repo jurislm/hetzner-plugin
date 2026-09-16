@@ -2,6 +2,36 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.0](https://github.com/jurislm/hetzner-plugin/compare/v1.5.0...v1.6.0) (2026-09-16)
+
+
+### Features
+
+* add release automation ([e3d0978](https://github.com/jurislm/hetzner-plugin/commit/e3d0978e0503608a68a4a5f295641c028ea5b395))
+* align Hetzner plugin release contract ([06332c0](https://github.com/jurislm/hetzner-plugin/commit/06332c00d1a423012842a24f3f18cb9e3b936e6c))
+* package Hetzner local stdio plugin ([b561901](https://github.com/jurislm/hetzner-plugin/commit/b561901ce9e46e81fcd93bd2629455863b4f772f))
+
+
+### Bug Fixes
+
+* align Hetzner release metadata ([40f64c9](https://github.com/jurislm/hetzner-plugin/commit/40f64c9e2514a4358f965ae04e58d3da40beb954))
+* align plugin version with source baseline ([2e5f031](https://github.com/jurislm/hetzner-plugin/commit/2e5f03146e38add4c32e3977c7dfa3b3aa0b5b17))
+* build before CI tests ([e2b6d7d](https://github.com/jurislm/hetzner-plugin/commit/e2b6d7dd349d1389fc9bdca3fee8d4ba6a44414a))
+* harden Hetzner generated and package checks ([61518ad](https://github.com/jurislm/hetzner-plugin/commit/61518ad8363a14c48fea780bd692a9c5678817ac))
+* harden Hetzner plugin review findings ([36e3bac](https://github.com/jurislm/hetzner-plugin/commit/36e3bac207ecd9ab581bafef525d47f6d3910d1a))
+* inject retained Hetzner API requests ([e6da375](https://github.com/jurislm/hetzner-plugin/commit/e6da3755ba45348dfa055df9d2c328abd1c21a68))
+* remove obsolete Hetzner test artifacts ([8d46422](https://github.com/jurislm/hetzner-plugin/commit/8d46422153239a4dd2d32339aec948bd3c080636))
+* verify package before publish ([61a8050](https://github.com/jurislm/hetzner-plugin/commit/61a80503ab650e8dd6c138159c2782ad7ca0d483))
+
+
+### Documentation
+
+* align active Bun test specification ([037823f](https://github.com/jurislm/hetzner-plugin/commit/037823fea979ec5870698c12e1f3e14671d66d5c))
+* record final Hetzner readback ([bc71f37](https://github.com/jurislm/hetzner-plugin/commit/bc71f3721b4b04ee386c498104af5756b7c55c17))
+* record Hetzner Woodpecker setup ([1dd1e76](https://github.com/jurislm/hetzner-plugin/commit/1dd1e7621b55dd50efda2b0046d33291b89d2662))
+* refresh Hetzner version readback ([9b8a0eb](https://github.com/jurislm/hetzner-plugin/commit/9b8a0eb58e16c3a48a81f96851ebe55ee40fc2d3))
+* update Hetzner release readback ([012d997](https://github.com/jurislm/hetzner-plugin/commit/012d9977fa8ca0ba50fb80ee0d9c475bb2799673))
+
 ## [1.5.0](https://github.com/jurislm/hetzner-mcp/compare/v1.4.4...v1.5.0) (2026-07-08)
 
 

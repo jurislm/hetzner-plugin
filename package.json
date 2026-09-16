@@ -1,12 +1,31 @@
 {
   "name": "@jurislm/hetzner-plugin",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Portable local stdio MCP plugin for Hetzner Cloud and Storage Box APIs",
   "type": "module",
-  "bin": { "hetzner-plugin": "dist/index.js" },
-  "files": ["dist", "README.md", "LICENSE", "plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", ".codex-plugin", "skills", "api", "openapi"],
-  "engines": { "bun": ">=1.1.0" },
-  "publishConfig": { "access": "public" },
+  "bin": {
+    "hetzner-plugin": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "plugin.json",
+    "mcp.json",
+    ".mcp.json",
+    ".mcp.json.example",
+    ".app.json.example",
+    ".codex-plugin",
+    "skills",
+    "api",
+    "openapi"
+  ],
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "bun run clean && tsc",
