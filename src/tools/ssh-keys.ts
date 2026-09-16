@@ -1,7 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
-  makeApiRequest,
+  ApiRequest,
+  missingApiRequest,
   handleApiError,
   createPaginatedFetch,
   PAGINATION_HARD_CAP_PAGES,
@@ -21,8 +22,6 @@ const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat
 const CLOUD_DEFAULT_PER_PAGE = 25;
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
 
-const paginatedFetch = createPaginatedFetch(makeApiRequest);
-
 function formatSSHKey(key: HetznerSSHKey): string {
   const lines = [
     `## ${escapeHtml(key.name)} (ID: ${key.id})`,
@@ -35,7 +34,8 @@ function formatSSHKey(key: HetznerSSHKey): string {
   return lines.join("\n");
 }
 
-export function registerSSHKeyTools(server: McpServer): void {
+export function registerSSHKeyTools(server: McpServer, apiRequest: ApiRequest = missingApiRequest): void {
+  const paginatedFetch = createPaginatedFetch(apiRequest);
   // List SSH Keys
   server.registerTool(
     "hetzner_list_ssh_keys",
@@ -67,7 +67,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         let partialFailure: PartialFailure | undefined;
 
         if (params.page !== undefined) {
-          const data = await makeApiRequest(
+          const data = await apiRequest(
             "/ssh_keys",
             ListSSHKeysResponseSchema,
             "GET",
@@ -142,7 +142,7 @@ SSH keys are used to authenticate when connecting to servers.`,
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(`/ssh_keys/${params.id}`, GetSSHKeyResponseSchema);
+        const data = await apiRequest(`/ssh_keys/${params.id}`, GetSSHKeyResponseSchema);
         const key = data.ssh_key;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -200,7 +200,7 @@ Args:
           requestBody.labels = params.labels;
         }
 
-        const data = await makeApiRequest("/ssh_keys", CreateSSHKeyResponseSchema, "POST", requestBody);
+        const data = await apiRequest("/ssh_keys", CreateSSHKeyResponseSchema, "POST", requestBody);
         const key = data.ssh_key;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -250,7 +250,7 @@ They will continue to work with the key.`,
     async (params) => {
       try {
         // DELETE returns 204 No Content; we don't care about the body shape.
-        await makeApiRequest(`/ssh_keys/${params.id}`, z.unknown(), "DELETE");
+        await apiRequest(`/ssh_keys/${params.id}`, z.unknown(), "DELETE");
 
         return {
           content: [{ type: "text", text: `SSH key ${params.id} has been deleted.` }]

@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { makeApiRequest, handleApiError } from "../api.js";
+import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
 import { ResponseFormat, ResponseFormatSchema, GetServerResponseSchema } from "../types.js";
 
 /** A single host key: its SHA256 fingerprint bound to its exact known_hosts line. */
@@ -234,7 +234,7 @@ export function registerServerSshTools(
   server: McpServer,
   sshRunner: typeof runSsh = runSsh,
   keyScanRunner: typeof runSshKeyScan = runSshKeyScan,
-  apiRequest: typeof makeApiRequest = makeApiRequest,
+  apiRequest: ApiRequest = missingApiRequest,
 ): void {
   server.registerTool(
     "hetzner_get_server_ram",

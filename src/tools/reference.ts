@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { makeApiRequest, handleApiError } from "../api.js";
+import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
 import {
   ResponseFormat,
   ListServerTypesResponseSchema,
@@ -12,7 +12,7 @@ import { escapeHtml } from "../utils.js";
 
 const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN);
 
-export function registerReferenceTools(server: McpServer): void {
+export function registerReferenceTools(server: McpServer, apiRequest: ApiRequest = missingApiRequest): void {
   // List Server Types
   server.registerTool(
     "hetzner_list_server_types",
@@ -40,7 +40,7 @@ Use this to find the right server type when creating a new server.`,
     },
     async (params) => {
       try {
-        const data = await makeApiRequest("/server_types", ListServerTypesResponseSchema);
+        const data = await apiRequest("/server_types", ListServerTypesResponseSchema);
         const serverTypes = data.server_types;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -111,7 +111,7 @@ Use this to find the right image when creating a new server.`,
           queryParams.type = "system"; // Default to system images
         }
 
-        const data = await makeApiRequest("/images", ListImagesResponseSchema, "GET", undefined, queryParams);
+        const data = await apiRequest("/images", ListImagesResponseSchema, "GET", undefined, queryParams);
         const images = data.images.filter(img => img.status === "available");
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -177,7 +177,7 @@ Use this to choose where to deploy your server.`,
     },
     async (params) => {
       try {
-        const data = await makeApiRequest("/locations", ListLocationsResponseSchema);
+        const data = await apiRequest("/locations", ListLocationsResponseSchema);
         const locations = data.locations;
 
         if (params.response_format === ResponseFormat.JSON) {

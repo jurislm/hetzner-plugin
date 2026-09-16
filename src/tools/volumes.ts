@@ -1,7 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
-  makeApiRequest,
+  ApiRequest,
+  missingApiRequest,
   handleApiError,
   createPaginatedFetch,
   PAGINATION_HARD_CAP_PAGES,
@@ -19,8 +20,6 @@ import {
 import { escapeHtml } from "../utils.js";
 const CLOUD_DEFAULT_PER_PAGE = 25;
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
-
-const paginatedFetch = createPaginatedFetch(makeApiRequest);
 
 function formatVolume(vol: HetznerVolume): string {
   const lines = [
@@ -42,7 +41,8 @@ function formatVolume(vol: HetznerVolume): string {
   return lines.join("\n");
 }
 
-export function registerVolumeTools(server: McpServer): void {
+export function registerVolumeTools(server: McpServer, apiRequest: ApiRequest = missingApiRequest): void {
+  const paginatedFetch = createPaginatedFetch(apiRequest);
   // List Volumes
   server.registerTool(
     "hetzner_list_volumes",
@@ -85,7 +85,7 @@ Returns volumes with their:
         if (params.status) filterParams.status = params.status;
 
         if (params.page !== undefined) {
-          const data = await makeApiRequest(
+          const data = await apiRequest(
             "/volumes",
             ListVolumesResponseSchema,
             "GET",
@@ -163,7 +163,7 @@ Useful for confirming the actual mount path (\`linux_device\`) before setting up
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(`/volumes/${params.id}`, GetVolumeResponseSchema);
+        const data = await apiRequest(`/volumes/${params.id}`, GetVolumeResponseSchema);
         const vol = data.volume;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -212,7 +212,7 @@ After attaching, the volume is accessible at its \`linux_device\` path (e.g. \`/
         const body: Record<string, unknown> = { server: params.server_id };
         if (params.automount !== undefined) body.automount = params.automount;
 
-        const data = await makeApiRequest(
+        const data = await apiRequest(
           `/volumes/${params.id}/actions/attach`,
           VolumeActionResponseSchema,
           "POST",
@@ -263,7 +263,7 @@ After detaching, the volume status returns to \`available\` and can be attached 
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(
+        const data = await apiRequest(
           `/volumes/${params.id}/actions/detach`,
           VolumeActionResponseSchema,
           "POST"

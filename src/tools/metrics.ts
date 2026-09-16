@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { makeApiRequest, handleApiError } from "../api.js";
+import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
 import {
   ResponseFormat,
   ResponseFormatSchema,
@@ -28,7 +28,7 @@ function fmt(n: number, decimals = 1): string {
   return n.toFixed(decimals);
 }
 
-export function registerMetricsTools(server: McpServer): void {
+export function registerMetricsTools(server: McpServer, apiRequest: ApiRequest = missingApiRequest): void {
   server.registerTool(
     "hetzner_get_server_metrics",
     {
@@ -85,7 +85,7 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
         // Fetch metrics and server info (for CPU core count) in parallel.
         // Server info is only needed when cpu is in the type list.
         const [metricsData, serverData] = await Promise.all([
-          makeApiRequest(
+          apiRequest(
             `/servers/${params.id}/metrics`,
             ServerMetricsResponseSchema,
             "GET",
@@ -93,7 +93,7 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
             { type: types.join(","), start, end, step }
           ),
           types.includes("cpu")
-            ? makeApiRequest(`/servers/${params.id}`, GetServerResponseSchema)
+            ? apiRequest(`/servers/${params.id}`, GetServerResponseSchema)
             : Promise.resolve(null)
         ]);
 

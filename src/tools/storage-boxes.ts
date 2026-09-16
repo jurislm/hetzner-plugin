@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
-  makeStorageBoxApiRequest,
+  type ApiRequest,
   handleApiError,
   createPaginatedFetch,
+  missingApiRequest,
   PAGINATION_HARD_CAP_PAGES,
   PartialFailure
 } from "../api.js";
@@ -184,15 +185,14 @@ export function formatAction(action: HetznerAction): string {
   return lines.join("\n");
 }
 
-// Exported for unit testing. Bound to makeStorageBoxApiRequest via the shared factory.
-export const paginatedFetch = createPaginatedFetch(makeStorageBoxApiRequest);
-
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
 
 export function registerStorageBoxTools(
   server: McpServer,
-  storageRequest: typeof makeStorageBoxApiRequest = makeStorageBoxApiRequest,
+  storageRequest: ApiRequest = missingApiRequest,
 ): void {
+  const makeStorageBoxApiRequest = storageRequest;
+  const paginatedFetch = createPaginatedFetch(storageRequest);
   // List Storage Boxes
   server.registerTool(
     "hetzner_list_storage_boxes",

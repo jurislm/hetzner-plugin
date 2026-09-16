@@ -56,4 +56,33 @@ describe("generated Hetzner MCP server", () => {
       globalThis.fetch = originalFetch;
     }
   });
+
+  test("routes a retained tool through createServer injection without process credentials", async () => {
+    const previousCloud = process.env.HETZNER_API_TOKEN;
+    const previousUnified = process.env.HETZNER_API_TOKEN_UNIFIED;
+    delete process.env.HETZNER_API_TOKEN;
+    delete process.env.HETZNER_API_TOKEN_UNIFIED;
+    const calls: string[] = [];
+    try {
+      const server = createServer({ cloudToken: "injected-cloud", timeoutMs: 30_000 }, async (url, init) => {
+        calls.push(`${init?.method}:${String(url)}`);
+        expect(new Headers(init?.headers).get("authorization")).toBe("Bearer injected-cloud");
+        return new Response(JSON.stringify({ server_types: [{ id: 1, name: "cx22", description: "", cores: 2, memory: 4, disk: 40, prices: [], architecture: "x86", cpu_type: "shared" }] }), { headers: { "content-type": "application/json" } });
+      });
+      const client = new Client({ name: "test", version: "0.0.0" });
+      const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+      await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+      const result = await client.callTool({ name: "hetzner_list_server_types", arguments: { response_format: "json" } });
+      expect(result.isError).not.toBe(true);
+      expect(result.structuredContent).toMatchObject({ data: [{ name: "cx22" }] });
+      expect(calls).toEqual(["GET:https://api.hetzner.cloud/v1/server_types"]);
+      await client.close();
+      await server.close();
+    } finally {
+      if (previousCloud === undefined) delete process.env.HETZNER_API_TOKEN;
+      else process.env.HETZNER_API_TOKEN = previousCloud;
+      if (previousUnified === undefined) delete process.env.HETZNER_API_TOKEN_UNIFIED;
+      else process.env.HETZNER_API_TOKEN_UNIFIED = previousUnified;
+    }
+  });
 });

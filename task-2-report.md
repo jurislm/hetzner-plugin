@@ -19,7 +19,7 @@ Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is check
 
 - Packaging and plugin registration: `package.json`, `bun.lock`, `plugin.json`, `mcp.json`, `.mcp.json`, `.mcp.json.example`, `.app.json.example`, `.codex-plugin/plugin.json`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`.
 - OpenAPI: `openapi/hetzner-cloud-openapi.json`, `openapi/hetzner-unified-openapi.json`, `api/manifest.json`, `scripts/update-openapi.ts`, `scripts/check-openapi.ts`, `scripts/check-release-tag.ts`, `scripts/generate-openapi.ts`, `src/openapi-integrity.ts`.
-- Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
+- Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, retained registrar files under `src/tools/`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
 - Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/release-tag.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root test suite and `vitest.config.ts`.
 - CI: removed `.github/workflows/ci.yml` and `.github/workflows/release.yml`; `.woodpecker/ci.yml` and `.woodpecker/release.yml` are the remaining CI/release definitions.
 - Active documentation: `CLAUDE.md`, `.github/copilot-instructions.md`, `docs/index.html`, `openspec/config.yaml`, `openspec/specs/{overview.md,storage-boxes.md}`, active OpenSpec change records, `skills/hetzner/references/authentication.md`.
@@ -37,9 +37,9 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 | `bun run api:check` | 0 | Offline hash verification passed for both snapshots, then regeneration caused no diff in tracked snapshot/generated artifacts. |
 | `bun run manifest:check` | 0 | Portable/root/compatibility manifests, local stdio boundary, public package, and exact pins validated. |
 | `bun run typecheck` | 0 | TypeScript source check passed. |
-| `bun run clean && bun run build && bun test` | 0 | Already-built `dist/index.js` served stdio; 19 passing Bun tests, 53 assertions. |
+| `bun run clean && bun run build && bun test` | 0 | Already-built `dist/index.js` served stdio; 20 passing Bun tests, 57 assertions. |
 | `bun run build` | 0 | `dist` emitted. |
-| `bun run check` | 0 | Full manifest, typecheck, build-before-test, active Bun test, package check, and npm pack gate passed; 19 tests and 53 assertions passed. |
+| `bun run check` | 0 | Full manifest, typecheck, build-before-test, active Bun test, package check, and npm pack gate passed; 20 tests and 57 assertions passed. |
 | `npm pack --dry-run` | 0 | Fresh JSON readback contained 98 files (`jurislm-hetzner-plugin-0.1.0.tgz`), package size 542,620 bytes, unpacked size 9,040,496 bytes. |
 | `bun run package:check` | 0 | Required package contents present; credential-file paths rejected. |
 | `git diff --check` | 0 | No whitespace errors. |
@@ -57,6 +57,7 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Round 4 updated the active `test-infrastructure` OpenSpec spec to the implemented Bun `src` test root and build-before-test flow, removed obsolete workflow files, and preserved archived OpenSpec history.
 - Round 5 added the Woodpecker Alpine git prerequisite, tag/version verification, public npm release job, `publishConfig.access=public`, and npm pack coverage in `check`. The canonical manifest is now `api/manifest.json`; `openapi/` contains snapshots only.
 - Round 5 fresh pack readback and command evidence are recorded after the canonical manifest migration; no publish or provider verification was performed.
+- Retained injection refactor: every registrar accepts an `ApiRequest`; `createServer` builds Cloud/Unified requests from its config and injected fetch; pagination factories are registrar-local; retained requests no longer load process config or global fetch. The no-process-credentials `createServer` regression passes.
 
 ## Unresolved concerns
 
