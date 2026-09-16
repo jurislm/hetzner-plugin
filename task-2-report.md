@@ -2,7 +2,7 @@
 
 ## Result
 
-Implemented `@jurislm/hetzner-plugin@0.1.0` on `codex/hetzner-plugin`, final public `main` at `e3d0978e0503608a68a4a5f295641c028ea5b395`, starting from the v1.5.0 baseline (`7c99e1e`). The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
+Implemented `@jurislm/hetzner-plugin@1.5.0` bootstrap on `codex/hetzner-plugin`, final public `main` is updated after the version correction, starting from the v1.5.0 baseline (`7c99e1e`). The first Release Please publish is `1.6.0`. The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
 
 Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is checked only before a Unified/Storage Box request and is never substituted by the Cloud token.
 
@@ -60,12 +60,12 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Retained injection refactor: every registrar accepts an `ApiRequest`; `createServer` builds Cloud/Unified requests from its config and injected fetch; pagination factories are registrar-local; retained requests no longer load process config or global fetch. The no-process-credentials `createServer` regression passes.
 - Round 7 replaced the package checker’s npm subprocess with Bun’s `bun pm pack --dry-run` output parser and kept required-file, exact-one-manifest, and credential-file checks.
 - Generated handlers now parse `operation.responseSchema` before returning structured content; malformed provider responses return redacted `isError`. Generated destructive metadata covers poweroff, reboot, rebuild, shutdown, rollback, delete/remove/destroy, reset, and revoke patterns.
-- `.release-please-manifest.json` is aligned to `0.1.0`; active OpenSpec, CLAUDE, Copilot, landing page, and API reference text now describe `@jurislm/hetzner-plugin`, Bun/`src`, `.woodpecker`, 264 total tools (222 generated + 42 retained), and the Unified auth variable.
+- `.release-please-manifest.json` is aligned to bootstrap `1.5.0`; active OpenSpec, CLAUDE, Copilot, landing page, and API reference text now describe `@jurislm/hetzner-plugin`, Bun/`src`, `.woodpecker`, 264 total tools (222 generated + 42 retained), and the Unified auth variable.
 
 ## Final readback
 
 - Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback: `jurislm/hetzner-plugin` PUBLIC, `main` at the same SHA.
-- Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, version `0.1.0`, installed manifest and `mcp.json` present in local cache.
+- Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, bootstrap version `1.5.0`, installed manifest and `mcp.json` present in local cache.
 - NPM publish remains blocked by `npm whoami` E401; package readback is E404. No publish or legacy deprecation was attempted.
 
 ## Release automation alignment

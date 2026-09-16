@@ -56,8 +56,8 @@ create snapshot 與 rollback 都回傳 `{ action: { id, command, status, progres
 
 1. 在 `develop` worktree 完成實作
 2. PR `develop → main`，經 Claude Bot review 後 merge
-3. Plugin version starts at `0.1.0`; future Release Please updates package and plugin manifests together.
-4. tag 建立後由 `.woodpecker/release.yml` verify `CI_COMMIT_TAG=v<package.version>` 並以 npm secret publish
+3. Plugin version starts at `1.5.0`; the first Release Please minor release is `1.6.0`.
+4. tag 建立後由 `.woodpecker/npm-release.yml` verify `CI_COMMIT_TAG=v<package.version>` 並以 npm secret publish
 5. 更新 plugin inventory to 264 tools（222 generated + 42 retained）
 
 無 rollback 步驟需求（純 additive，不動既有 tool 簽章）。

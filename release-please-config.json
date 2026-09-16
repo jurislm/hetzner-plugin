@@ -6,6 +6,7 @@
   "include-v-in-tag": true,
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
+  "bootstrap-sha": "7c99e1e10753823d740b201acdb97b8e5b38ab67",
   "changelog-sections": [
     { "type": "feat", "section": "Features" },
     { "type": "fix", "section": "Bug Fixes" },
