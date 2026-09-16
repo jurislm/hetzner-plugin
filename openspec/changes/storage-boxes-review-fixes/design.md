@@ -1,95 +1,47 @@
 ## Context
 
-PR #2 (jurislm/hetzner-mcp#2) adds three Storage Box query tools that target Hetzner's unified API at `https://api.hetzner.com/v1`. The existing tools target the Cloud API at `https://api.hetzner.cloud/v1`. Both APIs accept `Bearer` tokens but issue tokens from different consoles:
-
-- **Cloud token**: issued per project from `console.hetzner.cloud/projects/<id>/security/tokens`. Scope is one Cloud project.
-- **Unified token**: issued per account from `console.hetzner.com/account/security/api-tokens`. Scope spans Storage Boxes and other Robot-merged surfaces. Will eventually replace Cloud tokens but the migration is incomplete.
-
-A unified token authenticates against both APIs today (verified empirically). A Cloud token does **not** authenticate against the unified API. Reusing a single env var optimizes for the user with one token and ignores the user with two — and produces opaque `401`s for everyone else.
-
-Repo currently has no test infrastructure: no test script, no test framework, no test files. PR #2's test plan is a manual checklist with all boxes unchecked.
+The active target is `@jurislm/hetzner-plugin`, a local Bun stdio MCP plugin. It exposes generated Cloud and Unified operations plus retained v1.5 focused tools. The Cloud API is `https://api.hetzner.cloud/v1`; the Unified Storage Box API is `https://api.hetzner.com/v1`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Eliminate the silent token-class mismatch by accepting either env var and emitting actionable errors when neither is set.
-- Return complete result sets from list endpoints regardless of account size.
-- Produce deterministic, locale-independent output suitable for snapshot testing.
-- Establish a vitest baseline so future tools can be developed test-first without re-deciding tooling.
-- Land all changes within the existing PR (#2) — no separate PR.
+
+- Keep `HETZNER_API_TOKEN` as the Cloud credential required at process startup.
+- Use `HETZNER_API_TOKEN_UNIFIED` exclusively for Storage Box requests, checking it immediately before the request so Cloud-only users can start.
+- Use native `fetch` for both API bases with shared timeout, response decoding, envelope, annotation, and error-redaction behavior.
+- Generate the provider contract only from committed authoritative OpenAPI snapshots.
+- Keep the retained Storage Box and Cloud-focused tools covered by active Bun tests.
 
 **Non-Goals:**
-- Backfilling tests for pre-existing tools (`servers`, `ssh-keys`, `reference`) — out of scope; tracked as future work.
-- Adding pagination to other list endpoints (`hetzner_list_servers`, `hetzner_list_ssh_keys`) — out of scope; same reason.
-- Rewriting `formatBytes` for the existing Cloud-API tools — they don't use this function.
-- Integration tests against the live Hetzner API — requires real credentials in CI; out of scope.
-- Refactoring the `getApiClient` / `getStorageBoxApiClient` duplication into a single factory parameterized by base URL — keeping the change minimal and focused on review feedback.
+
+- No live-provider acceptance in CI or local tests without credentials.
+- No remote MCP endpoint, OAuth flow, or alternate credential alias.
+- No modification to archived OpenSpec history.
 
 ## Decisions
 
-### Decision 1: Token resolution — lazy hard split
-**Choice**: `getStorageBoxApiClient()` reads `HETZNER_API_TOKEN_UNIFIED` first, then falls back to `HETZNER_API_TOKEN`. If neither is set, throw an error naming both env vars and pointing to the unified-token console URL.
+### Decision 1: Separate credentials with lazy Unified validation
 
-**Alternatives considered**:
-- *Hard split (only `HETZNER_API_TOKEN_UNIFIED`)*: rejected — breaks every existing setup that has only `HETZNER_API_TOKEN`.
-- *Single var, document the token-class mismatch in README only*: rejected — leaves the silent-401 footgun in place; users must read docs to discover the failure mode.
+Storage Box operations read only `HETZNER_API_TOKEN_UNIFIED`. The process validates `HETZNER_API_TOKEN` during startup. A missing Unified token produces a local error before `fetch` is called. Cloud credentials are never used for Unified requests.
 
-**Rationale**: Cloud-only users can start the local MCP process with `HETZNER_API_TOKEN`; the first Storage Box operation requires `HETZNER_API_TOKEN_UNIFIED` before it sends a request. Token classes remain separate and the error names the missing Unified credential.
+### Decision 2: Native-fetch client boundary
 
-### Decision 2: Pagination — fetch-all by default, cap at 5 pages
-**Choice**: `hetzner_list_storage_boxes` and `hetzner_list_storage_box_subaccounts` loop while `meta.pagination.next_page` is non-null, accumulating results. Hard cap at 5 pages (250 items at default `per_page=50`) with a warning in output if cap hit. Optional `page` and `per_page` params override the loop and fetch a single page.
+`src/client.ts` owns URL path/query encoding, JSON request bodies, bearer authentication, timeout, no-retry behavior, JSON/text/binary/204 decoding, `ToolEnvelope`, and sensitive-value redaction. `src/api.ts` is the retained-tool adapter over this client. `src/errors.ts` provides the shared error formatter and bearer/token redaction used by generated and retained MCP handlers.
 
-**Alternatives considered**:
-- *Single page, return `meta.pagination` for caller to handle*: rejected — pushes complexity to the LLM caller; most accounts have <50 boxes so the loop is cheap.
-- *Unlimited pages*: rejected — pathological account size could exhaust the 30s axios timeout. 5 pages is enough for 99% of accounts and surfaces clearly when not.
+### Decision 3: Generated contract
 
-**Rationale**: Default behavior matches user expectation ("list all"). Cap prevents runaway requests. Manual `page`/`per_page` retains escape hatch for power users.
+`openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are the only codegen inputs. `scripts/update-openapi.ts` records source URL, fetch time, persisted-byte SHA-256, versions, and counts. `scripts/check-openapi.ts` recalculates both snapshot hashes offline before `api:check` regenerates types and the shared operation registry. Names use a source prefix and any remaining collision fails generation.
 
-### Decision 3: Byte formatting — switch labels, keep divisors
-**Choice**: Keep `1024**3` / `1024**2` divisors but label them `GiB` / `MiB` (binary prefixes per IEC 80000-13).
+### Decision 4: Retained capability coverage
 
-**Alternatives considered**:
-- *Switch to `1000**3` and keep `GB`*: rejected — Hetzner's Cloud Console displays storage in `GiB`, so binary prefixes match what users see.
-- *Auto-pick GiB/MiB/KiB based on magnitude*: rejected — unnecessary complexity; storage box quotas are always >1 GiB.
-
-**Rationale**: Smallest correct change.
-
-### Decision 4: Date formatting — ISO 8601 date-only
-**Choice**: `paid_until` formatted as `YYYY-MM-DD` via `value.slice(0, 10)`.
-
-**Rationale**: Deterministic, snapshot-testable, locale-independent. Hetzner's API returns ISO 8601 strings, so slicing is safer than re-parsing through `Date`.
-
-### Decision 5: Test framework — vitest
-**Choice**: vitest 3.x as devDependency, `tests/` directory at repo root, `*.test.ts` naming convention.
-
-**Alternatives considered**:
-- *node:test*: rejected — TypeScript ergonomics weaker (need separate ts-node setup vs vitest's native `tsx`/`tsconfig.json` reuse).
-- *jest*: rejected — heavier toolchain (Babel transform vs vitest's esbuild); vitest is the de facto modern choice.
-
-**Rationale**: Vitest is already in the user's other repos (per CLAUDE.md mode 14), so muscle memory carries over. Native ESM + TS support matches this repo's `"type": "module"` config.
-
-### Decision 6: Test scope — pure functions only in this PR
-**Choice**: Tests cover `formatBytes`, `formatStorageBox`, `formatSubaccount`. Tool registration and API request paths are not tested in this PR.
-
-**Rationale**: Pure-function tests give immediate ROI with zero mocking. Tool integration tests need a mock MCP server and axios mock — significant scope creep that would block the PR. Track as follow-up.
+Active Bun tests exercise Storage Box statistics, space assertion, RAM-over-SSH, and a representative server resource mutation boundary including method, path, body, and annotations. The direct `bun test` root is `src/`, where these tests are visible to the canonical check.
 
 ## Risks / Trade-offs
 
-- **[Risk]** Users who start with only a Cloud token cannot invoke Storage Box operations. → **Mitigation**: reject before the provider request with an error that names `HETZNER_API_TOKEN_UNIFIED` and document the lazy requirement.
-- **[Risk]** Pagination loop could hide a Hetzner API change (e.g. `meta.pagination` schema drift). → **Mitigation**: Defensive parse — if `meta.pagination.next_page` is missing or the response shape unexpected, exit the loop after current page. Page count is logged to stderr.
-- **[Risk]** ISO date formatting changes user-visible output for existing PR #2 users. → **Mitigation**: PR is unmerged; no users yet.
-- **[Trade-off]** Adding vitest as devDependency adds ~30 packages to `node_modules`. → Acceptable cost for unblocking test-driven development.
+- Cloud-only users can start the process but cannot use Storage Box tools until an account-level Unified token is configured.
+- Generated response schemas describe the provider contract; MCP output validation uses the shared envelope boundary so partial provider fixtures and forward-compatible fields do not block envelope delivery.
+- Live provider behavior remains unverified until credentials are supplied.
 
-## Migration Plan
+## Verification
 
-1. Cherry-pick PR #2 commits onto `develop` (already done — rebased branch base).
-2. Apply changes per spec in the order in `tasks.md`.
-3. Force-push to `claude/hetzner-storage-boxes-tool-zv321` (already done — base now `develop`).
-4. Validate via `npm run lint` + `npm run build` + `npm test`.
-5. Update PR description to reflect new env var.
-
-**Rollback**: revert the squash commit; old behavior (single env var, no pagination, `GB` labels, no tests) restored.
-
-## Open Questions
-
-None — review findings are concrete enough to act on directly.
+Run `bun run check`. It verifies snapshot hashes and generated artifacts, validates manifests and package contents, typechecks, builds before tests, runs the active Bun suite, and performs the package check.

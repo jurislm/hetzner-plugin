@@ -125,7 +125,7 @@ export function parseFreeOutput(output: string): FreeOutput {
   const total = parseCell(mem, 1, "Mem total");
   const used = parseCell(mem, 2, "Mem used");
   const free = parseCell(mem, 3, "Mem free");
-  // Column 6 = "available" (after buff/cache adjustment); fall back to free
+  // Column 6 = "available" (after buff/cache adjustment); use free when absent
   const available = mem[6] !== undefined ? parseCell(mem, 6, "Mem available") : free;
 
   const ram: RamStats = {
@@ -337,7 +337,7 @@ Returns used / total / available in MiB and overall usage %, plus swap state.`,
         }
 
         // Step 3: SSH and run free -m. When a fingerprint was verified, pin the
-        // exact host key (StrictHostKeyChecking=yes); otherwise fall back to TOFU.
+        // exact host key (StrictHostKeyChecking=yes); otherwise use TOFU.
         const stdout = pinnedHostKeys
           ? await sshRunner(ipv4, sshPort, sshUser, "free -m", { pinnedHostKeys })
           : await sshRunner(ipv4, sshPort, sshUser, "free -m");

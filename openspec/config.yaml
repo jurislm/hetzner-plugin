@@ -1,33 +1,32 @@
 schema: spec-driven
 
 context: |
-  Tech stack: TypeScript, Bun, Vitest, MCP SDK (@modelcontextprotocol/sdk), Zod
-  Runtime: Bun (not Node.js) — use `bun -e` for inline scripts, `bun run test` for tests
-  Linter: ESLint with max-warnings=0 and no-explicit-any rule
+  Tech stack: TypeScript, Bun, MCP SDK (@modelcontextprotocol/sdk), Zod
+  Runtime: Bun (not Node.js) — use `bun -e` for inline scripts, `bun test` for tests
+  Checks: generated contract integrity, typecheck, Bun tests, build, and package contents
   Transport: stdio (MCP server launched as subprocess)
 
-  Project: Hetzner Cloud MCP Server (hetzner-mcp)
-  Tools: 17 MCP tools across 4 categories (servers, ssh-keys, reference, storage-boxes)
+  Project: Hetzner local stdio plugin (@jurislm/hetzner-plugin)
+  Tools: generated Cloud/Unified operations plus retained focused tools across servers, ssh-keys, reference, storage-boxes, volumes, metrics, and RAM-over-SSH
   Naming: hetzner_ prefix + snake_case (e.g. hetzner_create_server)
 
   Architecture:
   - src/index.ts — MCP server entry, imports all tool modules
-  - src/api.ts — Hetzner Cloud REST API client (axios); makeApiRequest for Cloud API,
-                  makeStorageBoxApiRequest for Unified API (Storage Boxes)
+  - src/client.ts — native-fetch generated operation client with Cloud/Unified token selection
+  - src/api.ts — retained-tool adapter over the native-fetch client
   - src/types.ts — TypeScript interfaces + Zod schemas matching Hetzner API shapes
   - src/tools/*.ts — Tool definitions using server.registerTool()
 
   API endpoints:
   - Cloud API: https://api.hetzner.cloud/v1 — auth: HETZNER_API_TOKEN
-  - Unified API: https://api.hetzner.com/v1 — auth: HETZNER_API_TOKEN_UNIFIED
-    (fallback to HETZNER_API_TOKEN with WARN log; Cloud project tokens may not authenticate)
+  - Unified API: https://api.hetzner.com/v1 — auth: HETZNER_API_TOKEN_UNIFIED only;
+    checked immediately before a Storage Box request, never substituted by the Cloud token
 
   Conventions:
   - Conventional commits: feat/fix/refactor/docs/chore
   - Branch: develop → PR → main (never push directly to main)
   - Version managed by Release Please (never edit package.json version manually)
-  - All new tools must have Vitest unit tests (80%+ coverage)
-  - ESLint must pass with 0 warnings before commit
+  - All new and retained behavior must have active Bun tests under src/
   - All API responses validated with Zod schema at boundary (C-1/C-2 rules)
 
   Domain: Hetzner Cloud infrastructure management + Storage Boxes (NAS)

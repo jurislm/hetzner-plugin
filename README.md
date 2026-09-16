@@ -12,7 +12,7 @@ bun install --frozen-lockfile
 bun run check
 ```
 
-`mcp.json` registers only a local stdio process. There is no remote MCP endpoint, OAuth flow, axios dependency, or token fallback.
+`mcp.json` registers only a local stdio process. There is no remote MCP endpoint or OAuth flow.
 
 ## OpenAPI contract
 

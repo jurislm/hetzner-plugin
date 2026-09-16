@@ -1,47 +1,33 @@
-## 1. Test infrastructure setup
+## 1. Credential and request boundary
 
-- [ ] 1.1 Add `vitest` `^3` to `devDependencies` in `package.json`
-- [ ] 1.2 Add `"test": "vitest run"` and `"test:watch": "vitest"` scripts to `package.json`
-- [ ] 1.3 Run `npm install` to populate lockfile and `node_modules`
-- [ ] 1.4 Create `tests/` directory and add `.gitkeep` if empty (will be populated in §3)
+- [x] 1.1 Require `HETZNER_API_TOKEN` at process startup.
+- [x] 1.2 Require `HETZNER_API_TOKEN_UNIFIED` immediately before Unified Storage Box requests; keep Cloud and Unified credentials separate.
+- [x] 1.3 Use native `fetch` for auth, path/query/body encoding, JSON/text/binary/204 decoding, timeout, and zero retries.
+- [x] 1.4 Centralize error formatting and redact configured tokens plus bearer-token values in generated and retained tool errors.
+- [x] 1.5 Add active Bun tests for config, client, error redaction, and retained API seams under `src/`.
 
-## 2. Storage Boxes — code changes
+## 2. OpenAPI contract
 
-- [ ] 2.1 Require `HETZNER_API_TOKEN_UNIFIED` immediately before a Storage Box request; do not substitute `HETZNER_API_TOKEN`
-- [ ] 2.2 Change `HetznerStorageBoxSubaccount.comment` in `src/types.ts` to `string | null`
-- [ ] 2.3 Add pagination types to `src/types.ts`: `Pagination` (with `next_page: number | null`) and `Meta` interfaces
-- [ ] 2.4 Update `ListStorageBoxesResponse` and `ListStorageBoxSubaccountsResponse` in `src/types.ts` to include optional `meta?: Meta`
-- [ ] 2.5 Replace `formatBytes` body in `src/tools/storage-boxes.ts` to label output `GiB` / `MiB`
-- [ ] 2.6 Replace `paid_until` formatting in `formatStorageBox` to `value.slice(0, 10)`
-- [ ] 2.7 Replace protocol-key arrays in `formatStorageBox` and `formatSubaccount` with `as const` tuples typed as `(keyof T)[]`
-- [ ] 2.8 Update `formatSubaccount` to handle `comment: null` and empty-string cases (no `Comment:` line emitted)
-- [ ] 2.9 Add `paginatedFetch<T>(endpoint, page?, perPage?)` helper at top of `storage-boxes.ts` (or extract to shared util) that loops `meta.pagination.next_page` up to 5 pages and returns `{ items: T[]; truncated: boolean }`
-- [ ] 2.10 Update `hetzner_list_storage_boxes` `inputSchema` with optional `page` and `per_page` params; route to `paginatedFetch` or single-page fetch accordingly
-- [ ] 2.11 Update `hetzner_list_storage_box_subaccounts` `inputSchema` and behavior the same way
-- [ ] 2.12 In list-tool markdown output, append warning line `> ⚠️ Truncated at 5 pages — supply explicit \`page\` to fetch more.` when `truncated: true`. In JSON output, return `{ storage_boxes: [...], truncated: true }`.
+- [x] 2.1 Commit the official Cloud and Unified OpenAPI snapshots and provenance manifest.
+- [x] 2.2 Hash the exact persisted snapshot bytes, including the final newline written to disk.
+- [x] 2.3 Verify both snapshot hashes offline in `api:check` before regenerating artifacts.
+- [x] 2.4 Generate Cloud/Unified TypeScript contracts and one source-prefixed operation registry; fail on any remaining name collision.
 
-## 3. Tests — pure functions
+## 3. Retained capability coverage
 
-- [ ] 3.1 Export `formatBytes`, `formatStorageBox`, `formatSubaccount` from `src/tools/storage-boxes.ts` so they can be imported by tests
-- [ ] 3.2 Create `tests/tools/storage-boxes.test.ts` with `describe`/`it` blocks covering every scenario in `specs/storage-boxes/spec.md` for the three pure functions (`formatBytes` ×3, `formatStorageBox` ×2 paid_until cases, `formatSubaccount` ×3 comment cases)
-- [ ] 3.3 Run `npm test` and confirm all tests pass
-- [ ] 3.4 Confirm tests pass with no `HETZNER_*` env vars set (`unset HETZNER_API_TOKEN HETZNER_API_TOKEN_UNIFIED && npm test`)
+- [x] 3.1 Keep Storage Box statistics and assert-space tools registered and test their responses and annotations.
+- [x] 3.2 Keep explicit server RAM-over-SSH behavior and test server resolution plus SSH output parsing.
+- [x] 3.3 Test a representative retained server resource method, path, request body, and mutation annotations.
+- [x] 3.4 Keep generated metadata, structured `ToolEnvelope`, and all retained tool registrations on the same MCP server contract.
 
-## 4. README documentation
+## 4. Packaging and documentation
 
-- [ ] 4.1 Add a "Storage Boxes — token requirements" subsection to README explaining: unified API needs an account-level token from `console.hetzner.com/account/security/api-tokens`; Cloud-project tokens won't work for storage box endpoints; `HETZNER_API_TOKEN_UNIFIED` env var takes precedence over `HETZNER_API_TOKEN`
-- [ ] 4.2 Add a row to the tools table noting which tools need which token class
+- [x] 4.1 Use the portable root plugin manifest, local stdio MCP manifest, compatibility Codex manifest, examples, skill, references, README, LICENSE, and Woodpecker CI/release files.
+- [x] 4.2 Document Cloud startup credentials and lazy Unified Storage Box credentials in active README, `CLAUDE.md`, and OpenSpec artifacts.
+- [x] 4.3 Remove obsolete unrun root `tests/` artifacts that import the former request library or assert the old token behavior.
 
 ## 5. Validation
 
-- [ ] 5.1 Run `npm run lint` — must pass with `--max-warnings=0`
-- [ ] 5.2 Run `npm run build` — must succeed with zero TypeScript errors
-- [ ] 5.3 Run `npm test` — must pass
-- [ ] 5.4 Run `openspec status --change storage-boxes-review-fixes` — confirm all artifacts done
-
-## 6. Commit and push
-
-- [ ] 6.1 Stage all changes (`src/`, `tests/`, `package.json`, `package-lock.json`, `README.md`, `openspec/changes/storage-boxes-review-fixes/`)
-- [ ] 6.2 Commit with conventional-commits message (`fix(storage-boxes): address PR #2 review findings`) — body listing finding numbers #1–#8
-- [ ] 6.3 `git push origin claude/hetzner-storage-boxes-tool-zv321`
-- [ ] 6.4 Update PR #2 description to reflect new env var contract
+- [x] 5.1 Build before running the canonical `bun test`; stdio tests launch the already-built `dist/index.js` from `mcp.json`.
+- [x] 5.2 Run `bun run check`, `bun run build`, `npm pack --dry-run`, and `git diff --check`.
+- [x] 5.3 Do not claim live Hetzner acceptance without provider credentials.
