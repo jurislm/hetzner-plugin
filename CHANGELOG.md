@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.1](https://github.com/jurislm/hetzner-plugin/compare/v1.6.0...v1.6.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* gate release merges on CI status ([f418753](https://github.com/jurislm/hetzner-plugin/commit/f4187538d6268f0e539f9bea52f35dd1d22b2f6a))
+* wait for CI statuses before release merge ([8be582e](https://github.com/jurislm/hetzner-plugin/commit/8be582e6c4628e25bb2ad013304d277baea6b2f1))
+
 ## [1.6.0](https://github.com/jurislm/hetzner-plugin/compare/v1.5.0...v1.6.0) (2026-09-16)
 
 
