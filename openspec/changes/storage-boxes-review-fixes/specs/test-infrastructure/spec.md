@@ -1,33 +1,42 @@
 ## ADDED Requirements
 
-### Requirement: Vitest as the test framework
-The repository SHALL adopt vitest 3.x as its unit test framework. `vitest` MUST appear in `devDependencies` of `package.json`. A `test` script in `package.json` MUST invoke vitest in non-watch mode (`vitest run`).
+### Requirement: Bun test suite
+
+The repository SHALL use Bun's built-in test runner. The package `test` script SHALL invoke `bun test`, and `bunfig.toml` SHALL set the test root to `src` so active tests are discovered directly.
 
 #### Scenario: Test script available
-- **WHEN** a developer runs `npm test`
-- **THEN** vitest executes in run-once mode and exits with code 0 if all tests pass
 
-#### Scenario: Vitest version constraint
-- **WHEN** `package.json` is inspected
-- **THEN** the `devDependencies.vitest` semver range starts at `^3.` or higher
+- **WHEN** a developer runs `bun test` or `bun run test`
+- **THEN** Bun runs the active tests under `src` and exits with code 0 when they pass
 
-### Requirement: Test directory convention
-Test files SHALL live under `tests/` at the repository root, mirroring the `src/` directory tree. Files MUST be named `<module>.test.ts`.
+#### Scenario: Active test root
 
-#### Scenario: Locating a test
-- **WHEN** a source module is at `src/tools/storage-boxes.ts`
-- **THEN** its tests live at `tests/tools/storage-boxes.test.ts`
+- **WHEN** the repository test configuration is inspected
+- **THEN** `bunfig.toml` points the Bun test root at `./src`, and no root `tests/` suite is required
 
-### Requirement: Pure-function test coverage for storage-boxes
-The `storage-boxes` module's pure formatter functions (`formatBytes`, `formatStorageBox`, `formatSubaccount`) MUST have unit tests covering at least the scenarios enumerated in `specs/storage-boxes/spec.md`.
+### Requirement: Build-before-test distribution flow
 
-#### Scenario: Coverage check
-- **WHEN** vitest is run with `--coverage` against `src/tools/storage-boxes.ts`
-- **THEN** the three pure formatter functions show ≥80% line coverage
+The canonical `check` script SHALL typecheck and build `dist` before running Bun tests. The stdio protocol test SHALL launch the already-built `dist/index.js` declared by `mcp.json`; it SHALL not build the project itself.
+
+#### Scenario: Clean build then protocol test
+
+- **WHEN** `bun run check` is executed
+- **THEN** the build completes before `bun test`, and the stdio test starts the shipped `dist/index.js` through the local stdio configuration
+
+### Requirement: Active retained capability coverage
+
+Active Bun tests SHALL cover Storage Box stats, Storage Box assert-space, RAM-over-SSH, and a representative retained resource method/path/body/annotation boundary.
+
+#### Scenario: Retained capability coverage
+
+- **WHEN** `bun test` runs
+- **THEN** the retained capability tests execute under `src` without relying on a removed test framework or live provider credentials
 
 ### Requirement: Tests do not require live API credentials
-Unit tests for the storage-boxes module MUST NOT make network calls and MUST NOT require `HETZNER_API_TOKEN` or `HETZNER_API_TOKEN_UNIFIED` to be set.
+
+The active test suite MUST use injected local request/SSH boundaries and MUST NOT make provider network calls or require `HETZNER_API_TOKEN` or `HETZNER_API_TOKEN_UNIFIED` to be set.
 
 #### Scenario: Test run without env
-- **WHEN** `npm test` is run with no `HETZNER_*` env vars set
-- **THEN** all tests pass
+
+- **WHEN** `bun test` is run with no `HETZNER_*` environment variables
+- **THEN** all active tests pass using local fixtures; live provider acceptance remains a separate, credentialed step
