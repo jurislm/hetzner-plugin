@@ -21,6 +21,7 @@ Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is check
 - OpenAPI: `openapi/hetzner-cloud-openapi.json`, `openapi/hetzner-unified-openapi.json`, `openapi/manifest.json`, `scripts/update-openapi.ts`, `scripts/check-openapi.ts`, `scripts/generate-openapi.ts`, `src/openapi-integrity.ts`.
 - Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
 - Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root `tests/` Vitest suite and `vitest.config.ts`.
+- CI: removed `.github/workflows/ci.yml` and `.github/workflows/release.yml`; `.woodpecker/ci.yml` and `.woodpecker/release.yml` are the remaining CI/release definitions.
 - Active documentation: `CLAUDE.md`, `openspec/config.yaml`, `openspec/changes/storage-boxes-review-fixes/{design.md,proposal.md,specs/storage-boxes/spec.md,tasks.md}`, `openspec/specs/storage-boxes.md`, `skills/hetzner/references/authentication.md`.
 - Distribution/operations: `skills/hetzner/SKILL.md`, `skills/hetzner/references/authentication.md`, `.woodpecker/ci.yml`, `.woodpecker/release.yml`, `scripts/validate-plugin-manifests.ts`, `scripts/package-contents-check.ts`.
 
@@ -42,7 +43,7 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 | `bun run package:check` | 0 | Required package contents present; credential-file paths rejected. |
 | `git diff --check` | 0 | No whitespace errors. |
 
-## Fix round 1, round 2, and round 3 evidence
+## Fix round 1, round 2, round 3, and round 4 evidence
 
 - Snapshot hashes now cover exactly the bytes persisted to disk, including an appended final newline. The Bun regression suite verifies the live committed manifest and rejects a tampered offline fixture.
 - `formatToolError` and `redactErrorText` centralize generated and retained error output. The server regression test injects both bearer tokens into provider errors and verifies neither appears in either generated or retained tool output.
@@ -52,8 +53,10 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Round 2 removed the obsolete root `tests/` suite and all active axios/legacy-token references while preserving `openspec/changes/archive/` unchanged. The checked-in `bunfig.toml` test root is `src`, so direct `bun test` exercises the active retained-capability tests.
 - Fresh package readback reports exactly 98 files; the stale 94-file value is removed.
 - Round 3 changed `.codex-plugin/plugin.json` to describe the Codex compatibility manifest while keeping the root portable manifest canonical, and deleted the obsolete root `vitest.config.ts`.
+- Round 4 updated the active `test-infrastructure` OpenSpec spec to the implemented Bun `src` test root and build-before-test flow, removed the obsolete GitHub Actions workflows, and preserved archived OpenSpec history.
 
 ## Unresolved concerns
 
 - No live Hetzner request was made: no credentials were used or available for provider acceptance. The completed tests use injected local fetch responses and the local stdio process only.
 - The archived OpenSpec history under `openspec/changes/archive/` was preserved unchanged.
+- No publish verification was performed.
