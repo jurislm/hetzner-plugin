@@ -21,7 +21,7 @@ Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is check
 - OpenAPI: `openapi/hetzner-cloud-openapi.json`, `openapi/hetzner-unified-openapi.json`, `api/manifest.json`, `scripts/update-openapi.ts`, `scripts/check-openapi.ts`, `scripts/check-release-tag.ts`, `scripts/generate-openapi.ts`, `src/openapi-integrity.ts`.
 - Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, retained registrar files under `src/tools/`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
 - Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/package-contents.test.ts`, `src/release-tag.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root test suite and `vitest.config.ts`.
-- CI: removed `.github/workflows/ci.yml` and `.github/workflows/release.yml`; `.woodpecker/ci.yml` and `.woodpecker/release.yml` are the remaining CI/release definitions.
+- CI: removed `.github/workflows/ci.yml` and `.github/workflows/release.yml`; `.woodpecker/ci.yml`, `.woodpecker/release.yml`, `.woodpecker/release-pr-auto-merge.yml`, and `.woodpecker/npm-release.yml` are the remaining CI/release definitions.
 - Active documentation: `CLAUDE.md`, `.github/copilot-instructions.md`, `docs/index.html`, `openspec/config.yaml`, `openspec/specs/{overview.md,storage-boxes.md}`, active OpenSpec change records, `skills/hetzner/references/authentication.md`.
 - Distribution/operations: `skills/hetzner/SKILL.md`, `skills/hetzner/references/authentication.md`, `.woodpecker/ci.yml`, `.woodpecker/release.yml`, `scripts/validate-plugin-manifests.ts`, `scripts/package-contents.ts`, `scripts/package-contents-check.ts`.
 
@@ -40,7 +40,7 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 | `bun run clean && bun run build && bun test` | 0 | Already-built `dist/index.js` served stdio; 23 passing Bun tests, 65 assertions. |
 | `bun run build` | 0 | `dist` emitted. |
 | `bun run check` | 0 | Full manifest, typecheck, build-before-test, active Bun test, package check, and Bun pack gate passed; 23 tests and 65 assertions passed. |
-| `bun pm pack --dry-run` | 0 | Fresh Bun output contained 98 files and 9.0MB unpacked size. |
+| `bun pm pack --dry-run` | 0 | Fresh Bun output contained 102 files and 9.0MB unpacked size. |
 | `bun run package:check` | 0 | Required package contents present; credential-file paths rejected. |
 | `git diff --check` | 0 | No whitespace errors. |
 
@@ -64,9 +64,9 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 ## Final readback
 
-- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback: `jurislm/hetzner-plugin` PUBLIC, `main` at the same SHA.
+- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback before this report update: `jurislm/hetzner-plugin` PUBLIC, `main` at `2e5f03146e38add4c32e3977c7dfa3b3aa0b5b17`, package manifest `1.5.0`, no tags/releases.
 - Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, bootstrap version `1.5.0`, installed manifest and `mcp.json` present in local cache.
-- NPM publish remains blocked by `npm whoami` E401; package readback is E404. No publish or legacy deprecation was attempted.
+- `npm pack --dry-run --json`: `@jurislm/hetzner-plugin@1.5.0`, 102 files. NPM publish remains blocked by `npm whoami` E401; package readback is E404. No `v0.1.0` tag, publish, or legacy deprecation was attempted.
 
 ## Release automation alignment
 
