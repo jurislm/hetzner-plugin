@@ -2,7 +2,7 @@
 
 ## Result
 
-Implemented `@jurislm/hetzner-plugin@1.5.0` bootstrap on `codex/hetzner-plugin`, final public `main` is updated after the version correction, starting from the v1.5.0 baseline (`7c99e1e`). The first Release Please publish is `1.6.0`. The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
+Implemented `@jurislm/hetzner-plugin@1.6.2` on `codex/hetzner-plugin`, starting from the v1.5.0 baseline (`7c99e1e`). The first Release Please publish was `1.6.0`; the final published package is `1.6.2` after the release gate fixes. The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
 
 Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is checked only before a Unified/Storage Box request and is never substituted by the Cloud token.
 
@@ -64,9 +64,9 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 ## Final readback
 
-- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback before this report update: `jurislm/hetzner-plugin` PUBLIC, `main` at `2e5f03146e38add4c32e3977c7dfa3b3aa0b5b17`, package manifest `1.5.0`, no tags/releases.
+- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback: `jurislm/hetzner-plugin` PUBLIC, release merge `65d1dd46fe92b961633163f4763d16ffcd660bd7`, package manifest `1.6.2`, tags `v1.6.0`, `v1.6.1`, and `v1.6.2`.
 - Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, bootstrap version `1.5.0`, installed manifest and `mcp.json` present in local cache.
-- `npm pack --dry-run --json`: `@jurislm/hetzner-plugin@1.5.0`, 102 files. NPM publish remains blocked by `npm whoami` E401; package readback is E404. No `v0.1.0` tag, publish, or legacy deprecation was attempted.
+- `npm pack --dry-run --json`: `@jurislm/hetzner-plugin@1.5.0`, 102 files. NPM readback: latest `1.6.2`, tarball URL returned `200`, and tarball `package.json` is `1.6.2`; no `v0.1.0` tag was created.
 
 ## Release automation alignment
 
@@ -78,6 +78,11 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 - `jurislm/hetzner-plugin` is active and public as Woodpecker repo `22`.
 - Secret metadata is configured without value readback: `npm_token` for `tag`, and `personal_access_tokens_fine_grained_tokens_jurislm` for `push`.
+- Main pipeline `#26`, release-branch/PR checks `#22/#24`, and tag publish pipeline `#27` for `v1.6.2` succeeded.
+
+## Legacy closeout
+
+- Deprecation of `@jurislm/hetzner-mcp@*` was rejected by npm `E403`: 2FA or a granular token with 2FA bypass is required. The old package remains active and the old repo remains unarchived.
 
 ## Unresolved concerns
 
