@@ -5,6 +5,7 @@ import { createApiRequest } from "./api.js";
 import type { HetznerConfig } from "./config.js";
 import { formatToolError } from "./errors.js";
 import { operations } from "./generated/operations.js";
+import { pluginVersion } from "./version.js";
 import { registerMetricsTools } from "./tools/metrics.js";
 import { registerReferenceTools } from "./tools/reference.js";
 import { registerServerSshTools } from "./tools/server-ssh.js";
@@ -47,7 +48,7 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
   const client = new HetznerClient(config, requestFetch);
   const cloudRequest = createApiRequest(config, requestFetch, "cloud");
   const unifiedRequest = createApiRequest(config, requestFetch, "unified");
-  const server = new McpServer({ name: "hetzner-plugin", version: "0.1.0" }, { instructions: "Resolve resources with read tools before mutations. Never expose credentials or secrets." });
+  const server = new McpServer({ name: "hetzner-plugin", version: pluginVersion }, { instructions: "Resolve resources with read tools before mutations. Never expose credentials or secrets." });
   for (const operation of operations) server.registerTool(operation.name, {
     title: operation.name, description: operation.description, inputSchema: operation.inputSchema,
     outputSchema, annotations: operation.annotations,

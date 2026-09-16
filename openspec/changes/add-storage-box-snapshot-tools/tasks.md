@@ -32,7 +32,7 @@
 
 ## 5. Documentation
 
-- [x] 5.1 更新 `CLAUDE.md` 工具計數 17→20，Storage Boxes 區塊新增 3 個 tools
+- [x] 5.1 更新 `CLAUDE.md` 工具計數為 264（222 generated + 42 retained），Storage Boxes 區塊包含 retained stats/space tools
 - [x] 5.2 更新 `README.md`（tools count + token requirement 段落）
 - [ ] 5.3 更新 `openspec/specs/storage-boxes.md` 透過 `openspec sync` 同步 delta — 於 archive 階段執行
 - [x] 5.4 同步 active `CLAUDE.md` 與 `@jurislm/hetzner-plugin` contract（跨 repo 文件不在本次範圍）
@@ -43,4 +43,4 @@
 - [ ] 6.2 push `develop` 並開 PR `develop → main`
 - [ ] 6.3 PR labels 設 `enhancement`、assignee 設 `terry90918`
 - [ ] 6.4 等 Claude Bot review 通過後 merge
-- [ ] 6.5 Release Please 版本 PR merge 後建立 tag，由 `.woodpecker/release.yml` verify 並 publish
+- [ ] 6.5 Release tag 建立後，由 `.woodpecker/release.yml` verify `CI_COMMIT_TAG=v<package.version>` 並 publish

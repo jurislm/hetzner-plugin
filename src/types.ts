@@ -23,7 +23,7 @@ export type BooleanKeys<T> = {
 
 // =====================================================================
 // Cloud API — Zod schemas at the boundary (C-2 from /review-pr round 3).
-// Same rationale as the Storage Box schemas: makeApiRequest validates
+// Same rationale as the Storage Box schemas: the injected ApiRequest validates
 // every response with .parse(), so unexpected API shapes throw ZodError
 // instead of silently coercing to undefined downstream.
 // =====================================================================
@@ -204,7 +204,7 @@ export const CreateSSHKeyResponseSchema = z.object({
 });
 
 // Storage Box — Zod schemas at API boundary (C-1).
-// These schemas are validated at runtime via makeStorageBoxApiRequest, so
+// These schemas are validated at runtime via the injected Unified ApiRequest, so
 // unexpected API response shapes fail loudly with a ZodError instead of
 // silently coercing to undefined. Static types are inferred via z.infer to
 // keep a single source of truth.

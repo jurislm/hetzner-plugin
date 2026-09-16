@@ -3,6 +3,7 @@
   "packages": {
     ".": {
       "release-type": "node",
+      "extra-files": ["plugin.json", ".codex-plugin/plugin.json"],
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,

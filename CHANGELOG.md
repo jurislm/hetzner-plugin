@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.0](https://github.com/jurislm/hetzner-plugin/releases/tag/v0.1.0) (2026-09-16)
+
+* split the local stdio plugin from `hetzner-mcp`
+* add generated Cloud and Unified API operations with isolated credentials
+* publish through the Woodpecker tag release pipeline
+
 ## [1.5.0](https://github.com/jurislm/hetzner-mcp/compare/v1.4.4...v1.5.0) (2026-07-08)
 
 

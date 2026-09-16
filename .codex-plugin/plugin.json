@@ -5,6 +5,7 @@
   "author": { "name": "JurisLM" },
   "license": "MIT",
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Hetzner",
     "shortDescription": "Local Hetzner API tools",
