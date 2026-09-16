@@ -2,7 +2,7 @@
 
 ## Result
 
-Implemented `@jurislm/hetzner-plugin@0.1.0` on `codex/hetzner-plugin`, final public `main` at `61a80503ab650e8dd6c138159c2782ad7ca0d483`, starting from the v1.5.0 baseline (`7c99e1e`). The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
+Implemented `@jurislm/hetzner-plugin@0.1.0` on `codex/hetzner-plugin`, final public `main` at `e3d0978e0503608a68a4a5f295641c028ea5b395`, starting from the v1.5.0 baseline (`7c99e1e`). The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
 
 Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is checked only before a Unified/Storage Box request and is never substituted by the Cloud token.
 
