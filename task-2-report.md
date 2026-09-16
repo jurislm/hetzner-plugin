@@ -68,6 +68,12 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 - Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, version `0.1.0`, installed manifest and `mcp.json` present in local cache.
 - NPM publish remains blocked by `npm whoami` E401; package readback is E404. No publish or legacy deprecation was attempted.
 
+## Release automation alignment
+
+- Main push: `.woodpecker/release.yml` runs Release Please GitHub Release then Release PR; `.woodpecker/release-pr-auto-merge.yml` serializes and validates the Release PR before merge.
+- Tag push: `.woodpecker/npm-release.yml` verifies `v<package.version>` and runs Bun-native pack before token-scoped public publish.
+- `release-please-config.json` synchronizes `package.json`, `plugin.json`, and `.codex-plugin/plugin.json`; local release workflow tests are included in `bun run check`.
+
 ## Unresolved concerns
 
 - No live Hetzner request was made: no credentials were used or available for provider acceptance. The completed tests use injected local fetch responses and the local stdio process only.
