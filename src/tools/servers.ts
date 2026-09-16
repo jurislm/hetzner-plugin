@@ -50,7 +50,7 @@ function formatServer(server: HetznerServer): string {
   return lines.join("\n");
 }
 
-export function registerServerTools(server: McpServer): void {
+export function registerServerTools(server: McpServer, apiRequest: typeof makeApiRequest = makeApiRequest): void {
   // List Servers
   server.registerTool(
     "hetzner_list_servers",
@@ -92,7 +92,7 @@ Returns servers with their:
         if (params.label_selector) filterParams.label_selector = params.label_selector;
 
         if (params.page !== undefined) {
-          const data = await makeApiRequest(
+          const data = await apiRequest(
             "/servers",
             ListServersResponseSchema,
             "GET",
@@ -168,7 +168,7 @@ Returns servers with their:
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(`/servers/${params.id}`, GetServerResponseSchema);
+        const data = await apiRequest(`/servers/${params.id}`, GetServerResponseSchema);
         const srv = data.server;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -248,7 +248,7 @@ When using JSON output format, the response includes root_password in plaintext 
           requestBody.labels = params.labels;
         }
 
-        const data = await makeApiRequest("/servers", CreateServerResponseSchema, "POST", requestBody);
+        const data = await apiRequest("/servers", CreateServerResponseSchema, "POST", requestBody);
         const srv = data.server;
         const rootPassword = data.root_password;
 
@@ -308,7 +308,7 @@ When using JSON output format, the response includes root_password in plaintext 
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(`/servers/${params.id}`, ServerActionResponseSchema, "DELETE");
+        const data = await apiRequest(`/servers/${params.id}`, ServerActionResponseSchema, "DELETE");
 
         return {
           content: [{
@@ -343,7 +343,7 @@ When using JSON output format, the response includes root_password in plaintext 
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(
+        const data = await apiRequest(
           `/servers/${params.id}/actions/poweron`,
           ServerActionResponseSchema,
           "POST"
@@ -384,7 +384,7 @@ This is like pulling the power cord. For a graceful shutdown, SSH into the serve
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(
+        const data = await apiRequest(
           `/servers/${params.id}/actions/poweroff`,
           ServerActionResponseSchema,
           "POST"
@@ -425,7 +425,7 @@ This is like pressing the reset button. For a graceful reboot, SSH into the serv
     },
     async (params) => {
       try {
-        const data = await makeApiRequest(
+        const data = await apiRequest(
           `/servers/${params.id}/actions/reboot`,
           ServerActionResponseSchema,
           "POST"

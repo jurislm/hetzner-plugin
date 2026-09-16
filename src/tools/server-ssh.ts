@@ -233,7 +233,8 @@ export function runSsh(
 export function registerServerSshTools(
   server: McpServer,
   sshRunner: typeof runSsh = runSsh,
-  keyScanRunner: typeof runSshKeyScan = runSshKeyScan
+  keyScanRunner: typeof runSshKeyScan = runSshKeyScan,
+  apiRequest: typeof makeApiRequest = makeApiRequest,
 ): void {
   server.registerTool(
     "hetzner_get_server_ram",
@@ -291,7 +292,7 @@ Returns used / total / available in MiB and overall usage %, plus swap state.`,
 
       try {
         // Step 1: resolve public IPv4 from server ID
-        const serverData = await makeApiRequest(
+        const serverData = await apiRequest(
           `/servers/${params.id}`,
           GetServerResponseSchema
         );

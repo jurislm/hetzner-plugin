@@ -1,23 +1,23 @@
 ## ADDED Requirements
 
 ### Requirement: Unified API token resolution
-The Storage Box API client SHALL resolve its bearer token from `HETZNER_API_TOKEN_UNIFIED` first, falling back to `HETZNER_API_TOKEN` when unset. When neither environment variable is set, the client MUST throw an error that names both variables and references the unified-token console URL `https://console.hetzner.com/account/security/api-tokens`.
+The Storage Box API client SHALL resolve its bearer token only from `HETZNER_API_TOKEN_UNIFIED` immediately before a Storage Box request. It SHALL not use `HETZNER_API_TOKEN` as a substitute. Cloud startup requires `HETZNER_API_TOKEN` independently.
 
 #### Scenario: Unified-only env var
 - **WHEN** `HETZNER_API_TOKEN_UNIFIED=u-token` is set and `HETZNER_API_TOKEN` is unset
-- **THEN** `getStorageBoxApiClient()` returns an axios client whose `Authorization` header is `Bearer u-token`
+- **THEN** the native-fetch Storage Box request uses `Authorization: Bearer u-token`
 
-#### Scenario: Cloud-only env var (backwards compatibility)
+#### Scenario: Cloud-only startup
 - **WHEN** `HETZNER_API_TOKEN=c-token` is set and `HETZNER_API_TOKEN_UNIFIED` is unset
-- **THEN** `getStorageBoxApiClient()` returns an axios client whose `Authorization` header is `Bearer c-token`
+- **THEN** the MCP process starts, but a Storage Box operation fails before a provider request with an error naming `HETZNER_API_TOKEN_UNIFIED`
 
-#### Scenario: Both env vars set — unified wins
+#### Scenario: Both env vars set
 - **WHEN** `HETZNER_API_TOKEN_UNIFIED=u-token` AND `HETZNER_API_TOKEN=c-token` are both set
-- **THEN** the resulting client uses `u-token`
+- **THEN** Cloud requests use `c-token` and Storage Box requests use `u-token`
 
-#### Scenario: Neither env var set
-- **WHEN** both `HETZNER_API_TOKEN_UNIFIED` and `HETZNER_API_TOKEN` are unset
-- **THEN** `getStorageBoxApiClient()` throws an `Error` whose message contains both env var names and the URL `https://console.hetzner.com/account/security/api-tokens`
+#### Scenario: No Cloud token at startup
+- **WHEN** `HETZNER_API_TOKEN` is unset
+- **THEN** startup fails with an error naming `HETZNER_API_TOKEN`
 
 ### Requirement: Paginated list of Storage Boxes
 The `hetzner_list_storage_boxes` tool SHALL fetch all pages of Storage Boxes from the unified API by default, traversing `meta.pagination.next_page` until exhausted or a hard cap of 5 pages is reached. Callers MAY override the loop by supplying explicit `page` and/or `per_page` parameters, in which case exactly one page SHALL be fetched.

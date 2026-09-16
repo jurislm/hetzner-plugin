@@ -1,16 +1,14 @@
-# CLAUDE.md — JurisLM Hetzner MCP Server
+# CLAUDE.md — JurisLM Hetzner local stdio plugin
 
 Hetzner Cloud 管理 MCP Server，提供 40 個工具用於伺服器管理（建立、電源控制、SSH 金鑰、Storage Boxes 完整 CRUD、Snapshots、Actions、Cloud Volumes、Server Metrics、RAM via SSH）。
 
 ## 常用命令
 
 ```bash
-bun install          # 安裝依賴
-bun run build        # 編譯 TypeScript 到 dist/
-bun run dev          # 開發模式（bun --watch，stdio transport）
-bun run lint         # ESLint 檢查（max-warnings=0）
-bun run test         # Vitest 單元測試（一次執行）
-bun run test:watch   # Vitest 監看模式
+bun install --frozen-lockfile
+bun run api:check    # 離線驗證 committed OpenAPI snapshot 與 generated artifacts
+bun run check        # manifest、typecheck、build、Bun tests、package contents
+bun test             # Bun test root: src/（含 retained v1.5 capability coverage）
 
 # 本地執行
 HETZNER_API_TOKEN="token" bun dist/index.js
@@ -31,7 +29,9 @@ develop → PR → main
 ```
 src/
 ├── index.ts           # MCP server 入口，載入所有 tools
-├── api.ts             # Hetzner Cloud API client（axios）
+├── api.ts             # Retained tools 的 native-fetch adapter
+├── client.ts          # Generated operation native-fetch client
+├── server.ts          # Generated/retained tools 的共用 MCP envelope 與 error redaction
 ├── types.ts           # TypeScript 型別定義
 └── tools/
     ├── servers.ts     # 7 個伺服器管理工具
@@ -104,7 +104,7 @@ src/
 | 變數 | 必需 | 說明 |
 |------|------|------|
 | `HETZNER_API_TOKEN` | ✓ | Cloud API token（Read & Write），從 console.hetzner.cloud 生成 |
-| `HETZNER_API_TOKEN_UNIFIED` | 建議 | Unified API token，Storage Box 端點需要此 token；未設定時 fallback 至 `HETZNER_API_TOKEN` |
+| `HETZNER_API_TOKEN_UNIFIED` | Storage Box 呼叫時必需 | Unified API token；只在 Storage Box operation 執行前檢查，絕不使用 Cloud token 代替 |
 
 **注意**：MCP Server 是非互動式子進程，環境變數必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
 

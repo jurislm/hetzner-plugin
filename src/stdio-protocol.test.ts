@@ -5,7 +5,7 @@ import { expect, test } from "bun:test";
 test("serves the generated catalog through shipped local stdio", async () => {
   const configured = JSON.parse(await Bun.file("mcp.json").text()) as { mcpServers: { hetzner: { command: string; args: string[]; cwd?: string } } };
   const server = configured.mcpServers.hetzner;
-  expect(Bun.spawnSync([process.execPath, "run", "build"], { cwd: process.cwd() }).exitCode).toBe(0);
+  expect(await Bun.file(server.args[0]!).exists()).toBe(true);
   const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined));
   const transport = new StdioClientTransport({
     command: server.command, args: server.args, cwd: server.cwd ? new URL(server.cwd, `file://${process.cwd()}/`).pathname : process.cwd(),

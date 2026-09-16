@@ -1,4 +1,5 @@
 import type { HetznerConfig } from "./config.js";
+import { redactErrorText } from "./errors.js";
 
 export interface ToolEnvelope<T> {
   data: T;
@@ -74,7 +75,7 @@ export class HetznerClient {
     let response: Response;
     try { response = await this.fetchImpl(url, init); }
     catch (error) {
-      const message = error instanceof Error ? error.message.replaceAll(token, "[REDACTED]") : "request error";
+      const message = error instanceof Error ? redactErrorText(error.message, [token]) : "request error";
       throw new HetznerApiError(0, operation.method, path, `Hetzner request failed for ${operation.method} ${path}: ${message}`);
     }
     if (!response.ok) throw new HetznerApiError(response.status, operation.method, path, `Hetzner API returned ${response.status} for ${operation.method} ${path}`);

@@ -11,13 +11,13 @@
     "build": "bun run clean && tsc",
     "start": "bun dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "bun test src",
+    "test": "bun test",
     "api:fetch": "bun scripts/update-openapi.ts",
     "api:generate": "bun scripts/generate-openapi.ts",
-    "api:check": "bun run api:generate && git diff --exit-code -- openapi src/generated",
+    "api:check": "bun scripts/check-openapi.ts && bun run api:generate && git diff --exit-code -- openapi src/generated",
     "manifest:check": "bun scripts/validate-plugin-manifests.ts",
     "package:check": "bun scripts/package-contents-check.ts",
-    "check": "bun run api:check && bun run manifest:check && bun run typecheck && bun run test && bun run build && bun run package:check",
+    "check": "bun run api:check && bun run manifest:check && bun run typecheck && bun run build && bun run test && bun run package:check",
     "prepublishOnly": "bun run check"
   },
   "dependencies": {

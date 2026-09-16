@@ -7,7 +7,7 @@
 
 ## 2. Storage Boxes — code changes
 
-- [ ] 2.1 Update `getStorageBoxApiClient()` in `src/api.ts` to read `HETZNER_API_TOKEN_UNIFIED` first, fall back to `HETZNER_API_TOKEN`, throw a clear multi-line error citing both env vars and the unified-token console URL when neither is set
+- [ ] 2.1 Require `HETZNER_API_TOKEN_UNIFIED` immediately before a Storage Box request; do not substitute `HETZNER_API_TOKEN`
 - [ ] 2.2 Change `HetznerStorageBoxSubaccount.comment` in `src/types.ts` to `string | null`
 - [ ] 2.3 Add pagination types to `src/types.ts`: `Pagination` (with `next_page: number | null`) and `Meta` interfaces
 - [ ] 2.4 Update `ListStorageBoxesResponse` and `ListStorageBoxSubaccountsResponse` in `src/types.ts` to include optional `meta?: Meta`

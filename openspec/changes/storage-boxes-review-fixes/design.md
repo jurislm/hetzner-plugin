@@ -27,14 +27,14 @@ Repo currently has no test infrastructure: no test script, no test framework, no
 
 ## Decisions
 
-### Decision 1: Token resolution — fallback chain over hard split
+### Decision 1: Token resolution — lazy hard split
 **Choice**: `getStorageBoxApiClient()` reads `HETZNER_API_TOKEN_UNIFIED` first, then falls back to `HETZNER_API_TOKEN`. If neither is set, throw an error naming both env vars and pointing to the unified-token console URL.
 
 **Alternatives considered**:
 - *Hard split (only `HETZNER_API_TOKEN_UNIFIED`)*: rejected — breaks every existing setup that has only `HETZNER_API_TOKEN`.
 - *Single var, document the token-class mismatch in README only*: rejected — leaves the silent-401 footgun in place; users must read docs to discover the failure mode.
 
-**Rationale**: Fallback preserves the single-token convenience case (most users) while letting power users supply a separate Cloud token by setting `HETZNER_API_TOKEN_UNIFIED` explicitly. The error message converts the silent failure into a guided one.
+**Rationale**: Cloud-only users can start the local MCP process with `HETZNER_API_TOKEN`; the first Storage Box operation requires `HETZNER_API_TOKEN_UNIFIED` before it sends a request. Token classes remain separate and the error names the missing Unified credential.
 
 ### Decision 2: Pagination — fetch-all by default, cap at 5 pages
 **Choice**: `hetzner_list_storage_boxes` and `hetzner_list_storage_box_subaccounts` loop while `meta.pagination.next_page` is non-null, accumulating results. Hard cap at 5 pages (250 items at default `per_page=50`) with a warning in output if cap hit. Optional `page` and `per_page` params override the loop and fetch a single page.
@@ -75,7 +75,7 @@ Repo currently has no test infrastructure: no test script, no test framework, no
 
 ## Risks / Trade-offs
 
-- **[Risk]** Users who supply only an old Cloud token to `HETZNER_API_TOKEN` and call a Storage Box tool will still get a `401` from `api.hetzner.com` — the fallback chain doesn't validate the token class. → **Mitigation**: README explicitly warns that the unified API needs an account-level token; error message from the API is opaque but at least the env var name in our error message points users at the right console.
+- **[Risk]** Users who start with only a Cloud token cannot invoke Storage Box operations. → **Mitigation**: reject before the provider request with an error that names `HETZNER_API_TOKEN_UNIFIED` and document the lazy requirement.
 - **[Risk]** Pagination loop could hide a Hetzner API change (e.g. `meta.pagination` schema drift). → **Mitigation**: Defensive parse — if `meta.pagination.next_page` is missing or the response shape unexpected, exit the loop after current page. Page count is logged to stderr.
 - **[Risk]** ISO date formatting changes user-visible output for existing PR #2 users. → **Mitigation**: PR is unmerged; no users yet.
 - **[Trade-off]** Adding vitest as devDependency adds ~30 packages to `node_modules`. → Acceptable cost for unblocking test-driven development.

@@ -6,7 +6,7 @@ This change closes the review feedback loop on PR #2 before it merges, and estab
 
 ## What Changes
 
-- **BREAKING (env var contract)**: Introduce `HETZNER_API_TOKEN_UNIFIED` for the unified API client; fall back to `HETZNER_API_TOKEN` for backwards compatibility but emit a clear error message naming both possibilities when neither is set.
+- **BREAKING (env var contract)**: Storage Box operations require `HETZNER_API_TOKEN_UNIFIED` immediately before their request; Cloud startup remains valid with only `HETZNER_API_TOKEN`.
 - Add full pagination handling (`page` / `per_page` params + `meta.pagination` traversal) to `hetzner_list_storage_boxes` and `hetzner_list_storage_box_subaccounts`.
 - Replace `formatBytes` binary-divisor output (`1024**3`) labelled `GB` with explicit `GiB` / `MiB` labels.
 - Type `HetznerStorageBoxSubaccount.comment` as `string | null` (matches actual API) and update `formatSubaccount` to handle null.

@@ -32,7 +32,7 @@ src/
 | Variable | Required | Description |
 |---|---|---|
 | `HETZNER_API_TOKEN` | ✓ | Cloud API token（Read & Write），從 console.hetzner.cloud 生成 |
-| `HETZNER_API_TOKEN_UNIFIED` | 建議 | Unified API token，Storage Box 端點（`api.hetzner.com/v1`）需要此 token；未設定時 fallback 至 `HETZNER_API_TOKEN`，但 Cloud project token 通常無法驗證 Unified API |
+| `HETZNER_API_TOKEN_UNIFIED` | Storage Box 呼叫時必需 | Unified API token，Storage Box 端點（`api.hetzner.com/v1`）在 operation 執行前需要此 token；Cloud project token 不可代替 |
 
 MCP Server 為非互動式子進程，兩個 token 均必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
 

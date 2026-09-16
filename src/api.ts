@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { HetznerApiError, HetznerClient } from "./client.js";
 import { loadConfig } from "./config.js";
+import { redactErrorText } from "./errors.js";
 import type { HetznerMeta } from "./types.js";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -21,10 +22,10 @@ export const makeStorageBoxApiRequest = request("unified");
 export function handleApiError(error: unknown): string {
   if (error instanceof z.ZodError) return `Error: Hetzner API returned an unexpected response shape: ${error.issues[0]?.message ?? "validation failed"}`;
   if (error instanceof HetznerApiError) {
-    if (error.status === 0) return `Error: ${error.message}`;
+    if (error.status === 0) return `Error: ${redactErrorText(error.message)}`;
     return `Error: Hetzner API request failed (${error.status})`;
   }
-  return `Error: ${error instanceof Error ? error.message : "An unexpected error occurred."}`;
+  return `Error: ${redactErrorText(error instanceof Error ? error.message : "An unexpected error occurred.")}`;
 }
 
 export const PAGINATION_HARD_CAP_PAGES = 5;

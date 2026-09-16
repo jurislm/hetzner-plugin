@@ -34,4 +34,26 @@ describe("generated Hetzner MCP server", () => {
     await client.close();
     await server.close();
   });
+
+  test("redacts both configured tokens from generated and retained tool errors", async () => {
+    const secret = "Bearer cloud-secret and Bearer unified-secret";
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () => { throw new Error(secret); };
+    try {
+      const server = createServer({ cloudToken: "cloud-secret", unifiedToken: "unified-secret", timeoutMs: 30_000 }, async () => { throw new Error(secret); });
+      const client = new Client({ name: "test", version: "0.0.0" });
+      const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+      await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+      const generated = await client.callTool({ name: "hetzner_cloud_list_servers", arguments: {} });
+      const legacy = await client.callTool({ name: "hetzner_list_server_types", arguments: {} });
+      for (const result of [generated, legacy]) {
+        expect(JSON.stringify(result)).not.toContain("cloud-secret");
+        expect(JSON.stringify(result)).not.toContain("unified-secret");
+      }
+      await client.close();
+      await server.close();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
 });

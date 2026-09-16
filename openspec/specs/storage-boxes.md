@@ -64,7 +64,7 @@ HetznerMetaSchema — pagination.page, pagination.per_page, pagination.last_page
 - GIVEN 超過 5 頁 WHEN 自動分頁 THEN 截斷並在輸出頂部加入 `⚠️ Truncated at 5 pages` 警告
 - GIVEN 指定 `page=2` WHEN 呼叫 THEN 只 fetch 第 2 頁，不繼續翻頁
 - GIVEN 無 Storage Box WHEN 呼叫 THEN 返回空列表提示訊息
-- GIVEN `HETZNER_API_TOKEN_UNIFIED` 未設定 WHEN 呼叫 THEN fallback 至 `HETZNER_API_TOKEN` 並輸出 WARN log 至 stderr
+- GIVEN `HETZNER_API_TOKEN_UNIFIED` 未設定 WHEN 呼叫 THEN 在發送請求前回傳明確缺少 Unified token 的錯誤
 - GIVEN token 無效 WHEN 呼叫 THEN 返回 401 錯誤，提示檢查 `HETZNER_API_TOKEN_UNIFIED`
 
 ---
@@ -115,7 +115,7 @@ HetznerMetaSchema — pagination.page, pagination.per_page, pagination.last_page
 | 項目 | Cloud tools（servers/ssh-keys/reference） | Storage Box tools |
 |---|---|---|
 | API base | `https://api.hetzner.cloud/v1` | `https://api.hetzner.com/v1` |
-| Token | `HETZNER_API_TOKEN` | `HETZNER_API_TOKEN_UNIFIED`（fallback: `HETZNER_API_TOKEN`） |
+| Token | `HETZNER_API_TOKEN` | `HETZNER_API_TOKEN_UNIFIED`（僅在 Storage Box operation 執行時要求） |
 | Client function | `makeApiRequest<T>()` | `makeStorageBoxApiRequest<T>()` |
 | Schema validation | Zod（C-2） | Zod（C-1） |
 | Pagination | 無 | 自動多頁，hard cap 5 頁 |

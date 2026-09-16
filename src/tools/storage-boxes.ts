@@ -189,7 +189,10 @@ export const paginatedFetch = createPaginatedFetch(makeStorageBoxApiRequest);
 
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
 
-export function registerStorageBoxTools(server: McpServer): void {
+export function registerStorageBoxTools(
+  server: McpServer,
+  storageRequest: typeof makeStorageBoxApiRequest = makeStorageBoxApiRequest,
+): void {
   // List Storage Boxes
   server.registerTool(
     "hetzner_list_storage_boxes",
@@ -306,7 +309,7 @@ Returns Storage Boxes with their:
     },
     async (params) => {
       try {
-        const data = await makeStorageBoxApiRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
+        const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const box = data.storage_box;
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -1302,7 +1305,7 @@ Useful for dashboards, cron jobs, and pre-flight capacity checks before backup o
     },
     async (params) => {
       try {
-        const data = await makeStorageBoxApiRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
+        const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const stats = computeStorageBoxStats(data.storage_box);
 
         if (params.response_format === ResponseFormat.JSON) {
@@ -1358,7 +1361,7 @@ Designed for use in cron jobs and backup pipelines before executing storage-inte
     },
     async (params) => {
       try {
-        const data = await makeStorageBoxApiRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
+        const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const stats = computeStorageBoxStats(data.storage_box);
         const ok = stats.available_gib >= params.required_gib;
 
