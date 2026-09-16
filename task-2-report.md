@@ -82,7 +82,8 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 ## Legacy closeout
 
-- Deprecation of `@jurislm/hetzner-mcp@*` was rejected by npm `E403`: 2FA or a granular token with 2FA bypass is required. The old package remains active and the old repo remains unarchived.
+- `@jurislm/hetzner-mcp@*` was deprecated through the npm web UI; registry readback returns the deprecation message for version `1.5.0`.
+- `jurislm/hetzner-mcp` is archived and public (`isArchived=true`); no alias package was created.
 
 ## Unresolved concerns
 
