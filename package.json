@@ -10,6 +10,7 @@
     "dist",
     "README.md",
     "LICENSE",
+    "assets",
     "plugin.json",
     "mcp.json",
     ".mcp.json",

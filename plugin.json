@@ -11,6 +11,8 @@
     "com.openai": {
       "interface": {
         "displayName": "Hetzner",
+        "composerIcon": "./assets/hetzner.png",
+        "logo": "./assets/hetzner.png",
         "shortDescription": "Local Hetzner API tools",
         "longDescription": "Generated local stdio tools for Hetzner Cloud and Storage Box APIs.",
         "developerName": "JurisLM",
