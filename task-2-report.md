@@ -2,7 +2,7 @@
 
 ## Result
 
-Implemented `@jurislm/hetzner-plugin@1.6.2` on `codex/hetzner-plugin`, starting from the v1.5.0 baseline (`7c99e1e`). The first Release Please publish was `1.6.0`; the final published package is `1.6.2` after the release gate fixes. The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
+Implemented `@jurislm/hetzner-plugin@1.6.3` on `codex/hetzner-plugin`, starting from the v1.5.0 baseline (`7c99e1e`). The first Release Please publish was `1.6.0`; the final published package is `1.6.3` after the release gate fixes and icon addition. The package is public, Bun-only (`>=1.1.0`), local-stdio-only, and uses native `fetch`.
 
 Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is checked only before a Unified/Storage Box request and is never substituted by the Cloud token.
 
@@ -17,7 +17,7 @@ Cloud startup requires `HETZNER_API_TOKEN`. `HETZNER_API_TOKEN_UNIFIED` is check
 
 ## Changed files
 
-- Packaging and plugin registration: `package.json`, `bun.lock`, `.release-please-manifest.json`, `plugin.json`, `mcp.json`, `.mcp.json`, `.mcp.json.example`, `.app.json.example`, `.codex-plugin/plugin.json`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`.
+- Packaging and plugin registration: `package.json`, `bun.lock`, `.release-please-manifest.json`, `plugin.json`, `mcp.json`, `.mcp.json`, `.mcp.json.example`, `.app.json.example`, `.codex-plugin/plugin.json`, `assets/hetzner.png`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`.
 - OpenAPI: `openapi/hetzner-cloud-openapi.json`, `openapi/hetzner-unified-openapi.json`, `api/manifest.json`, `scripts/update-openapi.ts`, `scripts/check-openapi.ts`, `scripts/check-release-tag.ts`, `scripts/generate-openapi.ts`, `src/openapi-integrity.ts`.
 - Runtime: `src/config.ts`, `src/client.ts`, `src/api.ts`, `src/errors.ts`, `src/server.ts`, `src/index.ts`, `src/stream.ts`, `src/transports/stdio.ts`, retained registrar files under `src/tools/`, `src/generated/hetzner-cloud-api.ts`, `src/generated/hetzner-unified-api.ts`, `src/generated/operations.ts`, `tsconfig.json`.
 - Tests: `bunfig.toml`, `src/config.test.ts`, `src/client.test.ts`, `src/generated-contract.test.ts`, `src/openapi-integrity.test.ts`, `src/package-contents.test.ts`, `src/release-tag.test.ts`, `src/retained-capabilities.test.ts`, `src/server.test.ts`, `src/stdio-protocol.test.ts`; removed obsolete root test suite and `vitest.config.ts`.
@@ -64,9 +64,9 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 ## Final readback
 
-- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback: `jurislm/hetzner-plugin` PUBLIC, release merge `65d1dd46fe92b961633163f4763d16ffcd660bd7`, package manifest `1.6.2`, tags `v1.6.0`, `v1.6.1`, and `v1.6.2`.
+- Fresh `bun run check`: exit 0, 23 tests/65 assertions; official plugin validator: exit 0; GitHub readback: `jurislm/hetzner-plugin` PUBLIC, release merge `6be6d8d63d85ddeb5a41d9011ae2fe16140dc870`, package manifest `1.6.3`, tags through `v1.6.3`.
 - Codex local marketplace install/readback: `hetzner-plugin@jurislm-local`, bootstrap version `1.5.0`, installed manifest and `mcp.json` present in local cache.
-- `npm pack --dry-run --json`: `@jurislm/hetzner-plugin@1.5.0`, 102 files. NPM readback: latest `1.6.2`, tarball URL returned `200`, and tarball `package.json` is `1.6.2`; no `v0.1.0` tag was created.
+- `npm pack --dry-run --json`: current release contains 103 files including `assets/hetzner.png`. NPM readback: latest `1.6.3`, tarball URL returned `200`, tarball `package.json` is `1.6.3`, and the tarball contains `package/assets/hetzner.png`; no `v0.1.0` tag was created.
 
 ## Release automation alignment
 
@@ -78,7 +78,7 @@ Existing v1.5 focused capabilities remain registered through the common envelope
 
 - `jurislm/hetzner-plugin` is active and public as Woodpecker repo `22`.
 - Secret metadata is configured without value readback: `npm_token` for `tag`, and `personal_access_tokens_fine_grained_tokens_jurislm` for `push`.
-- Main pipeline `#26`, release-branch/PR checks `#22/#24`, and tag publish pipeline `#27` for `v1.6.2` succeeded.
+- Main pipeline `#34`, release-branch/PR checks `#31/#32`, and tag publish pipeline `#35` for `v1.6.3` succeeded.
 
 ## Legacy closeout
 
