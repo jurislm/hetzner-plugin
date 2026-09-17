@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.3](https://github.com/jurislm/hetzner-plugin/compare/v1.6.2...v1.6.3) (2026-09-17)
+
+
+### Bug Fixes
+
+* add plugin icons ([aa4415d](https://github.com/jurislm/hetzner-plugin/commit/aa4415d38ccabeb5683fa76f6696a1cf667dbd77))
+
 ## [1.6.2](https://github.com/jurislm/hetzner-plugin/compare/v1.6.1...v1.6.2) (2026-09-16)
 
 
