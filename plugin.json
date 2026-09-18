@@ -29,6 +29,9 @@
           "Read",
           "Write"
         ],
+        "defaultPrompt": [
+          "List my Hetzner Cloud servers."
+        ],
         "composerIcon": "./assets/hetzner.png",
         "logo": "./assets/hetzner.png",
         "websiteURL": "https://github.com/jurislm/hetzner-plugin"
