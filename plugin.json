@@ -4,26 +4,28 @@
   "version": "1.6.4",
   "description": "Portable Hetzner Cloud and Storage Box MCP plugin using local stdio tools generated from official OpenAPI contracts.",
   "author": {
-    "name": "JurisLM"
+    "name": "JurisLM",
+    "url": "https://github.com/jurislm"
   },
+  "homepage": "https://github.com/jurislm/hetzner-plugin",
+  "repository": "https://github.com/jurislm/hetzner-plugin",
   "license": "MIT",
+  "keywords": ["hetzner", "cloud", "storage-box", "devops", "mcp"],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Hetzner",
+        "shortDescription": "Manage Hetzner through agent tools.",
+        "longDescription": "Inspect and control Hetzner Cloud and Storage Box resources through local stdio tools.",
+        "developerName": "JurisLM",
+        "category": "Developer tools",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
         "composerIcon": "./assets/hetzner.png",
         "logo": "./assets/hetzner.png",
-        "shortDescription": "Local Hetzner API tools",
-        "longDescription": "Generated local stdio tools for Hetzner Cloud and Storage Box APIs.",
-        "developerName": "JurisLM",
-        "category": "Developer Tools",
-        "capabilities": [
-          "MCP",
-          "Local"
-        ],
-        "defaultPrompt": [
-          "List my Hetzner Cloud servers."
-        ]
+        "websiteURL": "https://github.com/jurislm/hetzner-plugin"
       }
     }
   }

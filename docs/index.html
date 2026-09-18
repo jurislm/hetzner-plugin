@@ -328,8 +328,8 @@
   <span class="key">"mcpServers"</span>: {
     <span class="key">"hetzner"</span>: {
       <span class="key">"type"</span>: <span class="str">"stdio"</span>,
-      <span class="key">"command"</span>: <span class="str">"bun"</span>,
-      <span class="key">"args"</span>: [<span class="str">"/absolute/path/to/hetzner-plugin/dist/index.js"</span>],
+      <span class="key">"command"</span>: <span class="str">"bunx"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@jurislm/hetzner-plugin@latest"</span>],
       <span class="key">"env"</span>: {
         <span class="key">"HETZNER_API_TOKEN"</span>: <span class="str">"your-api-token"</span>,
         <span class="comment" data-i18n="code-comment">// Storage Boxes only — unified token from console.hetzner.com</span>

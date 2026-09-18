@@ -12,7 +12,9 @@ bun install --frozen-lockfile
 bun run check
 ```
 
-`mcp.json` registers only a local stdio process. There is no remote MCP endpoint or OAuth flow.
+`mcp.json` and `.mcp.json` use the same published-package `bunx` stdio registration as the Woodpecker CI plugin. There is no remote MCP endpoint or OAuth flow.
+
+For Codex repository marketplace installation, use the repository root and leave the sparse path empty. The supported marketplace manifest is `.agents/plugins/marketplace.json`; do not enter `plugins/codex`.
 
 ## OpenAPI contract
 

@@ -1,6 +1,10 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
-    "hetzner": { "type": "stdio", "command": "bun", "args": ["dist/index.js"], "cwd": "./" }
+    "hetzner": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["-y", "@jurislm/hetzner-plugin@latest"]
+    }
   }
 }

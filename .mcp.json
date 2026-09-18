@@ -1,5 +1,9 @@
 {
   "mcpServers": {
-    "hetzner": { "type": "stdio", "command": "bun", "args": ["dist/index.js"], "cwd": "./" }
+    "hetzner": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["-y", "@jurislm/hetzner-plugin@latest"]
+    }
   }
 }
