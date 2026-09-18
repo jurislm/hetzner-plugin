@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.4](https://github.com/jurislm/hetzner-plugin/compare/v1.6.3...v1.6.4) (2026-09-18)
+
+
+### Bug Fixes
+
+* add repository marketplace manifest ([e87893a](https://github.com/jurislm/hetzner-plugin/commit/e87893a798cc9f40eb41a641d6fc332361acdee3))
+
 ## [1.6.3](https://github.com/jurislm/hetzner-plugin/compare/v1.6.2...v1.6.3) (2026-09-17)
 
 
