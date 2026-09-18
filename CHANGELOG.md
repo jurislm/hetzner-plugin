@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.5](https://github.com/jurislm/hetzner-plugin/compare/v1.6.4...v1.6.5) (2026-09-18)
+
+
+### Bug Fixes
+
+* align Hetzner plugin with Woodpecker architecture ([1c15984](https://github.com/jurislm/hetzner-plugin/commit/1c15984c7029068fcc1de5119907e46ee486df99))
+
 ## [1.6.4](https://github.com/jurislm/hetzner-plugin/compare/v1.6.3...v1.6.4) (2026-09-18)
 
 
