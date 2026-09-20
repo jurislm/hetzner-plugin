@@ -20,7 +20,7 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "Hetzner",
+        "displayName": "Hetzner Plugin",
         "shortDescription": "Manage Hetzner through agent tools.",
         "longDescription": "Inspect and control Hetzner Cloud and Storage Box resources through local stdio tools.",
         "developerName": "JurisLM",
