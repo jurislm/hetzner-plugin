@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.11](https://github.com/jurislm/hetzner-plugin/compare/v1.6.10...v1.6.11) (2026-09-21)
+
+
+### Bug Fixes
+
+* register tools before credential checks ([e523791](https://github.com/jurislm/hetzner-plugin/commit/e5237910c0edb217356ee8b929bcbf054bc3f042))
+* register tools before credential checks ([#17](https://github.com/jurislm/hetzner-plugin/issues/17)) ([ad72f03](https://github.com/jurislm/hetzner-plugin/commit/ad72f0328de0138039c02610a4adf8dce58461e8))
+
 ## [1.6.10](https://github.com/jurislm/hetzner-plugin/compare/v1.6.9...v1.6.10) (2026-09-21)
 
 
