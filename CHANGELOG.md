@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.10](https://github.com/jurislm/hetzner-plugin/compare/v1.6.9...v1.6.10) (2026-09-21)
+
+
+### Bug Fixes
+
+* keep portable MCP discovery canonical ([39da1b5](https://github.com/jurislm/hetzner-plugin/commit/39da1b526f60dbcde5cf48a2faab2e5c396995ba))
+* keep portable MCP discovery canonical ([#15](https://github.com/jurislm/hetzner-plugin/issues/15)) ([2a4f26b](https://github.com/jurislm/hetzner-plugin/commit/2a4f26be752e0c42328eb5fde5bc7b3024ea72a3))
+
 ## [1.6.9](https://github.com/jurislm/hetzner-plugin/compare/v1.6.8...v1.6.9) (2026-09-21)
 
 
