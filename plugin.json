@@ -10,8 +10,6 @@
   "homepage": "https://github.com/jurislm/hetzner-plugin",
   "repository": "https://github.com/jurislm/hetzner-plugin",
   "license": "MIT",
-  "skills": "./skills/",
-  "mcpServers": "./mcp.json",
   "keywords": [
     "hetzner",
     "cloud",
