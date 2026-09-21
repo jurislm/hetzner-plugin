@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.9](https://github.com/jurislm/hetzner-plugin/compare/v1.6.8...v1.6.9) (2026-09-21)
+
+
+### Bug Fixes
+
+* use a provider-owned marketplace name ([df4c862](https://github.com/jurislm/hetzner-plugin/commit/df4c862efefaabf87ec7dad2dd53cf9b41b4be31))
+* use a provider-owned marketplace name ([#13](https://github.com/jurislm/hetzner-plugin/issues/13)) ([96e76dd](https://github.com/jurislm/hetzner-plugin/commit/96e76dd9cda13b4b4a594887c677bda36dd8a4fd))
+
 ## [1.6.8](https://github.com/jurislm/hetzner-plugin/compare/v1.6.7...v1.6.8) (2026-09-21)
 
 
