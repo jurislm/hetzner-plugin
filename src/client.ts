@@ -65,7 +65,9 @@ export class HetznerClient {
       else url.searchParams.set(parameter.name, typeof value === "object" ? JSON.stringify(value) : String(value));
     }
     const token = operation.source === "cloud" ? this.config.cloudToken : this.config.unifiedToken;
-    if (!token) throw new HetznerApiError(0, operation.method, path, "HETZNER_API_TOKEN_UNIFIED is required for unified Storage Box operations");
+    if (!token) throw new HetznerApiError(0, operation.method, path, operation.source === "cloud"
+      ? "HETZNER_API_TOKEN is required for Hetzner Cloud operations"
+      : "HETZNER_API_TOKEN_UNIFIED is required for unified Storage Box operations");
     const headers = new Headers({ accept: "application/json, text/plain, */*", authorization: `Bearer ${token}` });
     const init: RequestInit = { method: operation.method, headers, signal: AbortSignal.timeout(this.config.timeoutMs) };
     if (input.body !== undefined && !["GET", "HEAD"].includes(operation.method)) {
