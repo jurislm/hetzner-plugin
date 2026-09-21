@@ -16,6 +16,11 @@ bun run check
 
 For Codex repository marketplace installation, use the repository root and leave the sparse path empty. The supported marketplace manifest is `.agents/plugins/marketplace.json`; do not enter `plugins/codex`.
 
+```sh
+codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
+codex plugin add hetzner-plugin@hetzner-marketplace
+```
+
 ## OpenAPI contract
 
 `openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are official snapshots. `api/manifest.json` is the single canonical manifest recording source URL, fetch time, SHA-256, OpenAPI version, path count, and operation count.
