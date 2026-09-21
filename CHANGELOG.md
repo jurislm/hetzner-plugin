@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.8](https://github.com/jurislm/hetzner-plugin/compare/v1.6.7...v1.6.8) (2026-09-21)
+
+
+### Bug Fixes
+
+* expose root MCP registration ([#11](https://github.com/jurislm/hetzner-plugin/issues/11)) ([d5de934](https://github.com/jurislm/hetzner-plugin/commit/d5de934166bb4cc071bd648935ac651b3d5d4399))
+
 ## [1.6.7](https://github.com/jurislm/hetzner-plugin/compare/v1.6.6...v1.6.7) (2026-09-20)
 
 
