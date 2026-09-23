@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.12](https://github.com/jurislm/hetzner-plugin/compare/v1.6.11...v1.6.12) (2026-09-23)
+
+
+### Bug Fixes
+
+* omit default Storage Box folder query ([2e7842c](https://github.com/jurislm/hetzner-plugin/commit/2e7842ce13e9fc644131bd0819899bf9168a255b))
+
 ## [1.6.11](https://github.com/jurislm/hetzner-plugin/compare/v1.6.10...v1.6.11) (2026-09-21)
 
 
