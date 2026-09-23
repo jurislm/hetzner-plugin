@@ -65,7 +65,9 @@ for (const source of specs) {
     const parameterMeta: string[] = [];
     for (const parameter of parameters) {
       if (parameter.in === "header") continue;
-      properties.push(`${quote(String(parameter.name))}: ${schemaText(parameter.schema ?? { type: "string" }, schemas, !parameter.required)}`);
+      const schema = { ...(parameter.schema ?? { type: "string" }) };
+      if (parameter.in === "query" && schema.default === ".") delete schema.default;
+      properties.push(`${quote(String(parameter.name))}: ${schemaText(schema, schemas, !parameter.required)}`);
       parameterMeta.push(`{ location: ${quote(parameter.in)}, name: ${quote(String(parameter.name))} }`);
     }
     const requestBody = operation.requestBody as ObjectValue | undefined;

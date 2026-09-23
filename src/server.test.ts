@@ -36,6 +36,27 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
+  test("omits the default folder path unless the caller supplies it", async () => {
+    const urls: string[] = [];
+    const server = createServer(config, async (url) => {
+      urls.push(String(url));
+      return new Response(JSON.stringify({ folders: ["backup"] }), { headers: { "content-type": "application/json" } });
+    });
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const omitted = await client.callTool({ name: "hetzner_unified_list_storage_box_folders", arguments: { id: 1 } });
+    const explicit = await client.callTool({ name: "hetzner_unified_list_storage_box_folders", arguments: { id: 1, path: "backup" } });
+    expect(omitted.isError).not.toBe(true);
+    expect(explicit.isError).not.toBe(true);
+    expect(urls).toEqual([
+      "https://api.hetzner.com/v1/storage_boxes/1/folders",
+      "https://api.hetzner.com/v1/storage_boxes/1/folders?path=backup",
+    ]);
+    await client.close();
+    await server.close();
+  });
+
   test("redacts both configured tokens from generated and retained tool errors", async () => {
     const secret = "Bearer cloud-secret and Bearer unified-secret";
     const originalFetch = globalThis.fetch;
