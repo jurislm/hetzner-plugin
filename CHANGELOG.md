@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.13](https://github.com/jurislm/hetzner-plugin/compare/v1.6.12...v1.6.13) (2026-09-23)
+
+
+### Bug Fixes
+
+* accept actions without error field ([#21](https://github.com/jurislm/hetzner-plugin/issues/21)) ([daf152d](https://github.com/jurislm/hetzner-plugin/commit/daf152d80f5b58ad4c1280b206e26a2d3f807653))
+
 ## [1.6.12](https://github.com/jurislm/hetzner-plugin/compare/v1.6.11...v1.6.12) (2026-09-23)
 
 
