@@ -57,6 +57,27 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
+  test("accepts successful volume actions without an error field", async () => {
+    const response = {
+      actions: [{ id: 1, command: "attach_volume", status: "success", progress: 100, started: "2026-09-23T00:00:00Z", finished: "2026-09-23T00:01:00Z", resources: [{ id: 7, type: "volume" }] }],
+      meta: emptyServers.meta,
+    };
+    const server = createServer(config, async () => new Response(JSON.stringify(response), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    for (const call of [
+      { name: "hetzner_cloud_list_volumes_actions", arguments: {} },
+      { name: "hetzner_cloud_list_volume_actions", arguments: { id: 7 } },
+    ]) {
+      const result = await client.callTool(call);
+      expect(result.isError).not.toBe(true);
+      expect(result.structuredContent).toMatchObject({ data: response });
+    }
+    await client.close();
+    await server.close();
+  });
+
   test("redacts both configured tokens from generated and retained tool errors", async () => {
     const secret = "Bearer cloud-secret and Bearer unified-secret";
     const originalFetch = globalThis.fetch;

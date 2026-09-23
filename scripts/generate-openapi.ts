@@ -21,6 +21,7 @@ function dereference(value: any, schemas: Record<string, ObjectValue>, seen = ne
   }
   const result: ObjectValue = {};
   for (const [key, child] of Object.entries(value)) if (key !== "$ref") result[key] = dereference(child, schemas, seen);
+  if (result.properties?.command && result.properties?.resources && result.properties?.error && Array.isArray(result.required)) result.required = result.required.filter((name: string) => name !== "error");
   return result.nullable === true ? { anyOf: [Object.fromEntries(Object.entries(result).filter(([key]) => key !== "nullable")), { type: "null" }] } : result;
 }
 
