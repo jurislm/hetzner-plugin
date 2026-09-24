@@ -322,7 +322,7 @@
 
     <div class="section">
       <h2 data-i18n="section-setup">Quick Setup</h2>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;" data-i18n="setup-hint">Install with <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>, or add this server to your MCP client config:</p>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;" data-i18n="setup-hint"><code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>, then <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>. Or add this server to your own MCP client config:</p>
       <div class="code-block">
         <pre>{
   <span class="key">"mcpServers"</span>: {
@@ -388,7 +388,7 @@ const TRANSLATIONS = {
     "cat-storage": "Storage Boxes",
     "cat-storage-desc": "Full CRUD for Hetzner Storage Boxes — subaccounts, snapshots, access settings, and scheduled backup plans. Requires a unified API token.",
     "section-setup": "Quick Setup",
-    "setup-hint": 'Install with <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>, or add this server to your MCP client config:',
+    "setup-hint": '<code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>, then <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>. Or add this server to your own MCP client config:',
     "code-comment": "// Storage Boxes only — unified token from console.hetzner.com",
     "callout-title": "Two token types:",
     "callout-body": ' All tools except Storage Boxes use a Cloud project token from <a href="https://console.hetzner.cloud">console.hetzner.cloud</a>. Storage Box tools use a unified token from <a href="https://console.hetzner.com/account/security/api-tokens">console.hetzner.com</a>. A Cloud token on the unified API returns <code>401</code>.',
@@ -417,7 +417,7 @@ const TRANSLATIONS = {
     "cat-storage": "Storage Box",
     "cat-storage-desc": "Hetzner Storage Box 完整 CRUD — 子帳號、快照、存取設定與自動備份排程。需要 Unified API Token。",
     "section-setup": "快速設定",
-    "setup-hint": '以 <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code> 安裝，或把此伺服器加入你的 MCP 客戶端設定：',
+    "setup-hint": '先 <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>，再 <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>。或把此伺服器加入你的 MCP 客戶端設定：',
     "code-comment": "// 僅 Storage Box 需要 — 從 console.hetzner.com 取得 Unified Token",
     "callout-title": "兩種 Token 類型：",
     "callout-body": ' Storage Box 以外的所有工具使用來自 <a href="https://console.hetzner.cloud">console.hetzner.cloud</a> 的 Cloud 專案 Token。Storage Box 工具需要來自 <a href="https://console.hetzner.com/account/security/api-tokens">console.hetzner.com</a> 的 Unified Token。Cloud Token 呼叫 Unified API 會回傳 <code>401</code>。',
@@ -446,7 +446,7 @@ const TRANSLATIONS = {
     "cat-storage": "ストレージボックス",
     "cat-storage-desc": "Hetzner Storage Box の完全な CRUD — サブアカウント、スナップショット、アクセス設定、自動バックアッププラン。Unified API トークンが必要。",
     "section-setup": "クイックセットアップ",
-    "setup-hint": '<code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code> でインストールするか、MCP クライアント設定にこのサーバーを追加してください：',
+    "setup-hint": 'まず <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>、次に <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>。または MCP クライアント設定にこのサーバーを追加してください：',
     "code-comment": "// Storage Box のみ — console.hetzner.com から取得した Unified トークン",
     "callout-title": "2 種類のトークン：",
     "callout-body": ' Storage Box 以外のすべてのツールは <a href="https://console.hetzner.cloud">console.hetzner.cloud</a> の Cloud プロジェクトトークンを使用します。Storage Box ツールは <a href="https://console.hetzner.com/account/security/api-tokens">console.hetzner.com</a> の Unified トークンが必要です。Unified API に Cloud トークンを使うと <code>401</code> が返ります。',
@@ -475,7 +475,7 @@ const TRANSLATIONS = {
     "cat-storage": "스토리지 박스",
     "cat-storage-desc": "Hetzner Storage Box 전체 CRUD — 서브계정, 스냅샷, 접근 설정, 자동 백업 플랜. Unified API 토큰 필요.",
     "section-setup": "빠른 설정",
-    "setup-hint": '<code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>로 설치하거나 MCP 클라이언트 설정에 이 서버를 추가하세요:',
+    "setup-hint": '먼저 <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>, 다음 <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>. 또는 MCP 클라이언트 설정에 이 서버를 추가하세요:',
     "code-comment": "// Storage Box 전용 — console.hetzner.com에서 발급한 Unified 토큰",
     "callout-title": "두 가지 토큰 유형:",
     "callout-body": ' Storage Box를 제외한 모든 도구는 <a href="https://console.hetzner.cloud">console.hetzner.cloud</a>의 Cloud 프로젝트 토큰을 사용합니다. Storage Box 도구는 <a href="https://console.hetzner.com/account/security/api-tokens">console.hetzner.com</a>의 Unified 토큰이 필요합니다. Unified API에 Cloud 토큰을 사용하면 <code>401</code>이 반환됩니다.',
