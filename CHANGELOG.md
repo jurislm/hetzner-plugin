@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.15](https://github.com/jurislm/hetzner-plugin/compare/v1.6.14...v1.6.15) (2026-09-24)
+
+
+### Documentation
+
+* align landing page stats and install command with repo reality ([#25](https://github.com/jurislm/hetzner-plugin/issues/25)) ([3d7b982](https://github.com/jurislm/hetzner-plugin/commit/3d7b982afaf26dc7ba0d9bc285fb3652e61b6c88))
+
 ## [1.6.14](https://github.com/jurislm/hetzner-plugin/compare/v1.6.13...v1.6.14) (2026-09-24)
 
 
