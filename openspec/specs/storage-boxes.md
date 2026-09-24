@@ -2,11 +2,13 @@
 
 ## Purpose
 
-提供 Hetzner Storage Box 的查詢、容量檢查與管理工具。Storage Box 使用 Unified API `https://api.hetzner.com/v1`，與 Cloud API 共用 `HETZNER_API_TOKEN`。
+提供 Hetzner Storage Box 的查詢、容量檢查與管理工具。Storage Box 使用 Unified API `https://api.hetzner.com/v1`；Cloud API `https://api.hetzner.cloud/v1` 的 token 不可用於此邊界。
 
 ## Authentication and transport
 
-- `HETZNER_API_TOKEN` is the only credential variable used by Cloud and Storage Box operations.
+- Cloud process startup requires `HETZNER_API_TOKEN`.
+- A Storage Box operation checks `HETZNER_API_TOKEN_UNIFIED` immediately before its request. If absent, it returns a local error and does not call `fetch`.
+- The two token variables are never interchangeable.
 - Requests use the shared native-fetch client and return the standard `ToolEnvelope` with redacted errors.
 - stdout is reserved for MCP protocol frames; logs use stderr.
 
@@ -36,8 +38,8 @@ The retained surface includes `hetzner_list_storage_boxes`, `hetzner_get_storage
 
 ## Required behavior
 
-- A configured token produces Cloud and Storage Box requests with the same bearer credential.
-- A missing token fails before network access.
+- Valid Unified credentials produce native-fetch requests with `Authorization: Bearer <unified-token>`.
+- Cloud-only startup succeeds; a Storage Box call without the Unified token fails before network access.
 - A missing or invalid resource returns a redacted error envelope.
 - Stats reports available space, including negative availability when snapshots put a box over quota.
 - Assert-space returns `ok: true` when available space meets `required_gib`; otherwise it returns `isError: true` and the measured values.

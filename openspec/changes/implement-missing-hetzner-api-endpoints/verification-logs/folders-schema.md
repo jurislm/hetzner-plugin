@@ -2,7 +2,7 @@
 
 Date: 2026-05-05  
 Box: 561406  
-Token: HETZNER_API_TOKEN
+Token: HETZNER_API_TOKEN (historical pre-split record)
 
 ## Response
 

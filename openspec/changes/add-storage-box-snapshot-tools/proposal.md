@@ -1,6 +1,6 @@
 ## Why
 
-Issue #8 acceptance 要求至少實作 Storage Box snapshot 三件套（list / create / rollback），讓 lawyer dev 跨環境遷移與長期 Coolify scheduled DB backup 可以推送至 Storage Box 並透過 MCP 觸發手動 snapshot 與 rollback，避免目前只能在 Hetzner Robot UI 手動操作的痛點。Hetzner Unified API 已支援 Storage Box snapshot 端點（不需走 Robot API），使用共用的 `HETZNER_API_TOKEN` 呼叫。
+Issue #8 acceptance 要求至少實作 Storage Box snapshot 三件套（list / create / rollback），讓 lawyer dev 跨環境遷移與長期 Coolify scheduled DB backup 可以推送至 Storage Box 並透過 MCP 觸發手動 snapshot 與 rollback，避免目前只能在 Hetzner Robot UI 手動操作的痛點。Hetzner Unified API 已支援 Storage Box snapshot 端點（不需走 Robot API），透過目前的 native-fetch retained adapter 與 `HETZNER_API_TOKEN_UNIFIED` 邊界呼叫。
 
 ## What Changes
 
@@ -25,6 +25,6 @@ Issue #8 acceptance 要求至少實作 Storage Box snapshot 三件套（list / c
 - 程式碼：`src/types.ts`（新 schemas）、`src/tools/storage-boxes.ts`（新 3 個 tool）；由 `ApiRequest` 注入 `registerStorageBoxTools(server, apiRequest)`，不使用 module-level client
 - 測試：active Bun tests under `src/` cover snapshot behavior, pagination, errors, and destructive annotations
 - 文件：`CLAUDE.md`（工具清單 17→20）、`README.md`（同步）、`openspec/specs/storage-boxes.md`（新 requirements）
-- API：使用既有 `HETZNER_API_TOKEN`，無新 credential 需求
+- API：使用既有 `HETZNER_API_TOKEN_UNIFIED`，無新 credential 需求
 - 相依：無新增 dependency
 - 風險：rollback 為 destructive 操作（資料覆寫），須在 tool annotation 標 `destructiveHint: true` 並於 description 警告

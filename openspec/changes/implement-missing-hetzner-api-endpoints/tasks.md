@@ -1,6 +1,6 @@
 ## 0. Pre-implementation: Live API Verification (Blocking)
 
-- [x] 0.1 Live-call `GET /v1/storage_boxes/{id}/folders` using `HETZNER_API_TOKEN` and document actual folder object field names in `openspec/changes/implement-missing-hetzner-api-endpoints/verification-logs/folders-schema.md`
+- [x] 0.1 Live-call `GET /v1/storage_boxes/{id}/folders` using `HETZNER_API_TOKEN_UNIFIED` and document actual folder object field names in `openspec/changes/implement-missing-hetzner-api-endpoints/verification-logs/folders-schema.md`
 - [x] 0.2 Live-call `POST /v1/storage_boxes/{id}/actions/reset_password` (or inspect API docs) and confirm whether response is `{ action, password }` or `{ action }` only; document in `verification-logs/reset-password-response.md`
 - [x] 0.3 Confirm `DELETE /v1/storage_boxes/{id}/subaccounts/{username}` response shape (204 No Content vs action object); document in `verification-logs/subaccount-delete-response.md`
 

@@ -1,6 +1,6 @@
 ## Context
 
-`@jurislm/hetzner-plugin` 的 retained Storage Box surface 已提供 read tools；本變更補上 snapshot 管理。Issue #8 acceptance 要求「至少 list + get + snapshot 三件套」。Hetzner Unified API 支援 Storage Box snapshot 端點，透過 native-fetch adapter 與 `HETZNER_API_TOKEN` 呼叫。
+`@jurislm/hetzner-plugin` 的 retained Storage Box surface 已提供 read tools；本變更補上 snapshot 管理。Issue #8 acceptance 要求「至少 list + get + snapshot 三件套」。Hetzner Unified API 支援 Storage Box snapshot 端點，透過 native-fetch adapter 與 `HETZNER_API_TOKEN_UNIFIED` 呼叫。
 
 當前模組分布：
 - `src/api.ts`：`ApiRequest` factory 以 config/fetch 注入，支援 GET/POST/PUT/DELETE，Zod 驗證在邊界

@@ -1,16 +1,23 @@
 ## ADDED Requirements
 
 ### Requirement: Unified API token resolution
-The Cloud and Storage Box API clients SHALL resolve their bearer token from the single `HETZNER_API_TOKEN` environment variable.
-Cloud API access SHALL remain limited to the project where that token was created.
+The Storage Box API client SHALL resolve its bearer token only from `HETZNER_API_TOKEN_UNIFIED` immediately before a Storage Box request. It SHALL not use `HETZNER_API_TOKEN` as a substitute. Cloud startup requires `HETZNER_API_TOKEN` independently.
 
-#### Scenario: One token for both APIs
-- **WHEN** `HETZNER_API_TOKEN=api-token` is set
-- **THEN** Cloud and Storage Box requests use `Authorization: Bearer api-token`
+#### Scenario: Unified-only env var
+- **WHEN** `HETZNER_API_TOKEN_UNIFIED=u-token` is set and `HETZNER_API_TOKEN` is unset
+- **THEN** the native-fetch Storage Box request uses `Authorization: Bearer u-token`
 
-#### Scenario: No token
+#### Scenario: Cloud-only startup
+- **WHEN** `HETZNER_API_TOKEN=c-token` is set and `HETZNER_API_TOKEN_UNIFIED` is unset
+- **THEN** the MCP process starts, but a Storage Box operation fails before a provider request with an error naming `HETZNER_API_TOKEN_UNIFIED`
+
+#### Scenario: Both env vars set
+- **WHEN** `HETZNER_API_TOKEN_UNIFIED=u-token` AND `HETZNER_API_TOKEN=c-token` are both set
+- **THEN** Cloud requests use `c-token` and Storage Box requests use `u-token`
+
+#### Scenario: No Cloud token at startup
 - **WHEN** `HETZNER_API_TOKEN` is unset
-- **THEN** an API operation fails before a provider request with an error naming `HETZNER_API_TOKEN`
+- **THEN** startup fails with an error naming `HETZNER_API_TOKEN`
 
 ### Requirement: Paginated list of Storage Boxes
 The `hetzner_list_storage_boxes` tool SHALL fetch all pages of Storage Boxes from the unified API by default, traversing `meta.pagination.next_page` until exhausted or a hard cap of 5 pages is reached. Callers MAY override the loop by supplying explicit `page` and/or `per_page` parameters, in which case exactly one page SHALL be fetched.

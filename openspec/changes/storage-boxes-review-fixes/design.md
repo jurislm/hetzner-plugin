@@ -6,7 +6,8 @@ The active target is `@jurislm/hetzner-plugin`, a local Bun stdio MCP plugin. It
 
 **Goals:**
 
-- Use `HETZNER_API_TOKEN` as the only credential for Cloud and Storage Box requests.
+- Keep `HETZNER_API_TOKEN` as the Cloud credential required at process startup.
+- Use `HETZNER_API_TOKEN_UNIFIED` exclusively for Storage Box requests, checking it immediately before the request so Cloud-only users can start.
 - Use native `fetch` for both API bases with shared timeout, response decoding, envelope, annotation, and error-redaction behavior.
 - Generate the provider contract only from committed authoritative OpenAPI snapshots.
 - Keep the retained Storage Box and Cloud-focused tools covered by active Bun tests.
@@ -19,9 +20,9 @@ The active target is `@jurislm/hetzner-plugin`, a local Bun stdio MCP plugin. It
 
 ## Decisions
 
-### Decision 1: One shared credential
+### Decision 1: Separate credentials with lazy Unified validation
 
-Cloud and Storage Box operations read `HETZNER_API_TOKEN` from the shared configuration. A missing token produces a local error before `fetch` is called.
+Storage Box operations read only `HETZNER_API_TOKEN_UNIFIED`. The process validates `HETZNER_API_TOKEN` during startup. A missing Unified token produces a local error before `fetch` is called. Cloud credentials are never used for Unified requests.
 
 ### Decision 2: Native-fetch client boundary
 
@@ -37,7 +38,7 @@ Active Bun tests exercise Storage Box statistics, space assertion, RAM-over-SSH,
 
 ## Risks / Trade-offs
 
-- All operations use the same configured API token.
+- Cloud-only users can start the process but cannot use Storage Box tools until an account-level Unified token is configured.
 - Generated response schemas describe the provider contract; MCP output validation uses the shared envelope boundary so partial provider fixtures and forward-compatible fields do not block envelope delivery.
 - Live provider behavior remains unverified until credentials are supplied.
 

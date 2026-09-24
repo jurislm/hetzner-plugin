@@ -1,7 +1,7 @@
 ## 1. Credential and request boundary
 
-- [x] 1.1 Load `HETZNER_API_TOKEN` into shared configuration and validate it when an API request is made.
-- [x] 1.2 Use `HETZNER_API_TOKEN` for both Cloud and Unified API requests.
+- [x] 1.1 Require `HETZNER_API_TOKEN` at process startup.
+- [x] 1.2 Require `HETZNER_API_TOKEN_UNIFIED` immediately before Unified Storage Box requests; keep Cloud and Unified credentials separate.
 - [x] 1.3 Use native `fetch` for auth, path/query/body encoding, JSON/text/binary/204 decoding, timeout, and zero retries.
 - [x] 1.4 Centralize error formatting and redact configured tokens plus bearer-token values in generated and retained tool errors.
 - [x] 1.5 Add active Bun tests for config, client, error redaction, and retained API seams under `src/`.
@@ -23,7 +23,7 @@
 ## 4. Packaging and documentation
 
 - [x] 4.1 Use the portable root plugin manifest, local stdio MCP manifest, compatibility Codex manifest, examples, skill, references, README, LICENSE, and Woodpecker CI/release files.
-- [x] 4.2 Document the single shared credential in active README, `CLAUDE.md`, and OpenSpec artifacts.
+- [x] 4.2 Document Cloud startup credentials and lazy Unified Storage Box credentials in active README, `CLAUDE.md`, and OpenSpec artifacts.
 - [x] 4.3 Remove obsolete root test artifacts; keep active retained behavior tests under `src/`.
 
 ## 5. Validation
