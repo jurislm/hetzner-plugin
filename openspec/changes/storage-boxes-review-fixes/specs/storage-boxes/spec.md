@@ -2,6 +2,7 @@
 
 ### Requirement: Unified API token resolution
 The Cloud and Storage Box API clients SHALL resolve their bearer token from the single `HETZNER_API_TOKEN` environment variable.
+Cloud API access SHALL remain limited to the project where that token was created.
 
 #### Scenario: One token for both APIs
 - **WHEN** `HETZNER_API_TOKEN=api-token` is set

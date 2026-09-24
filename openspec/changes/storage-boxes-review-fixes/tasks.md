@@ -1,6 +1,6 @@
 ## 1. Credential and request boundary
 
-- [x] 1.1 Require `HETZNER_API_TOKEN` at process startup.
+- [x] 1.1 Load `HETZNER_API_TOKEN` into shared configuration and validate it when an API request is made.
 - [x] 1.2 Use `HETZNER_API_TOKEN` for both Cloud and Unified API requests.
 - [x] 1.3 Use native `fetch` for auth, path/query/body encoding, JSON/text/binary/204 decoding, timeout, and zero retries.
 - [x] 1.4 Centralize error formatting and redact configured tokens plus bearer-token values in generated and retained tool errors.

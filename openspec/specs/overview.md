@@ -27,7 +27,7 @@ The generated registry contains 190 Cloud operations and 32 Unified operations. 
 
 | Variable | Required | Description |
 |---|---|---|
-| `HETZNER_API_TOKEN` | Required | Shared token for Cloud and Storage Box API requests. |
+| `HETZNER_API_TOKEN` | Required | Shared token for Cloud and Storage Box API requests; Cloud access is limited to the token's project. |
 
 ## Naming and output
 
