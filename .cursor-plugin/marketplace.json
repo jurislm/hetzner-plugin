@@ -1,5 +1,6 @@
 {
   "name": "hetzner-plugin",
+  "displayName": "Hetzner Plugin",
   "metadata": {
     "description": "Hetzner tools from JurisLM"
   },
