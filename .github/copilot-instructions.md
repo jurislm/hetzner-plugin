@@ -17,7 +17,7 @@ The Bun test root is `src/`. `bun run check` verifies the offline API manifest, 
 
 ## API and credentials
 
-- Cloud and Storage Box operations use the single `HETZNER_API_TOKEN` variable. Cloud access is limited to the token's project; tests must not require live credentials.
+- Cloud and Storage Box operations use the single `HETZNER_API_TOKEN` variable. API access is limited to the token's project; tests must not require live credentials.
 - Native `fetch` is the only HTTP client. Keep logs on stderr because stdout is reserved for MCP frames.
 
 ## Source and generated contract

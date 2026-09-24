@@ -339,7 +339,7 @@
       </div>
       <div class="callout">
         <strong data-i18n="callout-title">One token:</strong>
-        <span data-i18n="callout-body"> Set <code>HETZNER_API_TOKEN</code> once. Cloud and Storage Box requests use the same token; Cloud access stays within the token's project.</span>
+        <span data-i18n="callout-body"> Set <code>HETZNER_API_TOKEN</code> once for both APIs. Hetzner tokens are project-bound, so resources in other projects are outside this setup.</span>
       </div>
     </div>
 
@@ -384,7 +384,7 @@ const TRANSLATIONS = {
     "section-setup": "Quick Setup",
     "setup-hint": '<code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>, then <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>. Or add this server to your own MCP client config:',
     "callout-title": "One token:",
-    "callout-body": ' Set <code>HETZNER_API_TOKEN</code> once. Cloud and Storage Box requests use the same token; Cloud access stays within the token\'s project.',
+    "callout-body": ' Set <code>HETZNER_API_TOKEN</code> once for both APIs. Hetzner tokens are project-bound, so resources in other projects are outside this setup.',
   },
   zh: {
     tagline: "讓 Codex 透過 264 個工具管理您的 Hetzner Cloud 基礎設施 — 直接在對話視窗中操作。",
@@ -412,7 +412,7 @@ const TRANSLATIONS = {
     "section-setup": "快速設定",
     "setup-hint": '先 <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>，再 <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>。或把此伺服器加入你的 MCP 客戶端設定：',
     "callout-title": "使用一組 Token：",
-    "callout-body": ' 只需設定一次 <code>HETZNER_API_TOKEN</code>。Cloud 和 Storage Box API 共用此 Token；Cloud 權限限於建立 Token 的專案。',
+    "callout-body": ' 只需設定一次 <code>HETZNER_API_TOKEN</code> 供兩個 API 共用。Hetzner token 綁定 project，因此此設定只能存取該 project 的資源。',
   },
   ja: {
     tagline: "チャットウィンドウから Codex で Hetzner Cloud インフラを管理する、264 のツール。",
@@ -440,7 +440,7 @@ const TRANSLATIONS = {
     "section-setup": "クイックセットアップ",
     "setup-hint": 'まず <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>、次に <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>。または MCP クライアント設定にこのサーバーを追加してください：',
     "callout-title": "トークンは 1 つ：",
-    "callout-body": ' <code>HETZNER_API_TOKEN</code> を一度設定すれば、Cloud と Storage Box API の両方で同じトークンが使われます。Cloud API のアクセスはトークンを作成したプロジェクトに限定されます。',
+    "callout-body": ' <code>HETZNER_API_TOKEN</code> を両 API に一度設定します。Hetzner のトークンはプロジェクト単位のため、この設定でアクセスできるのはそのプロジェクトのリソースだけです。',
   },
   ko: {
     tagline: "Codex에서 Hetzner Cloud 인프라를 관리하는 264가지 도구 — 대화창에서 바로 사용하세요.",
@@ -468,7 +468,7 @@ const TRANSLATIONS = {
     "section-setup": "빠른 설정",
     "setup-hint": '먼저 <code style="font-size:13px;color:var(--text);">codex plugin marketplace add https://github.com/jurislm/hetzner-plugin</code>, 다음 <code style="font-size:13px;color:var(--text);">codex plugin add hetzner-plugin@hetzner-marketplace</code>. 또는 MCP 클라이언트 설정에 이 서버를 추가하세요:',
     "callout-title": "토큰 하나:",
-    "callout-body": ' <code>HETZNER_API_TOKEN</code>만 설정하면 Cloud와 Storage Box API가 같은 토큰을 사용합니다. Cloud API 액세스는 토큰을 생성한 프로젝트로 제한됩니다.',
+    "callout-body": ' 두 API에 <code>HETZNER_API_TOKEN</code> 하나를 사용합니다. Hetzner 토큰은 프로젝트에 종속되므로 이 설정은 해당 프로젝트의 리소스에만 접근합니다.',
   }
 };
 

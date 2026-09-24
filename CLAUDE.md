@@ -107,7 +107,7 @@ src/
 
 | 變數 | 必需 | 說明 |
 |------|------|------|
-| `HETZNER_API_TOKEN` | ✓ | Cloud 與 Storage Box API 共用的唯一 API token；Cloud 權限限於建立 token 的專案 |
+| `HETZNER_API_TOKEN` | ✓ | Cloud 與 Storage Box API 共用的唯一 API token；權限限於建立 token 的 project |
 
 **注意**：MCP Server 是非互動式子進程，環境變數必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
 

@@ -2,7 +2,7 @@
 
 Source: docs.hetzner.cloud (verified via Context7, 2026-05-05)  
 Base URL: `https://api.hetzner.com/v1`  
-Auth: Cloud and Unified/Storage Box requests use `Authorization: Bearer <HETZNER_API_TOKEN>`
+Auth: Cloud and Unified/Storage Box requests use `Authorization: Bearer <HETZNER_API_TOKEN>`. Hetzner API tokens are project-bound.
 
 ---
 
