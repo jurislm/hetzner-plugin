@@ -1,11 +1,9 @@
 export interface HetznerConfig {
-  cloudToken?: string;
-  unifiedToken?: string;
+  apiToken?: string;
   timeoutMs: number;
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): HetznerConfig {
-  const cloudToken = env.HETZNER_API_TOKEN?.trim();
-  const unifiedToken = env.HETZNER_API_TOKEN_UNIFIED?.trim();
-  return { ...(cloudToken ? { cloudToken } : {}), ...(unifiedToken ? { unifiedToken } : {}), timeoutMs: 30_000 };
+  const apiToken = env.HETZNER_API_TOKEN?.trim();
+  return { ...(apiToken ? { apiToken } : {}), timeoutMs: 30_000 };
 }
