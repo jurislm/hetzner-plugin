@@ -1,0 +1,17 @@
+{
+  "name": "hetzner-marketplace",
+  "owner": {
+    "name": "JurisLM"
+  },
+  "metadata": {
+    "description": "Hetzner tools from JurisLM"
+  },
+  "plugins": [
+    {
+      "name": "hetzner-plugin",
+      "source": ".",
+      "description": "Manage Hetzner Cloud and Storage Box resources through local stdio tools.",
+      "logo": "assets/hetzner.png"
+    }
+  ]
+}
