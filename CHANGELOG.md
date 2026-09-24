@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.14](https://github.com/jurislm/hetzner-plugin/compare/v1.6.13...v1.6.14) (2026-09-24)
+
+
+### Documentation
+
+* update landing page copy to Codex plugin install path ([#23](https://github.com/jurislm/hetzner-plugin/issues/23)) ([75fe97c](https://github.com/jurislm/hetzner-plugin/commit/75fe97c1275e14dc3ea91a1ab6babc3e4f04960d))
+
 ## [1.6.13](https://github.com/jurislm/hetzner-plugin/compare/v1.6.12...v1.6.13) (2026-09-23)
 
 
