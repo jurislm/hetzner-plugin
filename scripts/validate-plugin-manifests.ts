@@ -1,5 +1,5 @@
 type Json = Record<string, unknown>;
-const files = ["plugin.json", ".codex-plugin/plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example"];
+const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marketplace.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example"];
 const parsed = Object.fromEntries(await Promise.all(files.map(async (file) => [file, JSON.parse(await Bun.file(file).text()) as Json])));
 const packageJson = JSON.parse(await Bun.file("package.json").text()) as Json;
 const packageVersion = String(packageJson.version);
@@ -20,6 +20,7 @@ for (const manifestInterface of [portableInterface, fallbackInterface]) {
 if (parsed["plugin.json"].homepage !== "https://github.com/jurislm/hetzner-plugin" || parsed["plugin.json"].repository !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Portable manifest repository metadata must match Woodpecker");
 if ((parsed[".codex-plugin/plugin.json"].repository as string) !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Fallback manifest repository metadata must match Woodpecker");
 if (parsed["mcp.json"].$schema !== "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json") throw new Error("mcp.json must use the portable Agent Plugins schema");
+if (((parsed[".cursor-plugin/marketplace.json"].owner as Json).name) !== "JurisLM") throw new Error("Cursor marketplace must include its required owner");
 for (const file of ["plugin.json", ".codex-plugin/plugin.json"]) if (parsed[file].name !== "hetzner-plugin" || parsed[file].version !== packageVersion) throw new Error(`${file} is not the portable Hetzner manifest for ${packageVersion}`);
 const server = (parsed[".mcp.json"].mcpServers as Json).hetzner as Json;
 if (server.type !== "stdio" || server.command !== "bunx" || "cwd" in server || "url" in server || "serverUrl" in server || !(server.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json must match the Woodpecker bunx stdio registration");

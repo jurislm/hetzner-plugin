@@ -1,5 +1,8 @@
 {
   "name": "hetzner-plugin",
+  "owner": {
+    "name": "JurisLM"
+  },
   "metadata": {
     "description": "Hetzner tools from JurisLM"
   },
