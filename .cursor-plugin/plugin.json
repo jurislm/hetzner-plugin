@@ -1,5 +1,19 @@
 {
   "name": "hetzner-plugin",
   "displayName": "Hetzner Plugin",
+  "description": "Manage Hetzner Cloud and Storage Box resources through local stdio tools.",
+  "author": {
+    "name": "JurisLM"
+  },
+  "homepage": "https://github.com/jurislm/hetzner-plugin",
+  "repository": "https://github.com/jurislm/hetzner-plugin",
+  "license": "MIT",
+  "keywords": [
+    "hetzner",
+    "cloud",
+    "storage-box",
+    "devops",
+    "mcp"
+  ],
   "logo": "assets/hetzner.png"
 }
