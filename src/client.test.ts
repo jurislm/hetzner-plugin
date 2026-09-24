@@ -1,15 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import { HetznerApiError, HetznerClient } from "./client.js";
 
-const config = { cloudToken: "cloud-secret", unifiedToken: "unified-secret", timeoutMs: 30_000 };
+const config = { apiToken: "single-secret", timeoutMs: 30_000 };
 const cloudOperation = { source: "cloud" as const, method: "POST", path: "/servers/{id}", parameters: [{ location: "path", name: "id" }, { location: "query", name: "label" }] };
 
 describe("HetznerClient", () => {
-  test("encodes path/query/body and selects the Cloud token", async () => {
+  test("uses the canonical token for Cloud requests", async () => {
     let request = "";
     const client = new HetznerClient(config, async (url, init) => {
       request = String(url);
-      expect(new Headers(init?.headers).get("authorization")).toBe("Bearer cloud-secret");
+      expect(new Headers(init?.headers).get("authorization")).toBe("Bearer single-secret");
       expect(init?.body).toBe('{"name":"api"}');
       return new Response(JSON.stringify({ id: 1 }), { headers: { "content-type": "application/json" } });
     });
@@ -19,8 +19,9 @@ describe("HetznerClient", () => {
     expect(request).toBe("https://api.hetzner.cloud/v1/servers/a%2Fb?label=prod+blue");
   });
 
-  test("uses the Unified token and preserves empty, text, and binary responses", async () => {
-    const client = new HetznerClient(config, async (url) => {
+  test("uses the canonical token for Unified requests and preserves response formats", async () => {
+    const client = new HetznerClient(config, async (url, init) => {
+      expect(new Headers(init?.headers).get("authorization")).toBe("Bearer single-secret");
       if (String(url).endsWith("/empty")) return new Response(null, { status: 204 });
       if (String(url).endsWith("/text")) return new Response("ok", { headers: { "content-type": "text/plain" } });
       return new Response(new Uint8Array([65]), { headers: { "content-type": "application/octet-stream" } });
@@ -33,18 +34,18 @@ describe("HetznerClient", () => {
 
   test("does not retry and redacts tokens from request failures", async () => {
     let calls = 0;
-    const client = new HetznerClient(config, async () => { calls++; throw new Error("cloud-secret failed"); });
+    const client = new HetznerClient(config, async () => { calls++; throw new Error("single-secret failed"); });
     const error = await client.request(cloudOperation, { id: 1 }).catch((value) => value);
     expect(error).toBeInstanceOf(HetznerApiError);
-    expect(error.message).not.toContain("cloud-secret");
+    expect(error.message).not.toContain("single-secret");
     expect(calls).toBe(1);
   });
 
-  test("requires the Unified token only for Unified operations", async () => {
+  test("requires the canonical token for every API operation", async () => {
     let calls = 0;
-    const client = new HetznerClient({ cloudToken: "cloud-secret", timeoutMs: 30_000 }, async () => { calls++; return new Response(); });
+    const client = new HetznerClient({ timeoutMs: 30_000 }, async () => { calls++; return new Response(); });
     await expect(client.request({ source: "unified", method: "GET", path: "/storage_boxes", parameters: [] }, {})).rejects.toMatchObject({
-      message: "HETZNER_API_TOKEN_UNIFIED is required for unified Storage Box operations",
+      message: "HETZNER_API_TOKEN is required for Hetzner API operations",
     });
     expect(calls).toBe(0);
   });

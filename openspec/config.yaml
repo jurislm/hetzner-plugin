@@ -14,15 +14,14 @@ context: |
 
   Architecture:
   - src/index.ts — MCP server entry, imports all tool modules
-  - src/client.ts — native-fetch generated operation client with Cloud/Unified token selection
+  - src/client.ts — native-fetch generated operation client with shared token authentication
   - src/api.ts — retained-tool adapter over the native-fetch client
   - src/types.ts — TypeScript interfaces + Zod schemas matching Hetzner API shapes
   - src/tools/*.ts — Tool definitions using server.registerTool()
 
   API endpoints:
   - Cloud API: https://api.hetzner.cloud/v1 — auth: HETZNER_API_TOKEN
-  - Unified API: https://api.hetzner.com/v1 — auth: HETZNER_API_TOKEN_UNIFIED only;
-    checked immediately before a Storage Box request, never substituted by the Cloud token
+  - Unified API: https://api.hetzner.com/v1 — auth: HETZNER_API_TOKEN
 
   Conventions:
   - Conventional commits: feat/fix/refactor/docs/chore

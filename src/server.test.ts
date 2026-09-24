@@ -4,7 +4,7 @@ import { describe, expect, test } from "bun:test";
 import { operations } from "./generated/operations.js";
 import { createServer } from "./server.js";
 
-const config = { cloudToken: "cloud", unifiedToken: "unified", timeoutMs: 30_000 };
+const config = { apiToken: "single-token", timeoutMs: 30_000 };
 const emptyServers = { servers: [], meta: { pagination: { page: 1, per_page: 25, previous_page: null, next_page: null, last_page: 1, total_entries: 0 } } };
 
 describe("generated Hetzner MCP server", () => {
@@ -78,20 +78,19 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
-  test("redacts both configured tokens from generated and retained tool errors", async () => {
-    const secret = "Bearer cloud-secret and Bearer unified-secret";
+  test("redacts the configured token from generated and retained tool errors", async () => {
+    const secret = "Bearer single-secret";
     const originalFetch = globalThis.fetch;
     globalThis.fetch = async () => { throw new Error(secret); };
     try {
-      const server = createServer({ cloudToken: "cloud-secret", unifiedToken: "unified-secret", timeoutMs: 30_000 }, async () => { throw new Error(secret); });
+      const server = createServer({ apiToken: "single-secret", timeoutMs: 30_000 }, async () => { throw new Error(secret); });
       const client = new Client({ name: "test", version: "0.0.0" });
       const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
       await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
       const generated = await client.callTool({ name: "hetzner_cloud_list_servers", arguments: {} });
       const legacy = await client.callTool({ name: "hetzner_list_server_types", arguments: {} });
       for (const result of [generated, legacy]) {
-        expect(JSON.stringify(result)).not.toContain("cloud-secret");
-        expect(JSON.stringify(result)).not.toContain("unified-secret");
+        expect(JSON.stringify(result)).not.toContain("single-secret");
       }
       await client.close();
       await server.close();
@@ -113,15 +112,13 @@ describe("generated Hetzner MCP server", () => {
   });
 
   test("routes a retained tool through createServer injection without process credentials", async () => {
-    const previousCloud = process.env.HETZNER_API_TOKEN;
-    const previousUnified = process.env.HETZNER_API_TOKEN_UNIFIED;
+    const previousToken = process.env.HETZNER_API_TOKEN;
     delete process.env.HETZNER_API_TOKEN;
-    delete process.env.HETZNER_API_TOKEN_UNIFIED;
     const calls: string[] = [];
     try {
-      const server = createServer({ cloudToken: "injected-cloud", timeoutMs: 30_000 }, async (url, init) => {
+      const server = createServer({ apiToken: "injected-token", timeoutMs: 30_000 }, async (url, init) => {
         calls.push(`${init?.method}:${String(url)}`);
-        expect(new Headers(init?.headers).get("authorization")).toBe("Bearer injected-cloud");
+        expect(new Headers(init?.headers).get("authorization")).toBe("Bearer injected-token");
         return new Response(JSON.stringify({ server_types: [{ id: 1, name: "cx22", description: "", cores: 2, memory: 4, disk: 40, prices: [], architecture: "x86", cpu_type: "shared" }] }), { headers: { "content-type": "application/json" } });
       });
       const client = new Client({ name: "test", version: "0.0.0" });
@@ -134,10 +131,8 @@ describe("generated Hetzner MCP server", () => {
       await client.close();
       await server.close();
     } finally {
-      if (previousCloud === undefined) delete process.env.HETZNER_API_TOKEN;
-      else process.env.HETZNER_API_TOKEN = previousCloud;
-      if (previousUnified === undefined) delete process.env.HETZNER_API_TOKEN_UNIFIED;
-      else process.env.HETZNER_API_TOKEN_UNIFIED = previousUnified;
+      if (previousToken === undefined) delete process.env.HETZNER_API_TOKEN;
+      else process.env.HETZNER_API_TOKEN = previousToken;
     }
   });
 });

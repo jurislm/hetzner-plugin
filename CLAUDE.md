@@ -107,8 +107,7 @@ src/
 
 | 變數 | 必需 | 說明 |
 |------|------|------|
-| `HETZNER_API_TOKEN` | ✓ | Cloud API token（Read & Write），從 console.hetzner.cloud 生成 |
-| `HETZNER_API_TOKEN_UNIFIED` | Storage Box 呼叫時必需 | Unified API token；只在 Storage Box operation 執行前檢查，絕不使用 Cloud token 代替 |
+| `HETZNER_API_TOKEN` | ✓ | Cloud 與 Storage Box API 共用的唯一 API token |
 
 **注意**：MCP Server 是非互動式子進程，環境變數必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
 

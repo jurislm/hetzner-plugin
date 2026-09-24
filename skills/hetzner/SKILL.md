@@ -5,4 +5,4 @@ description: Manage Hetzner Cloud and Storage Box resources with local generated
 
 # Hetzner
 
-Resolve resources with read tools before mutations. `HETZNER_API_TOKEN` is required to start. Storage Box tools additionally require `HETZNER_API_TOKEN_UNIFIED`; Cloud credentials never substitute for it. Never expose credentials or secret values.
+Resolve resources with read tools before mutations. `HETZNER_API_TOKEN` is the only credential variable and is used for Cloud and Storage Box API requests. Never expose credentials or secret values.

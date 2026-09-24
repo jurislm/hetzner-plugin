@@ -28,7 +28,7 @@ function legacyServer(server: McpServer, config: HetznerConfig): McpServer {
         const result = await handler(input);
         const text = (result.content as Array<{ text?: string }> | undefined)?.[0]?.text;
         if (result.isError) {
-          const details = formatToolError(new Error(text ?? "Legacy tool error"), [config.cloudToken, config.unifiedToken]);
+          const details = formatToolError(new Error(text ?? "Legacy tool error"), [config.apiToken]);
           return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
         }
         let data: unknown = result.structuredContent ?? text ?? result;
@@ -36,7 +36,7 @@ function legacyServer(server: McpServer, config: HetznerConfig): McpServer {
         const structuredContent = redactSensitive({ data, status: 200, request: { method: "LOCAL", path: `legacy/${name}` } }) as Record<string, unknown>;
         return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
       } catch (error) {
-        const details = formatToolError(error, [config.cloudToken, config.unifiedToken]);
+        const details = formatToolError(error, [config.apiToken]);
         return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
       }
     });
@@ -59,7 +59,7 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
       const structuredContent = redactSensitive({ ...envelope, data }) as unknown as Record<string, unknown>;
       return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
     } catch (error) {
-      const details = formatToolError(error, [config.cloudToken, config.unifiedToken]);
+      const details = formatToolError(error, [config.apiToken]);
       return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
     }
   });

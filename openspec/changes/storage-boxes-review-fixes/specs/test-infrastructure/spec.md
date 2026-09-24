@@ -34,7 +34,7 @@ Active Bun tests SHALL cover Storage Box stats, Storage Box assert-space, RAM-ov
 
 ### Requirement: Tests do not require live API credentials
 
-The active test suite MUST use injected local request/SSH boundaries and MUST NOT make provider network calls or require `HETZNER_API_TOKEN` or `HETZNER_API_TOKEN_UNIFIED` to be set.
+The active test suite MUST use injected local request/SSH boundaries and MUST NOT make provider network calls or require `HETZNER_API_TOKEN` to be set.
 
 #### Scenario: Test run without env
 

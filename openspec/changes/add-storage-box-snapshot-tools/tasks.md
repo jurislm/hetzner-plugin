@@ -28,7 +28,7 @@
 - [x] 4.1 `bun run lint` — 0 warnings
 - [x] 4.2 `bun run build` — TypeScript 編譯通過
 - [x] 4.3 `bun run test` — 全綠（97 tests pass）
-- [ ] 4.4 手動 smoke test：`HETZNER_API_TOKEN_UNIFIED=... bun dist/index.js`，呼叫新 tool 確認可連線（runtime 證據）— 須使用者在有 credential 環境執行
+- [ ] 4.4 手動 smoke test：`HETZNER_API_TOKEN=... bun dist/index.js`，呼叫新 tool 確認可連線（runtime 證據）— 須使用者在有 credential 環境執行
 
 ## 5. Documentation
 

@@ -1,13 +1,12 @@
 ## Why
 
-The active Hetzner plugin has two API credential classes and two provider contracts. Cloud operations use `HETZNER_API_TOKEN`; Storage Box operations use `HETZNER_API_TOKEN_UNIFIED`. The boundary must stay explicit while allowing a Cloud-only process to start.
+The active Hetzner plugin uses one credential variable across the Cloud and Unified API contracts. `HETZNER_API_TOKEN` is the sole bearer token for all operations.
 
 The plugin also needs a reproducible native-fetch client, generated contract coverage, deterministic Storage Box capacity checks, and active Bun coverage for retained v1.5 operations.
 
 ## What Changes
 
-- Require `HETZNER_API_TOKEN` at startup.
-- Require `HETZNER_API_TOKEN_UNIFIED` only immediately before a Unified Storage Box request; never use one token class for the other.
+- Use `HETZNER_API_TOKEN` for Cloud and Unified API requests.
 - Use native `fetch` for Cloud and Unified requests with shared timeout, response decoding, envelope, annotation, and error-redaction contracts.
 - Generate operations from committed official OpenAPI snapshots and verify their persisted-byte hashes offline.
 - Keep Storage Box stats, assert-space, RAM-over-SSH, server, SSH key, volume, reference, and metrics tools registered through the common server contract.

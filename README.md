@@ -5,12 +5,12 @@ Portable local-stdio MCP plugin for Hetzner Cloud and Storage Box APIs. The `het
 ## Configure
 
 ```sh
-export HETZNER_API_TOKEN=cloud-project-token
-# Required only when invoking Storage Box tools:
-export HETZNER_API_TOKEN_UNIFIED=unified-account-token
+export HETZNER_API_TOKEN=account-api-token
 bun install --frozen-lockfile
 bun run check
 ```
+
+`HETZNER_API_TOKEN` is the only credential variable. The same token is used for Cloud and Storage Box API requests.
 
 `mcp.json` and `.mcp.json` use the same published-package `bunx` stdio registration as the Woodpecker CI plugin. There is no remote MCP endpoint or OAuth flow.
 

@@ -6,7 +6,6 @@ test("serves the generated catalog through shipped local stdio", async () => {
   expect(await Bun.file("dist/index.js").exists()).toBe(true);
   const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined));
   delete env.HETZNER_API_TOKEN;
-  delete env.HETZNER_API_TOKEN_UNIFIED;
   const transport = new StdioClientTransport({
     command: "bun", args: ["dist/index.js"],
     env, stderr: "pipe",

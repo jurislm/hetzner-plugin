@@ -4,8 +4,7 @@
       "command": "bunx",
       "args": ["-y", "@jurislm/hetzner-plugin@latest"],
       "env": {
-        "HETZNER_API_TOKEN": "<set-in-host-environment>",
-        "HETZNER_API_TOKEN_UNIFIED": "<set-in-host-environment>"
+        "HETZNER_API_TOKEN": "<set-in-host-environment>"
       }
     }
   }
