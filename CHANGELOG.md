@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.18](https://github.com/jurislm/hetzner-plugin/compare/v1.6.17...v1.6.18) (2026-09-24)
+
+
+### Bug Fixes
+
+* remove JurisLM prefix from Cursor marketplace ([#31](https://github.com/jurislm/hetzner-plugin/issues/31)) ([6e1cf0d](https://github.com/jurislm/hetzner-plugin/commit/6e1cf0df482e38995f612343d4f271915dbca2c4))
+
 ## [1.6.17](https://github.com/jurislm/hetzner-plugin/compare/v1.6.16...v1.6.17) (2026-09-24)
 
 
