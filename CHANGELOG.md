@@ -2,6 +2,20 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [1.6.21](https://github.com/jurislm/hetzner-plugin/compare/v1.6.20...v1.6.21) (2026-09-24)
+
+
+### Documentation
+
+* clarify project-bound token scope ([a89e987](https://github.com/jurislm/hetzner-plugin/commit/a89e987d2f9995e0a726a980dd0544818533dc6a))
+* clarify token project scope ([f8439e3](https://github.com/jurislm/hetzner-plugin/commit/f8439e3a206e7071272b91311b9374d51e900b93))
+
+
+### Refactoring
+
+* unify Hetzner API token ([d64ba1b](https://github.com/jurislm/hetzner-plugin/commit/d64ba1b7b5a5a07c6c999e90159d924043bac6ab))
+* unify Hetzner API token ([7ae4d7e](https://github.com/jurislm/hetzner-plugin/commit/7ae4d7ec89d0f9dbcca562d978b0fb170a94c86f))
+
 ## [1.6.20](https://github.com/jurislm/hetzner-plugin/compare/v1.6.19...v1.6.20) (2026-09-24)
 
 
