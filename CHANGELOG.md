@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.0.2](https://github.com/jurislm/hetzner-plugin/compare/v2.0.1...v2.0.2) (2026-09-25)
+
+
+### Bug Fixes
+
+* return one-time credentials from explicit Hetzner actions ([5f31a07](https://github.com/jurislm/hetzner-plugin/commit/5f31a0708292b64cd9e76117992e365fea2b9818))
+* return one-time Hetzner credentials for explicit actions ([675bb46](https://github.com/jurislm/hetzner-plugin/commit/675bb464bec9243e7f6287112fec5565776034dd))
+
 ## [2.0.1](https://github.com/jurislm/hetzner-plugin/compare/v2.0.0...v2.0.1) (2026-09-25)
 
 
