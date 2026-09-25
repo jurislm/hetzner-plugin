@@ -2,6 +2,18 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.0.0](https://github.com/jurislm/hetzner-plugin/compare/v1.6.21...v2.0.0) (2026-09-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Retained tools return their direct MCP results instead of a synthesized structured LOCAL envelope. Remove the deprecated OpenSpec artifacts.
+
+### Refactoring
+
+* avoid duplicate retained-response redaction ([5f4b919](https://github.com/jurislm/hetzner-plugin/commit/5f4b9191fcaf7a4b2cf652017c87bb080b81c3b6))
+* remove retained-tool compatibility proxy ([067a082](https://github.com/jurislm/hetzner-plugin/commit/067a082359a91d90664f25d1c50cf6211800b4f8))
+
 ## [1.6.21](https://github.com/jurislm/hetzner-plugin/compare/v1.6.20...v1.6.21) (2026-09-24)
 
 
