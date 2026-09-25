@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { HetznerClient, redactSensitive, type FetchLike } from "./client.js";
+import { HetznerClient, oneTimeCredentialKeys, redactSensitive, type FetchLike } from "./client.js";
 import { createApiRequest } from "./api.js";
 import type { HetznerConfig } from "./config.js";
 import { formatToolError } from "./errors.js";
@@ -21,7 +21,7 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
   const client = new HetznerClient(config, requestFetch);
   const cloudRequest = createApiRequest(config, requestFetch, "cloud");
   const unifiedRequest = createApiRequest(config, requestFetch, "unified");
-  const server = new McpServer({ name: "hetzner-plugin", version: pluginVersion }, { instructions: "Resolve resources with read tools before mutations. Never expose credentials or secrets." });
+  const server = new McpServer({ name: "hetzner-plugin", version: pluginVersion }, { instructions: "Resolve resources with read tools before mutations. Call credential-producing tools only on explicit user request. Return their one-time credentials only to that user. Never reveal the API token or unrelated secrets." });
   for (const operation of operations) server.registerTool(operation.name, {
     title: operation.name, description: operation.description, inputSchema: operation.inputSchema,
     outputSchema, annotations: operation.annotations,
@@ -29,7 +29,7 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
     try {
       const envelope = await client.request(operation, input as Record<string, unknown>);
       const data = operation.responseSchema.parse(envelope.data);
-      const structuredContent = redactSensitive({ ...envelope, data }) as unknown as Record<string, unknown>;
+      const structuredContent = { ...envelope, data: redactSensitive(data, oneTimeCredentialKeys(operation)) } as unknown as Record<string, unknown>;
       return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
     } catch (error) {
       const details = formatToolError(error, [config.apiToken]);
