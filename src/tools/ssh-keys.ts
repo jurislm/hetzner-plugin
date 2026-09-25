@@ -57,7 +57,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -130,7 +130,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -173,7 +173,7 @@ Args:
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -223,7 +223,7 @@ They will continue to work with the key.`,
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {

@@ -219,7 +219,7 @@ Returns Storage Boxes with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -297,7 +297,7 @@ Returns Storage Boxes with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -342,7 +342,7 @@ Returns subaccounts with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -433,7 +433,7 @@ optional size, and whether it was created by the automatic snapshot plan.`,
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -517,7 +517,7 @@ Returns the new snapshot id and the action envelope (status, progress).`,
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -595,7 +595,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -649,7 +649,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -690,7 +690,7 @@ This action cannot be undone.`,
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -722,7 +722,7 @@ This action cannot be undone.`,
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -773,7 +773,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -836,7 +836,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -890,7 +890,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -932,7 +932,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -966,7 +966,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1002,7 +1002,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1046,7 +1046,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1083,7 +1083,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1131,7 +1131,7 @@ Schedule options:
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1168,7 +1168,7 @@ Schedule options:
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1209,7 +1209,7 @@ Useful for dashboards, cron jobs, and pre-flight capacity checks before backup o
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1258,7 +1258,7 @@ Designed for use in cron jobs and backup pipelines before executing storage-inte
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -1321,7 +1321,7 @@ this tool uses the replacement \`snapshot\` field.)`,
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
