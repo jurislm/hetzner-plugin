@@ -21,6 +21,7 @@ describe("generated Hetzner MCP server", () => {
     expect(result.tools.some((tool) => tool.name === "hetzner_assert_storage_box_space")).toBe(true);
     expect(result.tools.some((tool) => tool.name === "hetzner_get_server_ram")).toBe(true);
     expect(result.tools.find((tool) => tool.name === "hetzner_cloud_delete_server")?.annotations?.destructiveHint).toBe(true);
+    expect(result.tools.find((tool) => tool.name === "hetzner_reset_storage_box_password")?.annotations?.destructiveHint).toBe(true);
     await client.close();
     await server.close();
   });

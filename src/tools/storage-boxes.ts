@@ -1119,7 +1119,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
       }).strict(),
       annotations: {
         readOnlyHint: false,
-        destructiveHint: false,
+        destructiveHint: true,
         idempotentHint: false,
         openWorldHint: true
       }
