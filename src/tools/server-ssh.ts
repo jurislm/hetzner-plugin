@@ -285,7 +285,7 @@ Returns used / total / available in MiB and overall usage %, plus swap state.`,
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => {

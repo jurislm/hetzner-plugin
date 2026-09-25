@@ -79,7 +79,7 @@ Returns servers with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -156,7 +156,7 @@ Returns servers with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -212,7 +212,7 @@ When using JSON output format, the response includes root_password in plaintext 
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -282,7 +282,7 @@ When using JSON output format, the response includes root_password in plaintext 
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -310,7 +310,7 @@ When using JSON output format, the response includes root_password in plaintext 
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -344,7 +344,7 @@ This is like pulling the power cord. For a graceful shutdown, SSH into the serve
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -378,7 +378,7 @@ This is like pressing the reset button. For a graceful reboot, SSH into the serv
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {

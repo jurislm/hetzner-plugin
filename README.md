@@ -2,6 +2,10 @@
 
 Local stdio MCP plugin for Hetzner Cloud and Storage Box. It registers generated `hetzner_cloud_*` and `hetzner_unified_*` tools from the committed official OpenAPI snapshots, plus focused tools for servers, SSH keys, volumes, reference data, Storage Boxes, metrics, and server RAM over SSH.
 
+## Scope
+
+This plugin is designed for local MCP hosts through stdio only. It does not provide a remote MCP endpoint or OAuth, and submission to the public OpenAI Plugins Directory is outside this repository's scope. Publishing the package on npm and GitHub does not make it a public-directory plugin.
+
 ## Requirements
 
 - Bun 1.1 or later

@@ -61,7 +61,7 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {

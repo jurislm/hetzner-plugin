@@ -71,7 +71,7 @@ Returns volumes with their:
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -151,7 +151,7 @@ Useful for confirming the actual mount path (\`linux_device\`) before setting up
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -190,7 +190,7 @@ After attaching, the volume is accessible at its \`linux_device\` path (e.g. \`/
         readOnlyHint: false,
         destructiveHint: false,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
@@ -237,7 +237,7 @@ After detaching, the volume status returns to \`available\` and can be attached 
         readOnlyHint: false,
         destructiveHint: true,
         idempotentHint: false,
-        openWorldHint: true
+        openWorldHint: false
       }
     },
     async (params) => withApiErrorHandling(async () => {
