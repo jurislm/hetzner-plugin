@@ -13,7 +13,9 @@ Set `HETZNER_API_TOKEN` in the MCP host's environment:
 export HETZNER_API_TOKEN="your-project-api-token"
 ```
 
-The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project. The RAM tool also needs a reachable server IPv4 and a private SSH key available through `ssh-agent` or `~/.ssh`.
+The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
+
+To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `free`; the local host needs `ssh` and a private key available through `ssh-agent` or `~/.ssh`. Fingerprint verification also requires `ssh-keyscan` and `ssh-keygen`.
 
 ## Install
 
