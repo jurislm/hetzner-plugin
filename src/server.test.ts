@@ -126,7 +126,8 @@ describe("generated Hetzner MCP server", () => {
       await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
       const result = await client.callTool({ name: "hetzner_list_server_types", arguments: { response_format: "json" } });
       expect(result.isError).not.toBe(true);
-      expect(result.structuredContent).toMatchObject({ data: [{ name: "cx22" }] });
+      expect(result.structuredContent).toBeUndefined();
+      expect(result.content[0]?.text).toContain('"name": "cx22"');
       expect(calls).toEqual(["GET:https://api.hetzner.cloud/v1/server_types"]);
       await client.close();
       await server.close();

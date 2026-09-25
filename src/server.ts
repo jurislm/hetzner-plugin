@@ -15,33 +15,6 @@ import { registerStorageBoxTools } from "./tools/storage-boxes.js";
 import { registerVolumeTools } from "./tools/volumes.js";
 
 const outputSchema = z.object({ data: z.unknown(), status: z.number(), request: z.object({ method: z.string(), path: z.string() }) });
-const annotations = (name: string) => ({ readOnlyHint: !/create|delete|update|set|reset|reboot|shutdown|power|attach|detach|change|enable|disable/iu.test(name), destructiveHint: /delete|destroy|remove/iu.test(name), idempotentHint: /^hetzner_(get|list)/u.test(name), openWorldHint: false });
-
-function legacyServer(server: McpServer, config: HetznerConfig): McpServer {
-  return new Proxy(server, { get(target, property, receiver) {
-    const value = Reflect.get(target, property, receiver);
-    if (property !== "registerTool" || typeof value !== "function") return typeof value === "function" ? value.bind(target) : value;
-    return (name: string, options: Record<string, unknown>, handler: (input: unknown) => Promise<Record<string, unknown>>) => value.call(target, name, {
-      ...options, outputSchema, annotations: options.annotations ?? annotations(name),
-    }, async (input: unknown) => {
-      try {
-        const result = await handler(input);
-        const text = (result.content as Array<{ text?: string }> | undefined)?.[0]?.text;
-        if (result.isError) {
-          const details = formatToolError(new Error(text ?? "Legacy tool error"), [config.apiToken]);
-          return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
-        }
-        let data: unknown = result.structuredContent ?? text ?? result;
-        if (typeof data === "string") try { data = JSON.parse(data); } catch { /* markdown is preserved as text data */ }
-        const structuredContent = redactSensitive({ data, status: 200, request: { method: "LOCAL", path: `legacy/${name}` } }) as Record<string, unknown>;
-        return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
-      } catch (error) {
-        const details = formatToolError(error, [config.apiToken]);
-        return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
-      }
-    });
-  } }) as McpServer;
-}
 
 export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpServer {
   const requestFetch = fetchImpl ?? fetch;
@@ -63,13 +36,12 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
       return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ error: details }) }] };
     }
   });
-  const legacy = legacyServer(server, config);
-  registerReferenceTools(legacy, cloudRequest);
-  registerSSHKeyTools(legacy, cloudRequest);
-  registerServerTools(legacy, cloudRequest);
-  registerStorageBoxTools(legacy, unifiedRequest);
-  registerVolumeTools(legacy, cloudRequest);
-  registerMetricsTools(legacy, cloudRequest);
-  registerServerSshTools(legacy, undefined, undefined, cloudRequest);
+  registerReferenceTools(server, cloudRequest);
+  registerSSHKeyTools(server, cloudRequest);
+  registerServerTools(server, cloudRequest);
+  registerStorageBoxTools(server, unifiedRequest);
+  registerVolumeTools(server, cloudRequest);
+  registerMetricsTools(server, cloudRequest);
+  registerServerSshTools(server, undefined, undefined, cloudRequest);
   return server;
 }

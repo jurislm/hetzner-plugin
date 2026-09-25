@@ -31,7 +31,7 @@ src/
 ├── index.ts           # MCP server 入口，載入所有 tools
 ├── api.ts             # Retained tools 的 native-fetch adapter
 ├── client.ts          # Generated operation native-fetch client
-├── server.ts          # Generated/retained tools 的共用 MCP envelope 與 error redaction
+├── server.ts          # Generated operations 的 MCP envelope；retained tools 直接回傳 MCP results
 ├── types.ts           # TypeScript 型別定義
 └── tools/
     ├── servers.ts     # 7 個伺服器管理工具
