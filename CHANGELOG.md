@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.3](https://github.com/jurislm/hetzner-plugin/compare/v2.1.2...v2.1.3) (2026-09-25)
+
+
+### Bug Fixes
+
+* align Hetzner MCP open-world hints with local scope ([81c0451](https://github.com/jurislm/hetzner-plugin/commit/81c0451ebfdd0f3dd0c347ad4a83ba25e98bced5))
+* align Hetzner MCP scope annotations ([4218a67](https://github.com/jurislm/hetzner-plugin/commit/4218a677a95bdb73bb33030a82d596f9c2cf48cd))
+
 ## [2.1.2](https://github.com/jurislm/hetzner-plugin/compare/v2.1.1...v2.1.2) (2026-09-25)
 
 
