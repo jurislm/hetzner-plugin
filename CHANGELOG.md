@@ -2,6 +2,15 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.1](https://github.com/jurislm/hetzner-plugin/compare/v2.1.0...v2.1.1) (2026-09-25)
+
+
+### Documentation
+
+* align Hetzner plugin README with current setup ([5eab9ca](https://github.com/jurislm/hetzner-plugin/commit/5eab9ca4595132dff1af64f1079f0bde5c70a78b))
+* align Hetzner plugin README with current setup ([176c334](https://github.com/jurislm/hetzner-plugin/commit/176c3344a38532eed1bb3e2b2dd35dd9710ce956))
+* document RAM tool SSH prerequisites ([0163de8](https://github.com/jurislm/hetzner-plugin/commit/0163de8ddf32880d24058429b161e7d4157a7940))
+
 ## [2.1.0](https://github.com/jurislm/hetzner-plugin/compare/v2.0.3...v2.1.0) (2026-09-25)
 
 
