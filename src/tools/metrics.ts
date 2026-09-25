@@ -118,7 +118,7 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
           lines.push("## CPU 使用率");
           const cpuEntry = time_series["cpu"];
           const nums = cpuEntry
-            ? parseValues(cpuEntry.values as TimeSeriesValues)
+            ? parseValues(cpuEntry.values)
             : [];
           const s = seriesStats(nums);
 
@@ -148,19 +148,19 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
           let hasData = false;
 
           if (bwRead) {
-            const s = seriesStats(parseValues(bwRead.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(bwRead.values));
             if (s) { lines.push(`- **Read bandwidth**  : ${fmt(s.latest / 1_048_576, 2)} MB/s`); hasData = true; }
           }
           if (bwWrite) {
-            const s = seriesStats(parseValues(bwWrite.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(bwWrite.values));
             if (s) { lines.push(`- **Write bandwidth** : ${fmt(s.latest / 1_048_576, 2)} MB/s`); hasData = true; }
           }
           if (iopsRead) {
-            const s = seriesStats(parseValues(iopsRead.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(iopsRead.values));
             if (s) { lines.push(`- **Read IOPS**       : ${fmt(s.latest, 0)} ops/s`); hasData = true; }
           }
           if (iopsWrite) {
-            const s = seriesStats(parseValues(iopsWrite.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(iopsWrite.values));
             if (s) { lines.push(`- **Write IOPS**      : ${fmt(s.latest, 0)} ops/s`); hasData = true; }
           }
           if (!hasData) {
@@ -177,11 +177,11 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
           let hasData = false;
 
           if (bwIn) {
-            const s = seriesStats(parseValues(bwIn.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(bwIn.values));
             if (s) { lines.push(`- **In**  : ${fmt(s.latest * 8 / 1_000_000, 2)} Mbps`); hasData = true; }
           }
           if (bwOut) {
-            const s = seriesStats(parseValues(bwOut.values as TimeSeriesValues));
+            const s = seriesStats(parseValues(bwOut.values));
             if (s) { lines.push(`- **Out** : ${fmt(s.latest * 8 / 1_000_000, 2)} Mbps`); hasData = true; }
           }
           if (!hasData) {

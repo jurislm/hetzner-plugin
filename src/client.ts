@@ -43,7 +43,10 @@ export class HetznerApiError extends Error {
 }
 
 export function redactSensitive<T>(value: T, allowedKeys: readonly string[] = []): T {
-  if (Array.isArray(value)) return value.map((item) => redactSensitive(item)) as T;
+  if (Array.isArray(value)) {
+    const items: unknown[] = value;
+    return items.map((item) => redactSensitive(item)) as T;
+  }
   if (!value || typeof value !== "object") return value;
   if ((value as unknown as BinaryEnvelope).encoding === "base64" && typeof (value as unknown as BinaryEnvelope).value === "string") return value;
   return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, child]) => [
@@ -57,6 +60,10 @@ function base64(bytes: ArrayBuffer): string {
   return btoa(value);
 }
 
+function stringifyParameter(value: unknown): string {
+  return value !== null && typeof value === "object" ? JSON.stringify(value) ?? "" : String(value);
+}
+
 export class HetznerClient {
   constructor(private readonly config: HetznerConfig, private readonly fetchImpl: FetchLike = fetch) {}
 
@@ -65,15 +72,15 @@ export class HetznerClient {
     for (const parameter of operation.parameters) if (parameter.location === "path") {
       const value = input[parameter.name];
       if (value === undefined || value === null) throw new HetznerApiError(0, operation.method, path, `Missing required path parameter: ${parameter.name}`);
-      path = path.replace(`{${parameter.name}}`, encodeURIComponent(String(value)));
+      path = path.replace(`{${parameter.name}}`, encodeURIComponent(stringifyParameter(value)));
     }
     if (path.includes("{")) throw new HetznerApiError(0, operation.method, path, `Unresolved path parameter in ${operation.path}`);
     const url = new URL(baseUrl[operation.source] + path);
     for (const parameter of operation.parameters) if (parameter.location === "query") {
       const value = input[parameter.name];
       if (value === undefined || value === null) continue;
-      if (Array.isArray(value)) for (const item of value) url.searchParams.append(parameter.name, String(item));
-      else url.searchParams.set(parameter.name, typeof value === "object" ? JSON.stringify(value) : String(value));
+      if (Array.isArray(value)) for (const item of value) url.searchParams.append(parameter.name, stringifyParameter(item));
+      else url.searchParams.set(parameter.name, stringifyParameter(value));
     }
     const token = this.config.apiToken;
     if (!token) throw new HetznerApiError(0, operation.method, path, "HETZNER_API_TOKEN is required for Hetzner API operations");

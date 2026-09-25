@@ -7,6 +7,10 @@ import { z } from "zod";
 import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
 import { ResponseFormat, ResponseFormatSchema, GetServerResponseSchema } from "../types.js";
 
+function toError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
 /** A single host key: its SHA256 fingerprint bound to its exact known_hosts line. */
 export interface HostKeyEntry {
   /** SHA256 fingerprint of this host key (e.g. "SHA256:abc…"). */
@@ -41,7 +45,7 @@ export function runSshKeyScan(host: string, port: number): Promise<HostKeyScan> 
         }
         // Reject if ssh-keyscan exited non-zero even with partial stdout — data may be corrupt.
         if (scanErr) {
-          reject(scanErr);
+          reject(toError(scanErr));
           return;
         }
         // Step 2: compute all fingerprints from the raw keys via ssh-keygen -l
@@ -50,7 +54,7 @@ export function runSshKeyScan(host: string, port: number): Promise<HostKeyScan> 
           ["-l", "-E", "sha256", "-f", "/dev/stdin"],
           { timeout: 10_000 },
           (keygenErr, keygenOut) => {
-            if (keygenErr) { reject(keygenErr); return; }
+            if (keygenErr) { reject(toError(keygenErr)); return; }
             // Extract every SHA256:... token; include trailing '=' (base64 padding).
             const matches = [...keygenOut.matchAll(/SHA256:[A-Za-z0-9+/]+=*/g)].map(m => m[0]);
             if (matches.length === 0) {
@@ -222,7 +226,7 @@ export function runSsh(
       { timeout: 15_000 },
       (error, stdout) => {
         cleanup();
-        if (error) reject(error);
+        if (error) reject(toError(error));
         else resolve(stdout);
       }
     );

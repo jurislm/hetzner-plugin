@@ -86,7 +86,7 @@ describe("HetznerClient", () => {
     const client = new HetznerClient({ ...config, timeoutMs: 1 }, async (_url, init) => {
       calls++;
       signal = init?.signal as AbortSignal;
-      await new Promise<void>((resolve) => signal?.addEventListener("abort", resolve, { once: true }));
+      await new Promise<void>((resolve) => signal?.addEventListener("abort", () => resolve(), { once: true }));
       throw signal?.reason;
     });
     await expect(client.request(cloudOperation, { id: 1 })).rejects.toBeInstanceOf(HetznerApiError);

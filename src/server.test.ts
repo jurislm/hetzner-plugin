@@ -1,5 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, test } from "bun:test";
 import { operations } from "./generated/operations.js";
 import { createServer } from "./server.js";
@@ -81,10 +82,10 @@ describe("generated Hetzner MCP server", () => {
     const client = new Client({ name: "test", version: "0.0.0" });
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
-    const result = await client.callTool({ name: "hetzner_cloud_request_server_console", arguments: { id: 1 } });
+    const result = await client.callTool({ name: "hetzner_cloud_request_server_console", arguments: { id: 1 } }) as CallToolResult;
     expect(result.isError).not.toBe(true);
     expect(result.structuredContent).toMatchObject({ data });
-    expect(result.content[0]?.text).toContain("one-time-secret");
+    expect(result.content.find((content) => content.type === "text")?.text).toContain("one-time-secret");
     await client.close();
     await server.close();
   });
@@ -113,7 +114,7 @@ describe("generated Hetzner MCP server", () => {
   test("redacts the configured token from generated and retained tool errors", async () => {
     const secret = "Bearer single-secret";
     const originalFetch = globalThis.fetch;
-    globalThis.fetch = async () => { throw new Error(secret); };
+    globalThis.fetch = new Proxy(originalFetch, { apply: () => { throw new Error(secret); } });
     try {
       const server = createServer({ apiToken: "single-secret", timeoutMs: 30_000 }, async () => { throw new Error(secret); });
       const client = new Client({ name: "test", version: "0.0.0" });
@@ -156,10 +157,10 @@ describe("generated Hetzner MCP server", () => {
       const client = new Client({ name: "test", version: "0.0.0" });
       const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
       await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
-      const result = await client.callTool({ name: "hetzner_list_server_types", arguments: { response_format: "json" } });
+      const result = await client.callTool({ name: "hetzner_list_server_types", arguments: { response_format: "json" } }) as CallToolResult;
       expect(result.isError).not.toBe(true);
       expect(result.structuredContent).toBeUndefined();
-      expect(result.content[0]?.text).toContain('"name": "cx22"');
+      expect(result.content.find((content) => content.type === "text")?.text).toContain('"name": "cx22"');
       expect(calls).toEqual(["GET:https://api.hetzner.cloud/v1/server_types"]);
       await client.close();
       await server.close();
