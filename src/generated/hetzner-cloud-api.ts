@@ -25349,11 +25349,11 @@ export interface operations {
                             /**
                              * @description Type of resource the [Primary IP](#tag/primary-ips) is assigned to.
                              *
-                             *     As of 01 August 2026 `unassigned` will be returned if the [Primary IP](#tag/primary-ips) is not assigned.
+                             *     As of 23 September 2026 `unassigned` is returned if the [Primary IP](#tag/primary-ips) is not assigned.
                              * @example server
                              * @enum {string}
                              */
-                            assignee_type: "server";
+                            assignee_type: "server" | "unassigned";
                             /**
                              * Format: int64
                              * @description ID of resource the [Primary IP](#tag/primary-ips) is assigned to.
@@ -25497,7 +25497,7 @@ export interface operations {
                      * @example server
                      * @enum {string}
                      */
-                    assignee_type?: "server";
+                    assignee_type?: "server" | "unassigned";
                     /**
                      * Format: int64
                      * @description ID of resource to assign the [Primary IP](#tag/primary-ips) to.
@@ -25656,11 +25656,11 @@ export interface operations {
                             /**
                              * @description Type of resource the [Primary IP](#tag/primary-ips) is assigned to.
                              *
-                             *     As of 01 August 2026 `unassigned` will be returned if the [Primary IP](#tag/primary-ips) is not assigned.
+                             *     As of 23 September 2026 `unassigned` is returned if the [Primary IP](#tag/primary-ips) is not assigned.
                              * @example server
                              * @enum {string}
                              */
-                            assignee_type: "server";
+                            assignee_type: "server" | "unassigned";
                             /**
                              * Format: int64
                              * @description ID of resource the [Primary IP](#tag/primary-ips) is assigned to.
@@ -26545,11 +26545,11 @@ export interface operations {
                             /**
                              * @description Type of resource the [Primary IP](#tag/primary-ips) is assigned to.
                              *
-                             *     As of 01 August 2026 `unassigned` will be returned if the [Primary IP](#tag/primary-ips) is not assigned.
+                             *     As of 23 September 2026 `unassigned` is returned if the [Primary IP](#tag/primary-ips) is not assigned.
                              * @example server
                              * @enum {string}
                              */
-                            assignee_type: "server";
+                            assignee_type: "server" | "unassigned";
                             /**
                              * Format: int64
                              * @description ID of resource the [Primary IP](#tag/primary-ips) is assigned to.
@@ -26784,11 +26784,11 @@ export interface operations {
                             /**
                              * @description Type of resource the [Primary IP](#tag/primary-ips) is assigned to.
                              *
-                             *     As of 01 August 2026 `unassigned` will be returned if the [Primary IP](#tag/primary-ips) is not assigned.
+                             *     As of 23 September 2026 `unassigned` is returned if the [Primary IP](#tag/primary-ips) is not assigned.
                              * @example server
                              * @enum {string}
                              */
-                            assignee_type: "server";
+                            assignee_type: "server" | "unassigned";
                             /**
                              * Format: int64
                              * @description ID of resource the [Primary IP](#tag/primary-ips) is assigned to.
@@ -28110,7 +28110,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -28134,7 +28134,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -29046,7 +29046,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -29070,7 +29070,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -30255,7 +30255,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -30279,7 +30279,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -31049,7 +31049,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;
@@ -31073,7 +31073,7 @@ export interface operations {
                                      */
                                     ip: string;
                                     /**
-                                     * @description If the IP is blocked by our anti abuse dept.
+                                     * @description Whether the IP is blocked by our abuse department.
                                      * @example false
                                      */
                                     blocked: boolean;

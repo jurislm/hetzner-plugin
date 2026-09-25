@@ -21,6 +21,7 @@ describe("generated Hetzner MCP server", () => {
     expect(result.tools.some((tool) => tool.name === "hetzner_assert_storage_box_space")).toBe(true);
     expect(result.tools.some((tool) => tool.name === "hetzner_get_server_ram")).toBe(true);
     expect(result.tools.find((tool) => tool.name === "hetzner_cloud_delete_server")?.annotations?.destructiveHint).toBe(true);
+    expect(result.tools.find((tool) => tool.name === "hetzner_reset_storage_box_password")?.annotations?.destructiveHint).toBe(true);
     await client.close();
     await server.close();
   });
@@ -53,6 +54,19 @@ describe("generated Hetzner MCP server", () => {
       "https://api.hetzner.com/v1/storage_boxes/1/folders",
       "https://api.hetzner.com/v1/storage_boxes/1/folders?path=backup",
     ]);
+    await client.close();
+    await server.close();
+  });
+
+  test("returns DNS record values from a generated RRset tool", async () => {
+    const data = { rrset: { id: "rrset-1", name: "@", type: "A", ttl: 300, labels: {}, protection: { change: false }, records: [{ value: "192.0.2.1" }], zone: 1 } };
+    const server = createServer(config, async () => new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const result = await client.callTool({ name: "hetzner_cloud_get_zone_rrset", arguments: { id_or_name: "zone-1", rr_name: "@", rr_type: "A" } });
+    expect(result.isError).not.toBe(true);
+    expect(result.structuredContent).toMatchObject({ data });
     await client.close();
     await server.close();
   });

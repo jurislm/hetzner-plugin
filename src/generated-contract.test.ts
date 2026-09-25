@@ -19,4 +19,9 @@ describe("generated Hetzner operation registry", () => {
       expect(operations.find((operation) => operation.name === name)?.annotations.destructiveHint).toBe(true);
     }
   });
+
+  test("accepts an unassigned Primary IP from the current Cloud contract", () => {
+    const operation = operations.find((item) => item.name === "hetzner_cloud_create_primary_ip");
+    expect(operation?.inputSchema.safeParse({ body: { name: "unused-ip", type: "ipv4", assignee_type: "unassigned" } }).success).toBe(true);
+  });
 });
