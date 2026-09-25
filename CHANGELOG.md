@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.2](https://github.com/jurislm/hetzner-plugin/compare/v2.1.1...v2.1.2) (2026-09-25)
+
+
+### Documentation
+
+* leave Codex marketplace sparse path empty ([2a1f0c2](https://github.com/jurislm/hetzner-plugin/commit/2a1f0c2d6eeb7d0fbdf7b7348c4b6577be809018))
+
 ## [2.1.1](https://github.com/jurislm/hetzner-plugin/compare/v2.1.0...v2.1.1) (2026-09-25)
 
 
