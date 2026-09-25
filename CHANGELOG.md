@@ -2,6 +2,19 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.0.3](https://github.com/jurislm/hetzner-plugin/compare/v2.0.2...v2.0.3) (2026-09-25)
+
+
+### Bug Fixes
+
+* require pagination metadata for cloud lists ([409c865](https://github.com/jurislm/hetzner-plugin/commit/409c865402300473828c1504f306a185b7064e08))
+
+
+### Refactoring
+
+* simplify retained tool error handling ([a563f3c](https://github.com/jurislm/hetzner-plugin/commit/a563f3c31ef6bf3ea64f003cdbf28bd03047d404))
+* simplify retained tool error handling ([94de1a0](https://github.com/jurislm/hetzner-plugin/commit/94de1a0ee4c1c916b39a9f3d3410de3c58ee5799))
+
 ## [2.0.2](https://github.com/jurislm/hetzner-plugin/compare/v2.0.1...v2.0.2) (2026-09-25)
 
 
