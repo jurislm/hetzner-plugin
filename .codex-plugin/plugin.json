@@ -1,6 +1,6 @@
 {
   "name": "hetzner-plugin",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Codex compatibility manifest for local stdio Hetzner tools; the root portable plugin manifest is canonical.",
   "author": {
     "name": "JurisLM",
