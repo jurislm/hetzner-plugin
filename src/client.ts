@@ -23,6 +23,17 @@ export type OperationRequest = {
 
 const baseUrl = { cloud: "https://api.hetzner.cloud/v1", unified: "https://api.hetzner.com/v1" } as const;
 const sensitiveKey = /(real_?value|private_?key|token|secret|password|authorization|cookie|^wss_url$)/iu;
+const oneTimeCredentialResponses: Record<string, readonly string[]> = {
+  "POST /servers": ["root_password"],
+  "POST /servers/{id}/actions/enable_rescue": ["root_password"],
+  "POST /servers/{id}/actions/rebuild": ["root_password"],
+  "POST /servers/{id}/actions/request_console": ["password", "wss_url"],
+  "POST /servers/{id}/actions/reset_password": ["root_password"],
+};
+
+export function oneTimeCredentialKeys(operation: OperationRequest): readonly string[] {
+  return operation.source === "cloud" ? oneTimeCredentialResponses[`${operation.method} ${operation.path}`] ?? [] : [];
+}
 
 export class HetznerApiError extends Error {
   constructor(readonly status: number, readonly method: string, readonly path: string, message: string) {
@@ -31,12 +42,12 @@ export class HetznerApiError extends Error {
   }
 }
 
-export function redactSensitive<T>(value: T): T {
-  if (Array.isArray(value)) return value.map(redactSensitive) as T;
+export function redactSensitive<T>(value: T, allowedKeys: readonly string[] = []): T {
+  if (Array.isArray(value)) return value.map((item) => redactSensitive(item)) as T;
   if (!value || typeof value !== "object") return value;
   if ((value as unknown as BinaryEnvelope).encoding === "base64" && typeof (value as unknown as BinaryEnvelope).value === "string") return value;
   return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, child]) => [
-    key, sensitiveKey.test(key) && child != null ? "[REDACTED]" : redactSensitive(child),
+    key, sensitiveKey.test(key) && child != null && !allowedKeys.includes(key) ? "[REDACTED]" : redactSensitive(child),
   ])) as T;
 }
 
@@ -86,6 +97,6 @@ export class HetznerClient {
       else if (contentType.startsWith("text/") || contentType.includes("xml")) data = await response.text();
       else data = { encoding: "base64", contentType: contentType || "application/octet-stream", value: base64(await response.arrayBuffer()) };
     }
-    return redactSensitive({ data, status: response.status, request: { method: operation.method, path } });
+    return { data: redactSensitive(data, oneTimeCredentialKeys(operation)), status: response.status, request: { method: operation.method, path } };
   }
 }

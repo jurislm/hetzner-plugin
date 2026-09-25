@@ -41,13 +41,28 @@ describe("HetznerClient", () => {
     expect(calls).toBe(1);
   });
 
-  test("redacts one-time console credentials from response fields and URLs", async () => {
-    const client = new HetznerClient(config, async () => new Response(JSON.stringify({
+  test("returns one-time console credentials only for the explicit console action", async () => {
+    const data = {
       wss_url: "wss://console.hetzner.cloud/?token=one-time-secret",
       password: "one-time-secret",
-    }), { headers: { "content-type": "application/json" } }));
-    const result = await client.request({ source: "cloud", method: "POST", path: "/servers/1/actions/request_console", parameters: [] }, {});
-    expect(result.data).toEqual({ wss_url: "[REDACTED]", password: "[REDACTED]" });
+      api_token: "unrelated-secret",
+    };
+    const client = new HetznerClient(config, async () => new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } }));
+    const consoleResult = await client.request({ source: "cloud", method: "POST", path: "/servers/{id}/actions/request_console", parameters: [{ location: "path", name: "id" }] }, { id: 1 });
+    expect(consoleResult.data).toEqual({ ...data, api_token: "[REDACTED]" });
+    const listResult = await client.request({ source: "cloud", method: "GET", path: "/servers", parameters: [] }, {});
+    expect(listResult.data).toEqual({ wss_url: "[REDACTED]", password: "[REDACTED]", api_token: "[REDACTED]" });
+  });
+
+  test("returns root passwords only from credential-producing server actions", async () => {
+    const client = new HetznerClient(config, async () => new Response(JSON.stringify({ root_password: "one-time-secret", server: { labels: { root_password: "unrelated-secret" } } }), { headers: { "content-type": "application/json" } }));
+    for (const path of ["/servers", "/servers/{id}/actions/enable_rescue", "/servers/{id}/actions/rebuild", "/servers/{id}/actions/reset_password"]) {
+      const hasId = path.includes("{id}");
+      const result = await client.request({ source: "cloud", method: "POST", path, parameters: hasId ? [{ location: "path", name: "id" }] : [] }, hasId ? { id: 1 } : {});
+      expect(result.data).toEqual({ root_password: "one-time-secret", server: { labels: { root_password: "[REDACTED]" } } });
+    }
+    const listResult = await client.request({ source: "cloud", method: "GET", path: "/servers", parameters: [] }, {});
+    expect(listResult.data).toEqual({ root_password: "[REDACTED]", server: { labels: { root_password: "[REDACTED]" } } });
   });
 
   test("preserves null when no root password was generated", async () => {

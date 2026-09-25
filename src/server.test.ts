@@ -71,6 +71,24 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
+  test("returns console credentials from the explicit MCP action", async () => {
+    const data = {
+      wss_url: "wss://console.hetzner.cloud/?token=one-time-secret",
+      password: "one-time-secret",
+      action: { id: 1, command: "request_console", status: "running", started: "2026-09-25T00:00:00Z", finished: null, progress: 0, resources: [{ id: 1, type: "server" }] },
+    };
+    const server = createServer(config, async () => new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const result = await client.callTool({ name: "hetzner_cloud_request_server_console", arguments: { id: 1 } });
+    expect(result.isError).not.toBe(true);
+    expect(result.structuredContent).toMatchObject({ data });
+    expect(result.content[0]?.text).toContain("one-time-secret");
+    await client.close();
+    await server.close();
+  });
+
   test("accepts successful volume actions without an error field", async () => {
     const response = {
       actions: [{ id: 1, command: "attach_volume", status: "success", progress: 100, started: "2026-09-23T00:00:00Z", finished: "2026-09-23T00:01:00Z", resources: [{ id: 7, type: "volume" }] }],
