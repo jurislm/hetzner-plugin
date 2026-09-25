@@ -17,9 +17,7 @@ export function createApiRequest(config: HetznerConfig, fetchImpl: FetchLike, so
   };
 }
 
-export const missingApiRequest: ApiRequest = async () => {
-  throw new Error("ApiRequest must be injected by createServer or the registrar test harness");
-};
+export const missingApiRequest: ApiRequest = () => Promise.reject(new Error("ApiRequest must be injected by createServer or the registrar test harness"));
 
 export function handleApiError(error: unknown): string {
   if (error instanceof z.ZodError) return `Error: Hetzner API returned an unexpected response shape: ${error.issues[0]?.message ?? "validation failed"}`;

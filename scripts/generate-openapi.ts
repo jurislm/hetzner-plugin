@@ -10,6 +10,7 @@ const specs = [
   { source: "unified", file: "openapi/hetzner-unified-openapi.json", types: "src/generated/hetzner-unified-api.ts" },
 ] as const;
 const methods = new Set(["get", "put", "post", "delete", "patch", "head", "options", "trace"]);
+const schemaTypes = new Set(["object", "array", "string", "number", "integer", "boolean", "null"]);
 const quote = JSON.stringify;
 
 function dereference(value: any, schemas: Record<string, ObjectValue>, seen = new Set<string>()): any {
@@ -26,13 +27,30 @@ function dereference(value: any, schemas: Record<string, ObjectValue>, seen = ne
 }
 
 function schemaText(schema: any, schemas: Record<string, ObjectValue>, optional = false): string {
-  if (!schema) return "z.unknown()";
+  if (schema === false) return "z.never()";
+  if (!schema || typeof schema !== "object" || Array.isArray(schema)) throw new Error("Cannot generate a Zod schema from a missing or non-object OpenAPI schema");
   try {
-    const result = jsonSchemaToZod(dereference(schema, schemas), { noImport: true }).trim()
+    const converted = jsonSchemaToZod(dereference(schema, schemas), {
+      noImport: true,
+      parserOverride: (node, refs) => {
+        const hasSupportedType = Array.isArray(node.type)
+          ? node.type.length > 0 && node.type.every((type) => schemaTypes.has(type))
+          : typeof node.type === "string" && schemaTypes.has(node.type);
+        const hasSupportedComposition = [node.anyOf, node.allOf, node.oneOf].some((value) => Array.isArray(value) && value.length > 0);
+        const hasSupportedConstraint = node.not !== undefined || node.enum !== undefined || node.const !== undefined;
+        const hasCompleteConditional = node.if !== undefined && node.then !== undefined && node.else !== undefined;
+        if (!hasSupportedType && !hasSupportedComposition && !hasSupportedConstraint && !hasCompleteConditional) {
+          throw new Error(`No supported JSON Schema validator at ${refs.path.join("/") || "<root>"}`);
+        }
+      },
+    }).trim()
       .replaceAll('.ip({ version: "v4" })', ".ipv4()")
       .replaceAll('.ip({ version: "v6" })', ".ipv6()");
-    return optional && schema.default === undefined && !result.endsWith(".optional()") ? `${result}.optional()` : result;
-  } catch { return "z.unknown()"; }
+    return optional && schema.default === undefined && !converted.endsWith(".optional()") ? `${converted}.optional()` : converted;
+  } catch (error) {
+    const details = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate a Zod schema from OpenAPI: ${details}; schema=${JSON.stringify(schema)}`, { cause: error });
+  }
 }
 
 function responseInfo(operation: ObjectValue, schemas: Record<string, ObjectValue>): { schema: string; kind: string } {
