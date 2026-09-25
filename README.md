@@ -1,35 +1,59 @@
 # @jurislm/hetzner-plugin
 
-Portable local-stdio MCP plugin for Hetzner Cloud and Storage Box APIs. The `hetzner_cloud_*` and `hetzner_unified_*` catalogs are generated from committed official OpenAPI snapshots; existing focused server, SSH key, volume, Storage Box, storage-stat/space assertion, and server-RAM-over-SSH tools remain available.
+Local stdio MCP plugin for Hetzner Cloud and Storage Box. It registers generated `hetzner_cloud_*` and `hetzner_unified_*` tools from the committed official OpenAPI snapshots, plus focused tools for servers, SSH keys, volumes, reference data, Storage Boxes, metrics, and server RAM over SSH.
 
-## Configure
+## Requirements
+
+- Bun 1.1 or later
+- A Hetzner project API token
+
+Set `HETZNER_API_TOKEN` in the MCP host's environment:
 
 ```sh
-export HETZNER_API_TOKEN=project-api-token
-bun install --frozen-lockfile
-bun run check
+export HETZNER_API_TOKEN="your-project-api-token"
 ```
 
-`HETZNER_API_TOKEN` is the only credential variable and is sent to both Cloud and Storage Box APIs. Hetzner API tokens are project-bound, so this setup accesses resources in the project where the token was created; it does not support resources across projects.
+The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
 
-`mcp.json` and `.mcp.json` use the same published-package `bunx` stdio registration as the Woodpecker CI plugin. There is no remote MCP endpoint or OAuth flow.
+To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `free`; the local host needs `ssh` and a private key available through `ssh-agent` or `~/.ssh`. Fingerprint verification also requires `ssh-keyscan` and `ssh-keygen`.
 
-For Codex repository marketplace installation, use the repository root and leave the sparse path empty. The supported marketplace manifest is `.agents/plugins/marketplace.json`; do not enter `plugins/codex`.
+## Install
+
+### Codex CLI
+
+The marketplace manifest is `.agents/plugins/marketplace.json`. Add that directory as the sparse path:
 
 ```sh
-codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
+codex plugin marketplace add https://github.com/jurislm/hetzner-plugin --sparse .agents/plugins
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
 
-## OpenAPI contract
+### Other MCP hosts
 
-`openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are official snapshots. `api/manifest.json` is the single canonical manifest recording source URL, fetch time, SHA-256, OpenAPI version, path count, and operation count.
+Use the published-package stdio configuration in [`mcp.json`](mcp.json). The host must pass `HETZNER_API_TOKEN` to the `bunx` process. The server has no remote endpoint or OAuth flow.
+
+## OpenAPI tools
+
+`openapi/hetzner-cloud-openapi.json` and `openapi/hetzner-unified-openapi.json` are the committed upstream snapshots. [`api/manifest.json`](api/manifest.json) records their source URLs, fetch times, hashes, and operation counts. The generated catalogs are combined with focused tools for server, SSH key, reference data, volume, and Storage Box management; Storage Box capacity checks; server CPU, disk, and network metrics; and RAM queries over SSH.
+
+Update and validate the snapshots with:
 
 ```sh
 bun run api:fetch
 bun run api:generate
 bun run api:check
 ```
+
+`api:fetch` downloads the current specifications, `api:generate` builds TypeScript and MCP operation definitions from the committed snapshots, and `api:check` verifies the local snapshots and generated files.
+
+## Development
+
+```sh
+bun install --frozen-lockfile
+bun run check
+```
+
+`bun run check` runs manifest validation, OpenAPI drift checks, lint, typecheck, build, tests, release checks, and package checks.
 
 ## License
 
