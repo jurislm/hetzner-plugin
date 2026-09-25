@@ -36,7 +36,7 @@ export function redactSensitive<T>(value: T): T {
   if (!value || typeof value !== "object") return value;
   if ((value as unknown as BinaryEnvelope).encoding === "base64" && typeof (value as unknown as BinaryEnvelope).value === "string") return value;
   return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, child]) => [
-    key, sensitiveKey.test(key) ? "[REDACTED]" : redactSensitive(child),
+    key, sensitiveKey.test(key) && child != null ? "[REDACTED]" : redactSensitive(child),
   ])) as T;
 }
 

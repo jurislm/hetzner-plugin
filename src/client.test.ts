@@ -50,6 +50,12 @@ describe("HetznerClient", () => {
     expect(result.data).toEqual({ wss_url: "[REDACTED]", password: "[REDACTED]" });
   });
 
+  test("preserves null when no root password was generated", async () => {
+    const client = new HetznerClient(config, async () => new Response(JSON.stringify({ root_password: null }), { headers: { "content-type": "application/json" } }));
+    const result = await client.request({ source: "cloud", method: "POST", path: "/servers", parameters: [] }, {});
+    expect(result.data).toEqual({ root_password: null });
+  });
+
   test("requires the canonical token for every API operation", async () => {
     let calls = 0;
     const client = new HetznerClient({ timeoutMs: 30_000 }, async () => { calls++; return new Response(); });
