@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { HetznerApiError, HetznerClient, redactSensitive } from "./client.js";
+import { HetznerApiError, HetznerClient } from "./client.js";
 import type { FetchLike } from "./client.js";
 import type { HetznerConfig } from "./config.js";
 import { redactErrorText } from "./errors.js";
@@ -13,7 +13,7 @@ export function createApiRequest(config: HetznerConfig, fetchImpl: FetchLike, so
     const client = new HetznerClient(config, fetchImpl);
     const parameters = Object.keys(params ?? {}).map((name) => ({ location: "query", name }));
     const response = await client.request({ source, method, path: endpoint, parameters }, { ...params, ...(data === undefined ? {} : { body: data }) });
-    return redactSensitive(schema.parse(response.data));
+    return schema.parse(response.data);
   };
 }
 
