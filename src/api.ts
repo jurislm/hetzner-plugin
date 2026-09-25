@@ -30,6 +30,13 @@ export function handleApiError(error: unknown): string {
   return `Error: ${redactErrorText(error instanceof Error ? error.message : "An unexpected error occurred.")}`;
 }
 
+export function withApiErrorHandling<T>(handler: () => Promise<T>) {
+  return handler().catch((error: unknown) => ({
+    content: [{ type: "text" as const, text: handleApiError(error) }],
+    isError: true as const,
+  }));
+}
+
 export const PAGINATION_HARD_CAP_PAGES = 5;
 export type PartialFailureKind = "network" | "http" | "other";
 export interface PartialFailure { message: string; kind: PartialFailureKind; pagesSucceeded: number; }

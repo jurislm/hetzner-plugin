@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
   type ApiRequest,
-  handleApiError,
+  withApiErrorHandling,
   createPaginatedFetch,
   missingApiRequest,
   PAGINATION_HARD_CAP_PAGES,
@@ -10,6 +10,7 @@ import {
 } from "../api.js";
 import {
   ResponseFormat,
+  ResponseFormatSchema,
   ListStorageBoxesResponse,
   ListStorageBoxesResponseSchema,
   GetStorageBoxResponseSchema,
@@ -38,7 +39,6 @@ import { escapeHtml, isSafePathSegment } from "../utils.js";
 const PATH_SEGMENT_TRAVERSAL_MSG =
   "must not be a path-traversal segment ('.', '..', '...')";
 
-const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN);
 const DEFAULT_PER_PAGE = 50;
 
 // Hetzner reports every size in bytes. Binary units (GiB/MiB), not decimal.
@@ -222,8 +222,7 @@ Returns Storage Boxes with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         let boxes: HetznerStorageBox[];
         let truncated = false;
         let partialFailure: PartialFailure | undefined;
@@ -281,13 +280,7 @@ Returns Storage Boxes with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Get Storage Box
@@ -307,8 +300,7 @@ Returns Storage Boxes with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const box = data.storage_box;
 
@@ -322,13 +314,7 @@ Returns Storage Boxes with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // List Storage Box Subaccounts
@@ -359,8 +345,7 @@ Returns subaccounts with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const endpoint = `/storage_boxes/${params.id}/subaccounts`;
         let subaccounts: HetznerStorageBoxSubaccount[];
         let truncated = false;
@@ -423,13 +408,7 @@ Returns subaccounts with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // List Storage Box Snapshots
@@ -457,8 +436,7 @@ optional size, and whether it was created by the automatic snapshot plan.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const endpoint = `/storage_boxes/${params.id}/snapshots`;
         let snapshots: HetznerStorageBoxSnapshot[];
         let truncated = false;
@@ -517,13 +495,7 @@ optional size, and whether it was created by the automatic snapshot plan.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Create Storage Box Snapshot
@@ -548,8 +520,7 @@ Returns the new snapshot id and the action envelope (status, progress).`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = {};
         if (params.description !== undefined) body.description = params.description;
         if (params.labels !== undefined) body.labels = params.labels;
@@ -579,13 +550,7 @@ Returns the new snapshot id and the action envelope (status, progress).`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Create Storage Box
@@ -633,8 +598,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = {
           storage_box_type: params.storage_box_type,
           location: params.location,
@@ -665,10 +629,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
           formatAction(data.action)
         ];
         return { content: [{ type: "text", text: lines.join("\n") }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Update Storage Box
@@ -691,8 +652,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = {};
         if (params.name !== undefined) body.name = params.name;
         if (params.labels !== undefined) body.labels = params.labels;
@@ -711,10 +671,7 @@ Returns the new Storage Box and an action tracking provisioning.`,
 
         const lines = ["# Storage Box Updated", "", formatStorageBox(data.storage_box)];
         return { content: [{ type: "text", text: lines.join("\n") }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Delete Storage Box
@@ -736,8 +693,7 @@ This action cannot be undone.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}`,
           StorageBoxActionResponseSchema,
@@ -749,10 +705,7 @@ This action cannot be undone.`,
             text: `Storage Box ${params.id} is being deleted. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // List Storage Box Folders
@@ -772,8 +725,7 @@ This action cannot be undone.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/folders`,
           ListFoldersResponseSchema
@@ -793,10 +745,7 @@ This action cannot be undone.`,
           ...data.folders.map((f) => `- \`${escapeHtml(f)}\``)
         ];
         return { content: [{ type: "text", text: lines.join("\n") }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Create Storage Box Subaccount
@@ -827,8 +776,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = {};
         if (params.comment !== undefined) body.comment = params.comment;
         if (params.labels !== undefined) body.labels = params.labels;
@@ -858,10 +806,7 @@ Use access settings to configure which protocols the subaccount can use.`,
           formatSubaccount(data.subaccount)
         ];
         return { content: [{ type: "text", text: lines.join("\n") }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Update Storage Box Subaccount
@@ -894,8 +839,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = {};
         if (params.comment !== undefined) body.comment = params.comment;
         if (params.labels !== undefined) body.labels = params.labels;
@@ -925,10 +869,7 @@ Use access settings to configure which protocols the subaccount can use.`,
           formatSubaccount(data.subaccount)
         ];
         return { content: [{ type: "text", text: lines.join("\n") }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Delete Storage Box Subaccount
@@ -952,8 +893,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/subaccounts/${params.username}`,
           z.unknown(),
@@ -965,10 +905,7 @@ Use access settings to configure which protocols the subaccount can use.`,
             text: `Subaccount \`${params.username}\` has been deleted from Storage Box ${params.id}.`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Delete Storage Box Snapshot
@@ -998,8 +935,7 @@ Use access settings to configure which protocols the subaccount can use.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/snapshots/${params.snapshot_id}`,
           z.unknown(),
@@ -1011,10 +947,7 @@ Use access settings to configure which protocols the subaccount can use.`,
             text: `Snapshot \`${params.snapshot_id}\` has been deleted from Storage Box ${params.id}.`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Change Storage Box Protection
@@ -1036,8 +969,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/change_protection`,
           StorageBoxActionResponseSchema,
@@ -1051,10 +983,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
             text: `Delete protection ${status} for Storage Box ${params.id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Change Storage Box Type
@@ -1076,8 +1005,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/change_type`,
           StorageBoxActionResponseSchema,
@@ -1090,10 +1018,7 @@ When delete protection is enabled, the Storage Box cannot be deleted until prote
             text: `Storage Box ${params.id} is changing to type \`${params.storage_box_type}\`. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Reset Storage Box Password
@@ -1124,8 +1049,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/reset_password`,
           StorageBoxActionResponseSchema,
@@ -1138,10 +1062,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
             text: `Password reset for Storage Box ${params.id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Update Storage Box Access Settings
@@ -1165,8 +1086,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, boolean> = {};
         if (params.ssh_enabled !== undefined) body.ssh_enabled = params.ssh_enabled;
         if (params.samba_enabled !== undefined) body.samba_enabled = params.samba_enabled;
@@ -1186,10 +1106,7 @@ Password policy: minimum 12 characters, must include uppercase, lowercase, numbe
             text: `Access settings updated for Storage Box ${params.id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Enable Snapshot Plan
@@ -1217,8 +1134,7 @@ Schedule options:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/enable_snapshot_plan`,
           StorageBoxActionResponseSchema,
@@ -1236,10 +1152,7 @@ Schedule options:
             text: `Snapshot plan enabled for Storage Box ${params.id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Disable Snapshot Plan
@@ -1258,8 +1171,7 @@ Schedule options:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/disable_snapshot_plan`,
           StorageBoxActionResponseSchema,
@@ -1272,10 +1184,7 @@ Schedule options:
             text: `Snapshot plan disabled for Storage Box ${params.id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return { content: [{ type: "text", text: handleApiError(error) }], isError: true };
-      }
-    }
+    })
   );
 
   // Get Storage Box Stats
@@ -1303,8 +1212,7 @@ Useful for dashboards, cron jobs, and pre-flight capacity checks before backup o
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const stats = computeStorageBoxStats(data.storage_box);
 
@@ -1325,13 +1233,7 @@ Useful for dashboards, cron jobs, and pre-flight capacity checks before backup o
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Assert Storage Box Space
@@ -1359,8 +1261,7 @@ Designed for use in cron jobs and backup pipelines before executing storage-inte
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await storageRequest(`/storage_boxes/${params.id}`, GetStorageBoxResponseSchema);
         const stats = computeStorageBoxStats(data.storage_box);
         const ok = stats.available_gib >= params.required_gib;
@@ -1388,13 +1289,7 @@ Designed for use in cron jobs and backup pipelines before executing storage-inte
           }],
           isError: true
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Rollback Storage Box Snapshot
@@ -1429,8 +1324,7 @@ this tool uses the replacement \`snapshot\` field.)`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await makeStorageBoxApiRequest(
           `/storage_boxes/${params.id}/actions/rollback_snapshot`,
           RollbackStorageBoxSnapshotResponseSchema,
@@ -1456,12 +1350,6 @@ this tool uses the replacement \`snapshot\` field.)`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

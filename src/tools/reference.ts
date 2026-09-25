@@ -1,16 +1,15 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
+import { type ApiRequest, withApiErrorHandling, missingApiRequest } from "../api.js";
 import {
   ResponseFormat,
+  ResponseFormatSchema,
   ListServerTypesResponseSchema,
   ListImagesResponseSchema,
   ListLocationsResponseSchema,
   HetznerImage,
 } from "../types.js";
 import { escapeHtml } from "../utils.js";
-
-const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN);
 
 export function registerReferenceTools(server: McpServer, apiRequest: ApiRequest = missingApiRequest): void {
   // List Server Types
@@ -38,8 +37,7 @@ Use this to find the right server type when creating a new server.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest("/server_types", ListServerTypesResponseSchema);
         const serverTypes = data.server_types;
 
@@ -67,13 +65,7 @@ Use this to find the right server type when creating a new server.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // List Images
@@ -102,8 +94,7 @@ Use this to find the right image when creating a new server.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const queryParams: Record<string, string> = {};
         if (params.type) {
           queryParams.type = params.type;
@@ -143,13 +134,7 @@ Use this to find the right image when creating a new server.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // List Locations
@@ -175,8 +160,7 @@ Use this to choose where to deploy your server.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest("/locations", ListLocationsResponseSchema);
         const locations = data.locations;
 
@@ -198,12 +182,6 @@ Use this to choose where to deploy your server.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

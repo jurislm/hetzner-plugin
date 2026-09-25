@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { type ApiRequest, handleApiError, missingApiRequest } from "../api.js";
+import { type ApiRequest, withApiErrorHandling, missingApiRequest } from "../api.js";
 import {
   ResponseFormat,
   ResponseFormatSchema,
@@ -64,8 +64,7 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const now = new Date();
         const start = params.start ?? new Date(now.getTime() - 5 * 60 * 1000).toISOString();
         const end = params.end ?? now.toISOString();
@@ -197,12 +196,6 @@ Metrics are retained for 30 days; step is auto-adjusted to a max of 500 samples.
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

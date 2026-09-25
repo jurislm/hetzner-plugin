@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 import { loadConfig } from "./config.js";
 import { createServer } from "./server.js";
-import { createStdioTransport } from "./transports/stdio.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 async function main(): Promise<void> {
   const server = createServer(loadConfig());
-  await server.connect(createStdioTransport());
+  await server.connect(new StdioServerTransport());
   console.error("Hetzner plugin running via stdio");
 }
 
