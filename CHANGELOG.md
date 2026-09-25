@@ -2,6 +2,16 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.0.1](https://github.com/jurislm/hetzner-plugin/compare/v2.0.0...v2.0.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* align Hetzner schemas and secret redaction ([794aa62](https://github.com/jurislm/hetzner-plugin/commit/794aa6248ed176d0a15adc6d3abc9e36e1675081))
+* mark Storage Box password reset destructive ([e986079](https://github.com/jurislm/hetzner-plugin/commit/e98607978c21eb5a14b1d7bc66eb9d3837b6fbdc))
+* preserve absent credentials in API responses ([71a116f](https://github.com/jurislm/hetzner-plugin/commit/71a116fcbcd94709c0ebd4d6ce78e6b0d2acb0d5))
+* preserve DNS values and accept unassigned Primary IPs ([be1718e](https://github.com/jurislm/hetzner-plugin/commit/be1718eb8abafa792f269f624098716838a679fd))
+
 ## [2.0.0](https://github.com/jurislm/hetzner-plugin/compare/v1.6.21...v2.0.0) (2026-09-25)
 
 
