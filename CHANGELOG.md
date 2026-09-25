@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.0](https://github.com/jurislm/hetzner-plugin/compare/v2.0.3...v2.1.0) (2026-09-25)
+
+
+### Features
+
+* add TypeScript and ESLint quality gates ([134d33e](https://github.com/jurislm/hetzner-plugin/commit/134d33eee3db16380dfc663fbdc72d182a64064b))
+* add TypeScript and ESLint quality gates ([50485a8](https://github.com/jurislm/hetzner-plugin/commit/50485a863dc901ad0f36c1854fd0a067fcc1d1e3))
+
 ## [2.0.3](https://github.com/jurislm/hetzner-plugin/compare/v2.0.2...v2.0.3) (2026-09-25)
 
 
