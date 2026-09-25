@@ -3,13 +3,14 @@ import { z } from "zod";
 import {
   ApiRequest,
   missingApiRequest,
-  handleApiError,
+  withApiErrorHandling,
   createPaginatedFetch,
   PAGINATION_HARD_CAP_PAGES,
   PartialFailure
 } from "../api.js";
 import {
   ResponseFormat,
+  ResponseFormatSchema,
   ListSSHKeysResponse,
   ListSSHKeysResponseSchema,
   GetSSHKeyResponseSchema,
@@ -18,7 +19,6 @@ import {
 } from "../types.js";
 import { escapeHtml } from "../utils.js";
 
-const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN);
 const CLOUD_DEFAULT_PER_PAGE = 25;
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
 
@@ -60,8 +60,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         let keys: HetznerSSHKey[];
         let truncated = false;
         let partialFailure: PartialFailure | undefined;
@@ -114,13 +113,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Get SSH Key
@@ -140,8 +133,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(`/ssh_keys/${params.id}`, GetSSHKeyResponseSchema);
         const key = data.ssh_key;
 
@@ -155,13 +147,7 @@ SSH keys are used to authenticate when connecting to servers.`,
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Create SSH Key
@@ -190,8 +176,7 @@ Args:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const requestBody: Record<string, unknown> = {
           name: params.name,
           public_key: params.public_key
@@ -219,13 +204,7 @@ Args:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Delete SSH Key
@@ -247,20 +226,13 @@ They will continue to work with the key.`,
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         // DELETE returns 204 No Content; we don't care about the body shape.
         await apiRequest(`/ssh_keys/${params.id}`, z.unknown(), "DELETE");
 
         return {
           content: [{ type: "text", text: `SSH key ${params.id} has been deleted.` }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

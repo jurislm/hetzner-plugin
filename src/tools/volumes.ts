@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   ApiRequest,
   missingApiRequest,
-  handleApiError,
+  withApiErrorHandling,
   createPaginatedFetch,
   PAGINATION_HARD_CAP_PAGES,
   PartialFailure
@@ -74,8 +74,7 @@ Returns volumes with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         let volumes: HetznerVolume[];
         let truncated = false;
         let partialFailure: PartialFailure | undefined;
@@ -133,13 +132,7 @@ Returns volumes with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Get Volume
@@ -161,8 +154,7 @@ Useful for confirming the actual mount path (\`linux_device\`) before setting up
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(`/volumes/${params.id}`, GetVolumeResponseSchema);
         const vol = data.volume;
 
@@ -175,13 +167,7 @@ Useful for confirming the actual mount path (\`linux_device\`) before setting up
         return {
           content: [{ type: "text", text: ["# Volume Details", "", formatVolume(vol)].join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Attach Volume
@@ -207,8 +193,7 @@ After attaching, the volume is accessible at its \`linux_device\` path (e.g. \`/
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const body: Record<string, unknown> = { server: params.server_id };
         if (params.automount !== undefined) body.automount = params.automount;
 
@@ -231,13 +216,7 @@ After attaching, the volume is accessible at its \`linux_device\` path (e.g. \`/
             text: `Volume ${params.id} is being attached to server ${params.server_id}. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Detach Volume
@@ -261,8 +240,7 @@ After detaching, the volume status returns to \`available\` and can be attached 
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(
           `/volumes/${params.id}/actions/detach`,
           VolumeActionResponseSchema,
@@ -281,12 +259,6 @@ After detaching, the volume status returns to \`available\` and can be attached 
             text: `Volume ${params.id} is being detached. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

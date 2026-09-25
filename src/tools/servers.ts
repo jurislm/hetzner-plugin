@@ -3,13 +3,14 @@ import { z } from "zod";
 import {
   ApiRequest,
   missingApiRequest,
-  handleApiError,
+  withApiErrorHandling,
   createPaginatedFetch,
   PAGINATION_HARD_CAP_PAGES,
   PartialFailure
 } from "../api.js";
 import {
   ResponseFormat,
+  ResponseFormatSchema,
   ListServersResponse,
   ListServersResponseSchema,
   GetServerResponseSchema,
@@ -19,7 +20,6 @@ import {
 } from "../types.js";
 import { escapeHtml } from "../utils.js";
 
-const ResponseFormatSchema = z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN);
 const CLOUD_DEFAULT_PER_PAGE = 25;
 const TRUNCATION_NOTE = `> ⚠️ Truncated at ${PAGINATION_HARD_CAP_PAGES} pages — supply explicit \`page\` to fetch more.`;
 
@@ -82,8 +82,7 @@ Returns servers with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         let servers: HetznerServer[];
         let truncated = false;
         let partialFailure: PartialFailure | undefined;
@@ -140,13 +139,7 @@ Returns servers with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Get Server
@@ -166,8 +159,7 @@ Returns servers with their:
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(`/servers/${params.id}`, GetServerResponseSchema);
         const srv = data.server;
 
@@ -181,13 +173,7 @@ Returns servers with their:
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Create Server
@@ -229,8 +215,7 @@ When using JSON output format, the response includes root_password in plaintext 
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const requestBody: Record<string, unknown> = {
           name: params.name,
           server_type: params.server_type,
@@ -279,13 +264,7 @@ When using JSON output format, the response includes root_password in plaintext 
         return {
           content: [{ type: "text", text: lines.join("\n") }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Delete Server
@@ -306,8 +285,7 @@ When using JSON output format, the response includes root_password in plaintext 
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(`/servers/${params.id}`, ServerActionResponseSchema, "DELETE");
 
         return {
@@ -316,13 +294,7 @@ When using JSON output format, the response includes root_password in plaintext 
             text: `Server ${params.id} is being deleted. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Power On Server
@@ -341,8 +313,7 @@ When using JSON output format, the response includes root_password in plaintext 
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(
           `/servers/${params.id}/actions/poweron`,
           ServerActionResponseSchema,
@@ -355,13 +326,7 @@ When using JSON output format, the response includes root_password in plaintext 
             text: `Server ${params.id} is powering on. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Power Off Server
@@ -382,8 +347,7 @@ This is like pulling the power cord. For a graceful shutdown, SSH into the serve
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(
           `/servers/${params.id}/actions/poweroff`,
           ServerActionResponseSchema,
@@ -396,13 +360,7 @@ This is like pulling the power cord. For a graceful shutdown, SSH into the serve
             text: `Server ${params.id} is powering off. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 
   // Reboot Server
@@ -423,8 +381,7 @@ This is like pressing the reset button. For a graceful reboot, SSH into the serv
         openWorldHint: true
       }
     },
-    async (params) => {
-      try {
+    async (params) => withApiErrorHandling(async () => {
         const data = await apiRequest(
           `/servers/${params.id}/actions/reboot`,
           ServerActionResponseSchema,
@@ -437,12 +394,6 @@ This is like pressing the reset button. For a graceful reboot, SSH into the serv
             text: `Server ${params.id} is rebooting. Action status: ${data.action.status}`
           }]
         };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: handleApiError(error) }],
-          isError: true
-        };
-      }
-    }
+    })
   );
 }

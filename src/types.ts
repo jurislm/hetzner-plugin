@@ -142,24 +142,28 @@ export const HetznerSSHKeySchema = z.object({
 });
 export type HetznerSSHKey = z.infer<typeof HetznerSSHKeySchema>;
 
-// Pagination meta envelope for Cloud API list responses (mirrors unified API).
-// Only next_page is consumed by createPaginatedFetch; other fields are optional
-// to avoid ZodError if the API omits them.
-const CloudMetaSchema = z.object({
-  pagination: z.object({
-    page: z.number().optional(),
-    per_page: z.number().optional(),
-    previous_page: z.number().nullable().optional(),
-    next_page: z.number().nullable(),
-    last_page: z.number().nullable().optional(),
-    total_entries: z.number().nullable().optional()
-  }).optional()
-}).optional();
+// Pagination envelope returned by Hetzner unified API list endpoints.
+// Only `next_page` is consumed by paginatedFetch; the other fields are made
+// optional so an API response that omits them does not throw ZodError on
+// data we never read (I-1 from /review-pr round 3).
+export const HetznerPaginationSchema = z.object({
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  previous_page: z.number().nullable().optional(),
+  next_page: z.number().nullable(),
+  last_page: z.number().nullable().optional(),
+  total_entries: z.number().nullable().optional()
+});
+
+export const HetznerMetaSchema = z.object({
+  pagination: HetznerPaginationSchema.optional()
+});
+export type HetznerMeta = z.infer<typeof HetznerMetaSchema>;
 
 // API Response wrappers
 export const ListServersResponseSchema = z.object({
   servers: z.array(HetznerServerSchema),
-  meta: CloudMetaSchema
+  meta: HetznerMetaSchema.optional()
 });
 export type ListServersResponse = z.infer<typeof ListServersResponseSchema>;
 
@@ -191,7 +195,7 @@ export const ListLocationsResponseSchema = z.object({
 
 export const ListSSHKeysResponseSchema = z.object({
   ssh_keys: z.array(HetznerSSHKeySchema),
-  meta: CloudMetaSchema
+  meta: HetznerMetaSchema.optional()
 });
 export type ListSSHKeysResponse = z.infer<typeof ListSSHKeysResponseSchema>;
 
@@ -208,24 +212,6 @@ export const CreateSSHKeyResponseSchema = z.object({
 // unexpected API response shapes fail loudly with a ZodError instead of
 // silently coercing to undefined. Static types are inferred via z.infer to
 // keep a single source of truth.
-
-// Pagination envelope returned by Hetzner unified API list endpoints.
-// Only `next_page` is consumed by paginatedFetch; the other fields are made
-// optional so an API response that omits them does not throw ZodError on
-// data we never read (I-1 from /review-pr round 3).
-export const HetznerPaginationSchema = z.object({
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  previous_page: z.number().nullable().optional(),
-  next_page: z.number().nullable(),
-  last_page: z.number().nullable().optional(),
-  total_entries: z.number().nullable().optional()
-});
-
-export const HetznerMetaSchema = z.object({
-  pagination: HetznerPaginationSchema.optional()
-});
-export type HetznerMeta = z.infer<typeof HetznerMetaSchema>;
 
 // Unified API (api.hetzner.com/v1) returns a nested structure distinct from
 // the legacy Robot API. Field names verified against official docs at
@@ -411,7 +397,7 @@ export type HetznerVolume = z.infer<typeof HetznerVolumeSchema>;
 
 export const ListVolumesResponseSchema = z.object({
   volumes: z.array(HetznerVolumeSchema),
-  meta: CloudMetaSchema
+  meta: HetznerMetaSchema.optional()
 });
 export type ListVolumesResponse = z.infer<typeof ListVolumesResponseSchema>;
 
