@@ -57,6 +57,19 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
+  test("returns DNS record values from a generated RRset tool", async () => {
+    const data = { rrset: { id: "rrset-1", name: "@", type: "A", ttl: 300, labels: {}, protection: { change: false }, records: [{ value: "192.0.2.1" }], zone: 1 } };
+    const server = createServer(config, async () => new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const result = await client.callTool({ name: "hetzner_cloud_get_zone_rrset", arguments: { id_or_name: "zone-1", rr_name: "@", rr_type: "A" } });
+    expect(result.isError).not.toBe(true);
+    expect(result.structuredContent).toMatchObject({ data });
+    await client.close();
+    await server.close();
+  });
+
   test("accepts successful volume actions without an error field", async () => {
     const response = {
       actions: [{ id: 1, command: "attach_volume", status: "success", progress: 100, started: "2026-09-23T00:00:00Z", finished: "2026-09-23T00:01:00Z", resources: [{ id: 7, type: "volume" }] }],

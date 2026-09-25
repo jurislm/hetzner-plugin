@@ -22,7 +22,7 @@ export type OperationRequest = {
 };
 
 const baseUrl = { cloud: "https://api.hetzner.cloud/v1", unified: "https://api.hetzner.com/v1" } as const;
-const sensitiveKey = /(^value$|real_?value|private_?key|token|secret|password|authorization|cookie)/iu;
+const sensitiveKey = /(real_?value|private_?key|token|secret|password|authorization|cookie|^wss_url$)/iu;
 
 export class HetznerApiError extends Error {
   constructor(readonly status: number, readonly method: string, readonly path: string, message: string) {

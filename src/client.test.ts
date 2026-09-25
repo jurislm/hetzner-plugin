@@ -41,6 +41,15 @@ describe("HetznerClient", () => {
     expect(calls).toBe(1);
   });
 
+  test("redacts one-time console credentials from response fields and URLs", async () => {
+    const client = new HetznerClient(config, async () => new Response(JSON.stringify({
+      wss_url: "wss://console.hetzner.cloud/?token=one-time-secret",
+      password: "one-time-secret",
+    }), { headers: { "content-type": "application/json" } }));
+    const result = await client.request({ source: "cloud", method: "POST", path: "/servers/1/actions/request_console", parameters: [] }, {});
+    expect(result.data).toEqual({ wss_url: "[REDACTED]", password: "[REDACTED]" });
+  });
+
   test("requires the canonical token for every API operation", async () => {
     let calls = 0;
     const client = new HetznerClient({ timeoutMs: 30_000 }, async () => { calls++; return new Response(); });

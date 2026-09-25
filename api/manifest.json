@@ -1,8 +1,8 @@
 {
   "cloud": {
     "sourceUrl": "https://docs.hetzner.cloud/cloud.spec.json",
-    "fetchedAt": "2026-09-16T09:33:48.395Z",
-    "sha256": "3a482a15e70b065ec06857e86435313eb0279b33c1b14496f2b16d55f9447ceb",
+    "fetchedAt": "2026-09-25T01:14:57.382Z",
+    "sha256": "257ffd0540aedf17cc3ec30860aa63587822054c5c591bdfac958a171a872ad1",
     "openapiVersion": "3.1.2",
     "infoVersion": "1.0.0",
     "pathCount": 152,
@@ -10,7 +10,7 @@
   },
   "unified": {
     "sourceUrl": "https://docs.hetzner.cloud/hetzner.spec.json",
-    "fetchedAt": "2026-09-16T09:33:48.618Z",
+    "fetchedAt": "2026-09-25T01:14:57.723Z",
     "sha256": "13e177935c03b020b7f054ff1b257297aa534d6d7b5df768af06d9ccf55a4b46",
     "openapiVersion": "3.1.2",
     "infoVersion": "1.0.0",
