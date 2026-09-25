@@ -159,11 +159,12 @@ export const HetznerMetaSchema = z.object({
   pagination: HetznerPaginationSchema.optional()
 });
 export type HetznerMeta = z.infer<typeof HetznerMetaSchema>;
+const CloudListMetaSchema = z.object({ pagination: HetznerPaginationSchema });
 
 // API Response wrappers
 export const ListServersResponseSchema = z.object({
   servers: z.array(HetznerServerSchema),
-  meta: HetznerMetaSchema.optional()
+  meta: CloudListMetaSchema
 });
 export type ListServersResponse = z.infer<typeof ListServersResponseSchema>;
 
@@ -195,7 +196,7 @@ export const ListLocationsResponseSchema = z.object({
 
 export const ListSSHKeysResponseSchema = z.object({
   ssh_keys: z.array(HetznerSSHKeySchema),
-  meta: HetznerMetaSchema.optional()
+  meta: CloudListMetaSchema
 });
 export type ListSSHKeysResponse = z.infer<typeof ListSSHKeysResponseSchema>;
 
@@ -397,7 +398,7 @@ export type HetznerVolume = z.infer<typeof HetznerVolumeSchema>;
 
 export const ListVolumesResponseSchema = z.object({
   volumes: z.array(HetznerVolumeSchema),
-  meta: HetznerMetaSchema.optional()
+  meta: CloudListMetaSchema
 });
 export type ListVolumesResponse = z.infer<typeof ListVolumesResponseSchema>;
 

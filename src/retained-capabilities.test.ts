@@ -3,6 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerServerSshTools } from "./tools/server-ssh.js";
 import { registerServerTools } from "./tools/servers.js";
 import { computeStorageBoxStats, registerStorageBoxTools } from "./tools/storage-boxes.js";
+import { ListServersResponseSchema, ListSSHKeysResponseSchema, ListVolumesResponseSchema } from "./types.js";
 
 type Captured = { name: string; options: { annotations?: Record<string, unknown> }; handler: (input: any) => Promise<any> };
 function capture(register: (server: McpServer, ...args: any[]) => void, ...args: any[]): Captured[] {
@@ -20,6 +21,20 @@ const box = {
 } as const;
 
 describe("retained v1.5 capabilities", () => {
+  test("requires pagination metadata for Cloud list responses", () => {
+    const pagination = { page: 1, per_page: 25, previous_page: null, next_page: null, last_page: 1, total_entries: 0 };
+    const responses = [
+      [ListServersResponseSchema, { servers: [] }],
+      [ListSSHKeysResponseSchema, { ssh_keys: [] }],
+      [ListVolumesResponseSchema, { volumes: [] }],
+    ] as const;
+    for (const [schema, list] of responses) {
+      expect(schema.safeParse({ ...list, meta: { pagination } }).success).toBe(true);
+      expect(schema.safeParse(list).success).toBe(false);
+      expect(schema.safeParse({ ...list, meta: {} }).success).toBe(false);
+    }
+  });
+
   test("computes Storage Box snapshot-inclusive capacity", () => {
     expect(computeStorageBoxStats(box as any)).toMatchObject({ used_gib: 4, available_gib: 6, usage_percent: 40 });
   });
