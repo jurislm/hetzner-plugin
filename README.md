@@ -21,10 +21,10 @@ To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `f
 
 ### Codex CLI
 
-The marketplace manifest is `.agents/plugins/marketplace.json`. Add that directory as the sparse path:
+Use the repository root as the marketplace source and leave the sparse path empty. The supported manifest is `.agents/plugins/marketplace.json`:
 
 ```sh
-codex plugin marketplace add https://github.com/jurislm/hetzner-plugin --sparse .agents/plugins
+codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
 
