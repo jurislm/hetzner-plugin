@@ -10,8 +10,7 @@
     {
       "name": "hetzner-plugin",
       "source": ".",
-      "description": "Manage Hetzner Cloud and Storage Box resources through local stdio tools.",
-      "logo": "assets/hetzner.png"
+      "description": "Manage Hetzner Cloud and Storage Box resources through local stdio tools."
     }
   ]
 }
