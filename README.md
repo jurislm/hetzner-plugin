@@ -42,12 +42,12 @@ enabled = false
 
 [mcp_servers.hetzner]
 command = "/bin/zsh"
-args = ["-c", "exec bunx -y @jurislm/hetzner-plugin@latest"]
+args = ['-c', 'exec "$HOME/.bun/bin/bunx" -y @jurislm/hetzner-plugin@latest']
 enabled_tools = ["hetzner_cloud_list_servers", "hetzner_unified_list_storage_boxes", "hetzner_assert_storage_box_space"]
 startup_timeout_sec = 30
 ```
 
-This launches the same published plugin through zsh without copying the token into the config file. The tool allowlist covers read-only acceptance. Check `codex mcp get hetzner`, then start a new Codex chat and call both list tools. Record the resolved package version, HTTP status, and returned counts. A registered tool alone does not establish API access: a missing tool means discovery did not reach the chat, `HETZNER_API_TOKEN is required` means the MCP process lacks the token, and HTTP 401 means Hetzner rejected it.
+This launches the same published plugin through zsh without copying the token into the config file. Replace `$HOME/.bun/bin/bunx` if Bun is installed elsewhere; a Dock-launched app may not have Bun in `PATH`. The tool allowlist covers read-only acceptance. Check `codex mcp get hetzner`, then start a new Codex chat and call both list tools. Record the resolved package version, HTTP status, and returned counts. A registered tool alone does not establish API access: a missing tool means discovery did not reach the chat, `HETZNER_API_TOKEN is required` means the MCP process lacks the token, and HTTP 401 means Hetzner rejected it.
 
 ### Other MCP hosts
 
