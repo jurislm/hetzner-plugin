@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.4](https://github.com/jurislm/hetzner-plugin/compare/v2.1.3...v2.1.4) (2026-09-28)
+
+
+### Bug Fixes
+
+* **cursor:** align marketplace entry with current schema ([1f8a4a9](https://github.com/jurislm/hetzner-plugin/commit/1f8a4a965cd407ccec0efd9974262419cc319625))
+* **cursor:** align marketplace entry with schema ([c5c41fe](https://github.com/jurislm/hetzner-plugin/commit/c5c41fe76d91e214d99557e9da64523d4aeda464))
+
 ## [2.1.3](https://github.com/jurislm/hetzner-plugin/compare/v2.1.2...v2.1.3) (2026-09-25)
 
 
