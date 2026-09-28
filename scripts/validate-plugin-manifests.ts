@@ -21,6 +21,8 @@ if (parsed["plugin.json"].homepage !== "https://github.com/jurislm/hetzner-plugi
 if ((parsed[".codex-plugin/plugin.json"].repository as string) !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Fallback manifest repository metadata must match Woodpecker");
 if (parsed["mcp.json"].$schema !== "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json") throw new Error("mcp.json must use the portable Agent Plugins schema");
 if (((parsed[".cursor-plugin/marketplace.json"].owner as Json).name) !== "JurisLM") throw new Error("Cursor marketplace must include its required owner");
+const cursorMarketplacePlugins = parsed[".cursor-plugin/marketplace.json"].plugins as Json[];
+if (cursorMarketplacePlugins.some((plugin) => Object.keys(plugin).some((key) => !["name", "source", "description", "minClientVersions"].includes(key)))) throw new Error("Cursor marketplace plugin entries contain unsupported fields");
 const cursorPlugin = parsed[".cursor-plugin/plugin.json"];
 if (cursorPlugin.displayName !== "Hetzner Plugin" || (cursorPlugin.author as Json).name !== "JurisLM" || cursorPlugin.homepage !== "https://github.com/jurislm/hetzner-plugin" || cursorPlugin.repository !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Cursor plugin must provide display and repository metadata");
 for (const file of ["plugin.json", ".codex-plugin/plugin.json"]) if (parsed[file].name !== "hetzner-plugin" || parsed[file].version !== packageVersion) throw new Error(`${file} is not the portable Hetzner manifest for ${packageVersion}`);
