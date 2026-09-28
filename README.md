@@ -32,6 +32,23 @@ codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
 
+### Codex desktop on macOS
+
+When Codex starts from the Dock or Finder, it does not read `~/.zshenv` or `~/.zshrc`. A token exported only by zsh is then absent from the bundled MCP process. To use a token already exported by `~/.zshenv`, keep the plugin installed and place this local override in `~/.codex/config.toml`:
+
+```toml
+[plugins."hetzner-plugin@hetzner-marketplace".mcp_servers.hetzner]
+enabled = false
+
+[mcp_servers.hetzner]
+command = "/bin/zsh"
+args = ["-c", "exec bunx -y @jurislm/hetzner-plugin@latest"]
+enabled_tools = ["hetzner_cloud_list_servers", "hetzner_unified_list_storage_boxes", "hetzner_assert_storage_box_space"]
+startup_timeout_sec = 30
+```
+
+This launches the same published plugin through zsh without copying the token into the config file. The tool allowlist covers read-only acceptance. Check `codex mcp get hetzner`, then start a new Codex chat and call both list tools. Record the resolved package version, HTTP status, and returned counts. A registered tool alone does not establish API access: a missing tool means discovery did not reach the chat, `HETZNER_API_TOKEN is required` means the MCP process lacks the token, and HTTP 401 means Hetzner rejected it.
+
 ### Other MCP hosts
 
 Use the published-package stdio configuration in [`mcp.json`](mcp.json). The host must pass `HETZNER_API_TOKEN` to the `bunx` process. The server has no remote endpoint or OAuth flow.
