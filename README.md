@@ -19,6 +19,8 @@ export HETZNER_API_TOKEN="your-project-api-token"
 
 The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
 
+Read resource state before write operations. Some operations create billable resources or modify or delete live resources. Treat one-time credentials returned by explicit actions as secrets.
+
 To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `free`; the local host needs `ssh` and a private key available through `ssh-agent` or `~/.ssh`. Fingerprint verification also requires `ssh-keyscan` and `ssh-keygen`.
 
 ## Install
@@ -31,6 +33,10 @@ Use the repository root as the marketplace source and leave the sparse path empt
 codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
+
+### Cursor
+
+The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`.
 
 ### Other MCP hosts
 
