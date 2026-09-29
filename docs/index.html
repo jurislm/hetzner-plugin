@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hetzner local MCP plugin</title>
-  <meta name="description" content="Local stdio MCP tools for Hetzner Cloud and Storage Boxes. Requires Bun 1.1 or later and a project-scoped Hetzner API token. No remote MCP endpoint or OAuth." />
+  <title>Hetzner Plugin</title>
+  <meta name="description" content="Manage Hetzner Cloud and Storage Boxes through a local stdio MCP server. Requires Bun 1.1 or later and a project-scoped API token; no remote MCP endpoint or OAuth." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -169,8 +169,10 @@
       border-radius: 4px;
       padding: 1px 6px;
       color: var(--blue);
+      overflow-wrap: anywhere;
     }
     .destructive { color: var(--accent); }
+    .billable { color: var(--yellow); }
 
     /* ── Config snippet ── */
     .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: auto; }
@@ -190,6 +192,8 @@
       margin-top: 16px;
     }
     .callout strong { color: var(--text); }
+    .callout ul { margin: 8px 0 0 20px; }
+    .callout li + li { margin-top: 6px; }
 
     /* ── Footer ── */
     footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; font-size: 13px; color: var(--muted); margin-top: 64px; }
@@ -212,13 +216,13 @@
 <header>
   <div class="container">
     <div class="badge"><span class="dot"></span> @jurislm/hetzner-plugin · Bun · stdio</div>
-    <h1>Hetzner <span>plugin</span></h1>
-    <p class="tagline" data-i18n="tagline">Generated and retained Bun tools for Hetzner Cloud and Storage Boxes — through local stdio.</p>
+    <h1>Hetzner <span>Plugin</span></h1>
+    <p class="tagline" data-i18n="tagline">Manage Hetzner Cloud and Storage Boxes from your MCP host over a local stdio connection.</p>
 
     <button class="install-box" type="button" onclick="copyInstall(this)">
       <code>codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace</code>
-      <span class="copy-icon" data-i18n="copy">⎘ Copy Codex setup</span>
+      <span class="copy-icon" data-i18n="copy">⎘ Copy install commands</span>
     </button>
 
     <div class="hero-links">
@@ -234,15 +238,15 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
 
     <div class="stats">
       <div class="stat"><div class="num">264</div><div class="label" data-i18n="stat-tools">Total tools</div></div>
-      <div class="stat"><div class="num">222</div><div class="label" data-i18n="stat-generated">OpenAPI operations</div></div>
+      <div class="stat"><div class="num">222</div><div class="label" data-i18n="stat-generated">OpenAPI tools</div></div>
       <div class="stat"><div class="num">42</div><div class="label" data-i18n="stat-focused">Focused tools</div></div>
       <div class="stat"><div class="num">2</div><div class="label" data-i18n="stat-apis">APIs</div></div>
     </div>
 
     <div class="section">
       <h2 data-i18n="section-tools">Tools</h2>
-      <p class="tools-breakdown" data-i18n="tools-breakdown">222 generated OpenAPI operations (190 Cloud + 32 Unified) and 42 focused tools across six groups.</p>
-      <p style="font-size:13px;color:var(--muted);margin:-8px 0 16px;" data-i18n="tools-note">⚠ marks destructive or hard-to-reverse operations.</p>
+      <p class="tools-breakdown" data-i18n="tools-breakdown">222 OpenAPI-generated tools (190 Cloud + 32 Unified) and 42 focused tools across six groups.</p>
+      <p style="font-size:13px;color:var(--muted);margin:-8px 0 16px;" data-i18n="tools-note">⚠ marks destructive or hard-to-reverse operations; € marks operations that create or change billable resources.</p>
       <div class="categories">
 
         <div class="category">
@@ -250,15 +254,15 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
             <span class="category-name" data-i18n="cat-servers">Servers</span>
             <span class="category-count">7</span>
           </div>
-          <p class="category-desc" data-i18n="cat-servers-desc">Create, power on/off/reboot, and delete cloud servers.</p>
+          <p class="category-desc" data-i18n="cat-servers-desc">Create, start, stop, reboot, and delete cloud servers.</p>
           <div class="tool-list">
-            <span class="tool-tag">list_servers</span>
-            <span class="tool-tag">get_server</span>
-            <span class="tool-tag">create_server</span>
-            <span class="tool-tag destructive">delete_server ⚠</span>
-            <span class="tool-tag">power_on</span>
-            <span class="tool-tag destructive">power_off ⚠</span>
-            <span class="tool-tag destructive">reboot ⚠</span>
+            <span class="tool-tag">hetzner_list_servers</span>
+            <span class="tool-tag">hetzner_get_server</span>
+            <span class="tool-tag billable">hetzner_create_server €</span>
+            <span class="tool-tag destructive">hetzner_delete_server ⚠</span>
+            <span class="tool-tag">hetzner_power_on_server</span>
+            <span class="tool-tag destructive">hetzner_power_off_server ⚠</span>
+            <span class="tool-tag destructive">hetzner_reboot_server ⚠</span>
           </div>
         </div>
 
@@ -269,10 +273,10 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
           </div>
           <p class="category-desc" data-i18n="cat-ssh-desc">Manage SSH public keys for server authentication.</p>
           <div class="tool-list">
-            <span class="tool-tag">list_ssh_keys</span>
-            <span class="tool-tag">get_ssh_key</span>
-            <span class="tool-tag">create_ssh_key</span>
-            <span class="tool-tag destructive">delete_ssh_key ⚠</span>
+            <span class="tool-tag">hetzner_list_ssh_keys</span>
+            <span class="tool-tag">hetzner_get_ssh_key</span>
+            <span class="tool-tag">hetzner_create_ssh_key</span>
+            <span class="tool-tag destructive">hetzner_delete_ssh_key ⚠</span>
           </div>
         </div>
 
@@ -281,12 +285,12 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
             <span class="category-name" data-i18n="cat-volumes">Cloud Volumes</span>
             <span class="category-count">4</span>
           </div>
-          <p class="category-desc" data-i18n="cat-volumes-desc">Attach and detach persistent block storage volumes.</p>
+          <p class="category-desc" data-i18n="cat-volumes-desc">Attach or detach persistent block storage volumes.</p>
           <div class="tool-list">
-            <span class="tool-tag">list_volumes</span>
-            <span class="tool-tag">get_volume</span>
-            <span class="tool-tag destructive">attach_volume ⚠</span>
-            <span class="tool-tag destructive">detach_volume ⚠</span>
+            <span class="tool-tag">hetzner_list_volumes</span>
+            <span class="tool-tag">hetzner_get_volume</span>
+            <span class="tool-tag destructive">hetzner_attach_volume ⚠</span>
+            <span class="tool-tag destructive">hetzner_detach_volume ⚠</span>
           </div>
         </div>
 
@@ -295,23 +299,23 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
             <span class="category-name" data-i18n="cat-metrics">Metrics &amp; RAM</span>
             <span class="category-count">2</span>
           </div>
-          <p class="category-desc" data-i18n="cat-metrics-desc">CPU, disk I/O, network metrics — and RAM via SSH (the Metrics API doesn't expose memory).</p>
+          <p class="category-desc" data-i18n="cat-metrics-desc">Read CPU, disk I/O, and network metrics. RAM usage is queried over SSH because the Metrics API does not expose memory.</p>
           <div class="tool-list">
-            <span class="tool-tag">get_server_metrics</span>
-            <span class="tool-tag">get_server_ram</span>
+            <span class="tool-tag">hetzner_get_server_metrics</span>
+            <span class="tool-tag">hetzner_get_server_ram</span>
           </div>
         </div>
 
         <div class="category">
           <div class="category-header">
-            <span class="category-name" data-i18n="cat-reference">Reference</span>
+            <span class="category-name" data-i18n="cat-reference">Reference data</span>
             <span class="category-count">3</span>
           </div>
           <p class="category-desc" data-i18n="cat-reference-desc">Browse available server types, OS images, and datacenter locations.</p>
           <div class="tool-list">
-            <span class="tool-tag">list_server_types</span>
-            <span class="tool-tag">list_images</span>
-            <span class="tool-tag">list_locations</span>
+            <span class="tool-tag">hetzner_list_server_types</span>
+            <span class="tool-tag">hetzner_list_images</span>
+            <span class="tool-tag">hetzner_list_locations</span>
           </div>
         </div>
 
@@ -320,13 +324,30 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
             <span class="category-name" data-i18n="cat-storage">Storage Boxes</span>
             <span class="category-count">22</span>
           </div>
-          <p class="category-desc" data-i18n="cat-storage-desc">Full CRUD for Hetzner Storage Boxes — subaccounts, snapshots, access settings, and scheduled backup plans.</p>
+          <p class="category-desc" data-i18n="cat-storage-desc">Manage Hetzner Storage Boxes, including subaccounts, snapshots, access settings, and automatic snapshot schedules.</p>
           <div class="tool-list">
-            <span class="tool-tag">list / get / create</span>
-            <span class="tool-tag">update / delete</span>
-            <span class="tool-tag">subaccounts</span>
-            <span class="tool-tag">snapshots</span>
-            <span class="tool-tag">access settings</span>
+            <span class="tool-tag">hetzner_list_storage_boxes</span>
+            <span class="tool-tag">hetzner_get_storage_box</span>
+            <span class="tool-tag billable">hetzner_create_storage_box €</span>
+            <span class="tool-tag">hetzner_update_storage_box</span>
+            <span class="tool-tag destructive">hetzner_delete_storage_box ⚠</span>
+            <span class="tool-tag">hetzner_list_storage_box_subaccounts</span>
+            <span class="tool-tag">hetzner_create_storage_box_subaccount</span>
+            <span class="tool-tag">hetzner_update_storage_box_subaccount</span>
+            <span class="tool-tag destructive">hetzner_delete_storage_box_subaccount ⚠</span>
+            <span class="tool-tag">hetzner_list_storage_box_snapshots</span>
+            <span class="tool-tag">hetzner_create_storage_box_snapshot</span>
+            <span class="tool-tag destructive">hetzner_delete_storage_box_snapshot ⚠</span>
+            <span class="tool-tag">hetzner_list_storage_box_folders</span>
+            <span class="tool-tag">hetzner_change_storage_box_protection</span>
+            <span class="tool-tag destructive billable">hetzner_change_storage_box_type ⚠ €</span>
+            <span class="tool-tag destructive">hetzner_reset_storage_box_password ⚠</span>
+            <span class="tool-tag">hetzner_update_storage_box_access_settings</span>
+            <span class="tool-tag">hetzner_enable_storage_box_snapshot_plan</span>
+            <span class="tool-tag">hetzner_disable_storage_box_snapshot_plan</span>
+            <span class="tool-tag">hetzner_get_storage_box_stats</span>
+            <span class="tool-tag">hetzner_assert_storage_box_space</span>
+            <span class="tool-tag destructive">hetzner_rollback_storage_box_snapshot ⚠</span>
           </div>
         </div>
 
@@ -335,7 +356,7 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
 
     <div class="section">
       <h2 data-i18n="section-setup">Quick Setup</h2>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;" data-i18n="setup-hint">For Codex CLI, copy the two commands above. For other MCP hosts, use the local stdio configuration below:</p>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;" data-i18n="setup-hint">Install with Codex CLI by running the two commands above. For other MCP hosts, use the local stdio configuration below:</p>
       <div class="code-block">
         <pre>{
   <span class="key">"mcpServers"</span>: {
@@ -352,7 +373,12 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
       </div>
       <div class="callout">
         <strong data-i18n="callout-title">Requirements:</strong>
-        <span data-i18n="callout-body"> Use Bun 1.1 or later and set <code>HETZNER_API_TOKEN</code>. Tokens are project-bound. This plugin uses local stdio only; it has no remote MCP endpoint or OAuth.</span>
+        <ul data-i18n="callout-body">
+          <li>Requires Bun 1.1+ and a project-bound <code>HETZNER_API_TOKEN</code>; the same token is used for both the Cloud and Unified APIs.</li>
+          <li>For RAM queries over SSH, the server needs a reachable public IPv4 address and the <code>free</code> command. The host needs <code>ssh</code> and a key available through <code>ssh-agent</code> or <code>~/.ssh</code>; fingerprint verification also requires <code>ssh-keyscan</code> and <code>ssh-keygen</code>.</li>
+          <li>Runs locally over stdio. No remote MCP endpoint or OAuth is provided.</li>
+          <li>Storage Box passwords are sent in plaintext over MCP. Protect MCP session logs and treat one-time credentials returned by actions as secrets.</li>
+        </ul>
       </div>
     </div>
 
@@ -372,120 +398,120 @@ codex plugin add hetzner-plugin@hetzner-marketplace</code>
 <script>
 const TRANSLATIONS = {
   en: {
-    tagline: "Manage Hetzner Cloud and Storage Boxes from your MCP host using local stdio MCP tools.",
-    copy: "⎘ Copy Codex setup",
+    tagline: "Manage Hetzner Cloud and Storage Boxes from your MCP host over a local stdio connection.",
+    copy: "⎘ Copy install commands",
     copied: "✓ Copied",
     docs: "Docs",
     "stat-tools": "Total tools",
-    "stat-generated": "OpenAPI operations",
+    "stat-generated": "OpenAPI tools",
     "stat-focused": "Focused tools",
     "stat-apis": "APIs",
     "section-tools": "Tools",
-    "tools-note": "⚠ marks destructive or hard-to-reverse operations.",
-    "tools-breakdown": "222 generated OpenAPI operations (190 Cloud + 32 Unified) and 42 focused tools across six groups.",
+    "tools-note": "⚠ marks destructive or hard-to-reverse operations; € marks operations that create or change billable resources.",
+    "tools-breakdown": "222 OpenAPI-generated tools (190 Cloud + 32 Unified) and 42 focused tools across six groups.",
     "cat-servers": "Servers",
-    "cat-servers-desc": "Create, power on/off/reboot, and delete cloud servers.",
+    "cat-servers-desc": "Create, start, stop, reboot, and delete cloud servers.",
     "cat-ssh": "SSH Keys",
     "cat-ssh-desc": "Manage SSH public keys for server authentication.",
     "cat-volumes": "Cloud Volumes",
-    "cat-volumes-desc": "Attach and detach persistent block storage volumes.",
+    "cat-volumes-desc": "Attach or detach persistent block storage volumes.",
     "cat-metrics": "Metrics & RAM",
-    "cat-metrics-desc": "CPU, disk I/O, network metrics — and RAM via SSH (the Metrics API doesn't expose memory).",
-    "cat-reference": "Reference",
+    "cat-metrics-desc": "Read CPU, disk I/O, and network metrics. RAM usage is queried over SSH because the Metrics API does not expose memory.",
+    "cat-reference": "Reference data",
     "cat-reference-desc": "Browse available server types, OS images, and datacenter locations.",
     "cat-storage": "Storage Boxes",
-    "cat-storage-desc": "Full CRUD for Hetzner Storage Boxes — subaccounts, snapshots, access settings, and scheduled backup plans.",
+    "cat-storage-desc": "Manage Hetzner Storage Boxes, including subaccounts, snapshots, access settings, and automatic snapshot schedules.",
     "section-setup": "Quick Setup",
-    "setup-hint": "For Codex CLI, copy the two commands above. For other MCP hosts, use the local stdio configuration below:",
+    "setup-hint": "Install with Codex CLI by running the two commands above. For other MCP hosts, use the local stdio configuration below:",
     "callout-title": "Requirements:",
-    "callout-body": " Use Bun 1.1 or later and set <code>HETZNER_API_TOKEN</code>. Tokens are project-bound. This plugin uses local stdio only; it has no remote MCP endpoint or OAuth.",
+    "callout-body": "<li>Requires Bun 1.1+ and a project-bound <code>HETZNER_API_TOKEN</code>; the same token is used for both the Cloud and Unified APIs.</li><li>For RAM queries over SSH, the server needs a reachable public IPv4 address and the <code>free</code> command. The host needs <code>ssh</code> and a key available through <code>ssh-agent</code> or <code>~/.ssh</code>; fingerprint verification also requires <code>ssh-keyscan</code> and <code>ssh-keygen</code>.</li><li>Runs locally over stdio. No remote MCP endpoint or OAuth is provided.</li><li>Storage Box passwords are sent in plaintext over MCP. Protect MCP session logs and treat one-time credentials returned by actions as secrets.</li>",
   },
   zh: {
-    tagline: "透過支援 MCP 的主機，以本機 stdio 工具管理 Hetzner Cloud 與 Storage Box。",
-    copy: "⎘ 複製 Codex 安裝指令",
+    tagline: "透過 MCP 主機的本機 stdio 連線，管理 Hetzner Cloud 與 Storage Box。",
+    copy: "⎘ 複製安裝指令",
     copied: "✓ 已複製",
     docs: "文件",
     "stat-tools": "工具總數",
-    "stat-generated": "OpenAPI 操作",
+    "stat-generated": "OpenAPI 工具",
     "stat-focused": "精選工具",
     "stat-apis": "API",
     "section-tools": "工具",
-    "tools-note": "⚠ 標示破壞性或難以復原的操作。",
-    "tools-breakdown": "222 個 OpenAPI 操作工具（Cloud 190 個、Unified 32 個），以及下方六個分類中的 42 個精選工具。",
+    "tools-note": "⚠ 標示具破壞性或難以復原的操作；€ 標示建立資源或變更付費方案的操作。",
+    "tools-breakdown": "由 OpenAPI 規格產生的 222 個工具（Cloud 190 個、Unified 32 個），另有分為六類的 42 個精選工具。",
     "cat-servers": "伺服器",
-    "cat-servers-desc": "建立、開關機、重新開機、刪除雲端伺服器。",
+    "cat-servers-desc": "建立、啟動、關閉、重新開機或刪除雲端伺服器。",
     "cat-ssh": "SSH 金鑰",
     "cat-ssh-desc": "管理用於伺服器認證的 SSH 公鑰。",
     "cat-volumes": "雲端磁碟區",
-    "cat-volumes-desc": "掛載與卸載持久性區塊儲存磁碟區。",
+    "cat-volumes-desc": "掛載或卸載持久性區塊儲存磁碟區。",
     "cat-metrics": "指標與記憶體",
-    "cat-metrics-desc": "CPU、磁碟 I/O、網路指標 — 以及透過 SSH 取得 RAM 使用量（Metrics API 不提供記憶體資料）。",
+    "cat-metrics-desc": "查詢 CPU、磁碟 I/O 與網路指標；Hetzner Metrics API 不提供 RAM 指標，因此改透過 SSH 查詢。",
     "cat-reference": "參考資料",
     "cat-reference-desc": "瀏覽可用的伺服器規格、作業系統映像與資料中心位置。",
     "cat-storage": "Storage Box",
-    "cat-storage-desc": "Hetzner Storage Box 完整 CRUD — 子帳號、快照、存取設定與自動備份排程。",
+    "cat-storage-desc": "管理 Hetzner Storage Box、子帳號、快照與存取設定，並設定自動快照排程。",
     "section-setup": "快速設定",
-    "setup-hint": "使用 Codex CLI 時，複製上方兩行指令。其他 MCP 主機可使用下方本機 stdio 設定：",
+    "setup-hint": "在 Codex CLI 執行上方兩條指令即可安裝；其他 MCP 主機請使用下方本機 stdio 設定：",
     "callout-title": "需求：",
-    "callout-body": " 需要 Bun 1.1 以上並設定 <code>HETZNER_API_TOKEN</code>。Token 僅存取所屬的 project。此 plugin 僅提供本機 stdio，不提供遠端 MCP 端點或 OAuth。",
+    "callout-body": "<li>需要 Bun 1.1 以上版本與專案綁定的 <code>HETZNER_API_TOKEN</code>；同一個 API 憑證會用於 Cloud API 與 Unified API。</li><li>透過 SSH 查詢 RAM 時，伺服器需有可連線的公用 IPv4 位址與 <code>free</code> 指令。本機需有 <code>ssh</code>，且私鑰可由 <code>ssh-agent</code> 使用或存放在 <code>~/.ssh</code>；若要驗證主機指紋，還需 <code>ssh-keyscan</code> 與 <code>ssh-keygen</code>。</li><li>透過本機 stdio 執行，不提供遠端 MCP 端點或 OAuth。</li><li>Storage Box 密碼會以明文透過 MCP 傳送。請保護 MCP 工作階段記錄，並將操作回傳的一次性憑證視為機密。</li>",
   },
   ja: {
-    tagline: "MCP ホストからローカル stdio MCP ツールを使って Hetzner Cloud と Storage Box を管理できます。",
-    copy: "⎘ Codex の設定をコピー",
+    tagline: "MCP ホストからローカル stdio 接続で Hetzner Cloud と Storage Box を管理できます。",
+    copy: "⎘ インストールコマンドをコピー",
     copied: "✓ コピーしました",
     docs: "ドキュメント",
-    "stat-tools": "合計ツール",
-    "stat-generated": "OpenAPI 操作",
+    "stat-tools": "ツール総数",
+    "stat-generated": "OpenAPI ツール",
     "stat-focused": "専用ツール",
     "stat-apis": "API",
     "section-tools": "ツール",
-    "tools-note": "⚠ は破壊的または元に戻しにくい操作を示します。",
-    "tools-breakdown": "生成された OpenAPI 操作ツール 222 個（Cloud 190 個、Unified 32 個）と、6 分類の専用ツール 42 個です。",
+    "tools-note": "⚠ は破壊的または元に戻しにくい操作、€ は課金対象のリソース作成やプラン変更を示します。",
+    "tools-breakdown": "OpenAPI から生成されたツール 222 個（Cloud 190 個、Unified 32 個）と、6 分類の専用ツール 42 個です。",
     "cat-servers": "サーバー",
-    "cat-servers-desc": "クラウドサーバーの作成、電源操作、再起動、削除。",
+    "cat-servers-desc": "クラウドサーバーの作成、起動、停止、再起動、削除。",
     "cat-ssh": "SSH キー",
     "cat-ssh-desc": "サーバー認証用 SSH 公開鍵の管理。",
     "cat-volumes": "クラウドボリューム",
     "cat-volumes-desc": "永続ブロックストレージのアタッチとデタッチ。",
     "cat-metrics": "メトリクスと RAM",
-    "cat-metrics-desc": "CPU・ディスク I/O・ネットワークメトリクス — SSH 経由の RAM 使用量も取得可能（Metrics API はメモリを公開していないため）。",
-    "cat-reference": "リファレンス",
+    "cat-metrics-desc": "CPU・ディスク I/O・ネットワークのメトリクスを取得します。Metrics API は RAM を提供していないため、RAM 使用量は SSH 経由で確認します。",
+    "cat-reference": "参照データ",
     "cat-reference-desc": "利用可能なサーバータイプ、OS イメージ、データセンターの一覧。",
     "cat-storage": "ストレージボックス",
-    "cat-storage-desc": "Hetzner Storage Box の完全な CRUD — サブアカウント、スナップショット、アクセス設定、自動バックアッププラン。",
+    "cat-storage-desc": "Hetzner Storage Box の管理機能（サブアカウント、スナップショット、アクセス設定、自動スナップショットのスケジュール設定）を提供します。",
     "section-setup": "クイックセットアップ",
-    "setup-hint": "Codex CLI では上の 2 行をコピーしてください。その他の MCP ホストでは下のローカル stdio 設定を使います：",
+    "setup-hint": "Codex CLI では上の 2 つのコマンドを実行してインストールします。その他の MCP ホストでは下のローカル stdio 設定を使います：",
     "callout-title": "必要条件：",
-    "callout-body": " Bun 1.1 以降と <code>HETZNER_API_TOKEN</code> が必要です。トークンはプロジェクト単位です。このプラグインはローカル stdio のみで、リモート MCP エンドポイントや OAuth はありません。",
+    "callout-body": "<li>Bun 1.1 以降とプロジェクト単位の <code>HETZNER_API_TOKEN</code> が必要です。同じトークンを Cloud API と Unified API の両方で使用します。</li><li>SSH 経由で RAM を確認するには、外部から接続できるパブリック IPv4 とサーバー上の <code>free</code> コマンドが必要です。実行元には <code>ssh</code> と、<code>ssh-agent</code> で利用できるか <code>~/.ssh</code> に保存された秘密鍵が必要です。ホスト鍵のフィンガープリントを検証する場合は <code>ssh-keyscan</code> と <code>ssh-keygen</code> も必要です。</li><li>ローカル stdio で動作します。リモート MCP エンドポイントや OAuth は提供しません。</li><li>Storage Box のパスワードは MCP 経由で平文送信されます。MCP セッションログを保護し、操作で返される一時認証情報は秘密情報として扱ってください。</li>",
   },
   ko: {
-    tagline: "MCP 호스트에서 로컬 stdio MCP 도구로 Hetzner Cloud와 Storage Box를 관리하세요.",
-    copy: "⎘ Codex 설정 복사",
+    tagline: "MCP 호스트에서 로컬 stdio 연결로 Hetzner Cloud와 Storage Box를 관리하세요.",
+    copy: "⎘ 설치 명령 복사",
     copied: "✓ 복사됨",
     docs: "문서",
     "stat-tools": "전체 도구",
-    "stat-generated": "OpenAPI 작업",
+    "stat-generated": "OpenAPI 도구",
     "stat-focused": "전용 도구",
     "stat-apis": "API",
     "section-tools": "도구",
-    "tools-note": "⚠ 는 파괴적이거나 되돌리기 어려운 작업을 나타냅니다.",
-    "tools-breakdown": "생성된 OpenAPI 작업 도구 222개(Cloud 190개, Unified 32개)와 6개 분류의 전용 도구 42개입니다.",
+    "tools-note": "⚠는 파괴적이거나 되돌리기 어려운 작업, €는 과금 대상 리소스를 생성하거나 요금제에 영향을 주는 작업을 나타냅니다.",
+    "tools-breakdown": "OpenAPI 사양에서 생성된 도구 222개(Cloud 190개, Unified 32개)와 6개 분류의 전용 도구 42개입니다.",
     "cat-servers": "서버",
-    "cat-servers-desc": "클라우드 서버 생성, 전원 켜기/끄기, 재시작, 삭제.",
+    "cat-servers-desc": "클라우드 서버 생성, 시작, 중지, 재시작, 삭제.",
     "cat-ssh": "SSH 키",
     "cat-ssh-desc": "서버 인증용 SSH 공개 키 관리.",
     "cat-volumes": "클라우드 볼륨",
     "cat-volumes-desc": "영구 블록 스토리지 볼륨 연결 및 분리.",
     "cat-metrics": "메트릭 및 RAM",
-    "cat-metrics-desc": "CPU, 디스크 I/O, 네트워크 메트릭 — SSH를 통한 RAM 사용량 조회 (Metrics API는 메모리를 제공하지 않음).",
-    "cat-reference": "참조",
+    "cat-metrics-desc": "CPU, 디스크 I/O, 네트워크 메트릭을 조회합니다. Metrics API는 RAM 정보를 제공하지 않으므로 RAM 사용량은 SSH로 확인합니다.",
+    "cat-reference": "참조 데이터",
     "cat-reference-desc": "사용 가능한 서버 유형, OS 이미지, 데이터센터 위치 조회.",
     "cat-storage": "스토리지 박스",
-    "cat-storage-desc": "Hetzner Storage Box 전체 CRUD — 서브계정, 스냅샷, 접근 설정, 자동 백업 플랜.",
+    "cat-storage-desc": "Hetzner Storage Box, 서브계정, 스냅샷, 접근 설정을 관리하고 자동 스냅샷 일정을 설정합니다.",
     "section-setup": "빠른 설정",
-    "setup-hint": "Codex CLI에서는 위의 두 명령을 복사하세요. 다른 MCP 호스트에서는 아래 로컬 stdio 설정을 사용하세요:",
+    "setup-hint": "Codex CLI에서 위의 두 명령을 실행해 설치하세요. 다른 MCP 호스트에서는 아래 로컬 stdio 설정을 사용하세요:",
     "callout-title": "요구 사항:",
-    "callout-body": " Bun 1.1 이상과 <code>HETZNER_API_TOKEN</code>이 필요합니다. 토큰은 프로젝트에 종속됩니다. 이 플러그인은 로컬 stdio만 제공하며 원격 MCP 엔드포인트나 OAuth는 제공하지 않습니다.",
+    "callout-body": "<li>Bun 1.1 이상과 프로젝트 범위로 제한된 <code>HETZNER_API_TOKEN</code>이 필요하며, 동일한 토큰을 Cloud API와 Unified API 모두에 사용합니다.</li><li>SSH로 RAM을 조회하려면 서버에 외부에서 접속할 수 있는 공인 IPv4 주소와 <code>free</code> 명령이 필요합니다. 실행 호스트에는 <code>ssh</code>와 <code>ssh-agent</code>에서 사용할 수 있거나 <code>~/.ssh</code>에 저장된 개인 키가 필요합니다. 호스트 키 지문을 검증하려면 <code>ssh-keyscan</code>과 <code>ssh-keygen</code>도 필요합니다.</li><li>로컬 stdio로 실행되며 원격 MCP 엔드포인트나 OAuth는 제공하지 않습니다.</li><li>Storage Box 비밀번호는 MCP를 통해 평문으로 전송됩니다. MCP 세션 로그를 보호하고 작업에서 반환되는 일회성 인증 정보는 비밀로 취급하세요.</li>",
   }
 };
 
