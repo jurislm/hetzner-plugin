@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.7](https://github.com/jurislm/hetzner-plugin/compare/v2.1.6...v2.1.7) (2026-09-29)
+
+
+### Documentation
+
+* **website:** simplify hero title ([e085f1d](https://github.com/jurislm/hetzner-plugin/commit/e085f1d324c5bd25c1edbcc6b0912bd81e273f1e))
+* **website:** simplify hero title ([79ad69a](https://github.com/jurislm/hetzner-plugin/commit/79ad69a0f3e40e26f968e6951f0425f4ba274823))
+
 ## [2.1.6](https://github.com/jurislm/hetzner-plugin/compare/v2.1.5...v2.1.6) (2026-09-29)
 
 
