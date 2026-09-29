@@ -43,6 +43,8 @@ test("official website content, counts, install commands, and metadata agree", a
     .map(([, locale]) => locale);
   expect(languageOptions).toEqual(["en", "zh"]);
   expect(page).toContain("currentLang = TRANSLATIONS[lang] ? lang : 'en';");
+  expect(page).toContain('<span class="tool-tag">hetzner_attach_volume</span>');
+  expect(page).toContain('<span class="tool-tag destructive">hetzner_detach_volume ⚠</span>');
 
   expect(portable.homepage).toBe(websiteUrl);
   expect(portable.repository).toBe(repositoryUrl);
