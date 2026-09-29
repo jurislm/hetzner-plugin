@@ -33,9 +33,16 @@ test("official website content, counts, install commands, and metadata agree", a
   expect(page).toContain(`const CODEX_INSTALL_COMMANDS = ${JSON.stringify(codexInstallCommands)};`);
   expect(page).toContain("navigator.clipboard.writeText(CODEX_INSTALL_COMMANDS)");
 
-  for (const locale of ["en", "zh", "ja", "ko"]) {
+  for (const locale of ["en", "zh"]) {
     expect(page).toContain(locale + ": {");
   }
+  for (const locale of ["ja", "ko"]) {
+    expect(page).not.toContain(locale + ": {");
+  }
+  const languageOptions = [...page.matchAll(/<button class="lang-btn(?: active)?" onclick="setLang\('([^']+)'\)">/g)]
+    .map(([, locale]) => locale);
+  expect(languageOptions).toEqual(["en", "zh"]);
+  expect(page).toContain("currentLang = TRANSLATIONS[lang] ? lang : 'en';");
 
   expect(portable.homepage).toBe(websiteUrl);
   expect(portable.repository).toBe(repositoryUrl);
