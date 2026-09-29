@@ -2,6 +2,15 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.5](https://github.com/jurislm/hetzner-plugin/compare/v2.1.4...v2.1.5) (2026-09-29)
+
+
+### Documentation
+
+* update README and add agent guidance ([cf4bca9](https://github.com/jurislm/hetzner-plugin/commit/cf4bca9baed63ef32d5a827ab9e36555d73fb045))
+* update README and add agent guidance ([345766b](https://github.com/jurislm/hetzner-plugin/commit/345766be48bb53baff291438077a5702d5e6779f))
+* update README and add agent guidance ([#59](https://github.com/jurislm/hetzner-plugin/issues/59)) ([cf4bca9](https://github.com/jurislm/hetzner-plugin/commit/cf4bca9baed63ef32d5a827ab9e36555d73fb045))
+
 ## [2.1.4](https://github.com/jurislm/hetzner-plugin/compare/v2.1.3...v2.1.4) (2026-09-28)
 
 
