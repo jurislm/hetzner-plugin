@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.6](https://github.com/jurislm/hetzner-plugin/compare/v2.1.5...v2.1.6) (2026-09-29)
+
+
+### Documentation
+
+* **website:** publish official Hetzner Plugin site ([1d7f59d](https://github.com/jurislm/hetzner-plugin/commit/1d7f59d41965d482687cc21184b0540c5fa6d23e))
+* **website:** publish official Pages site ([bc3f369](https://github.com/jurislm/hetzner-plugin/commit/bc3f3695fde9631a34aaae3c07172bc30e2eef5c))
+
 ## [2.1.5](https://github.com/jurislm/hetzner-plugin/compare/v2.1.4...v2.1.5) (2026-09-29)
 
 
