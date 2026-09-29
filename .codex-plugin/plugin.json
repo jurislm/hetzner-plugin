@@ -22,7 +22,7 @@
     ],
     "composerIcon": "./assets/hetzner.png",
     "logo": "./assets/hetzner.png",
-    "websiteURL": "https://github.com/jurislm/hetzner-plugin",
+    "websiteURL": "https://jurislm.github.io/hetzner-plugin/",
     "defaultPrompt": "List my Hetzner Cloud servers."
   }
 }
