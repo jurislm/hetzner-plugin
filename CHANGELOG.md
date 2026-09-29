@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.8](https://github.com/jurislm/hetzner-plugin/compare/v2.1.7...v2.1.8) (2026-09-29)
+
+
+### Documentation
+
+* **website:** align copy with current plugin ([854fc11](https://github.com/jurislm/hetzner-plugin/commit/854fc119ddbc365f2538de65840392356e346c58))
+
 ## [2.1.7](https://github.com/jurislm/hetzner-plugin/compare/v2.1.6...v2.1.7) (2026-09-29)
 
 
