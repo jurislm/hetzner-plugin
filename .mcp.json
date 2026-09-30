@@ -3,7 +3,8 @@
     "hetzner": {
       "type": "stdio",
       "command": "bunx",
-      "args": ["-y", "@jurislm/hetzner-plugin@latest"]
+      "args": ["-y", "@jurislm/hetzner-plugin@latest"],
+      "env_vars": ["HETZNER_API_TOKEN"]
     }
   }
 }

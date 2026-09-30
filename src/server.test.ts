@@ -145,6 +145,25 @@ describe("generated Hetzner MCP server", () => {
     await server.close();
   });
 
+  test("omits raw response-read failures from generated and retained errors", async () => {
+    const server = createServer(config, async () => new Response(new ReadableStream({
+      start(controller) { controller.error(new Error("single-token raw provider body")); },
+    }), { headers: { "content-type": "application/json" } }));
+    const client = new Client({ name: "test", version: "0.0.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    try {
+      const generated = await client.callTool({ name: "hetzner_cloud_list_servers", arguments: {} }) as CallToolResult;
+      const retained = await client.callTool({ name: "hetzner_list_server_types", arguments: {} }) as CallToolResult;
+      expect(generated).toMatchObject({ isError: true, content: [{ type: "text", text: JSON.stringify({ error: { code: "HETZNER_TOOL_ERROR", message: "Hetzner API returned an unreadable response body" } }) }] });
+      expect(retained).toEqual({ isError: true, content: [{ type: "text", text: "Error: Hetzner API returned an unreadable response body" }] });
+      for (const result of [generated, retained]) expect(JSON.stringify(result)).not.toContain("raw provider body");
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
   test("routes a retained tool through createServer injection without process credentials", async () => {
     const previousToken = process.env.HETZNER_API_TOKEN;
     delete process.env.HETZNER_API_TOKEN;

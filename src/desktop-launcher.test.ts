@@ -8,7 +8,7 @@ test("desktop launcher loads only the Hetzner credential and preserves stdio", (
   try {
     const bin = join(fixtureHome, ".bun/bin");
     mkdirSync(bin, { recursive: true });
-    writeFileSync(join(fixtureHome, ".zshenv"), "print -r -- startup-banner\nprint -u2 -- startup-diagnostic\nexport HETZNER_API_TOKEN=fixture-token\nexport UNRELATED_SECRET=fixture-secret\n");
+    writeFileSync(join(fixtureHome, ".zshenv"), "print -r -- startup-banner\nprint -u2 -- startup-diagnostic\nexport HETZNER_API_TOKEN=fixture-token\nexport UNRELATED_SECRET=fixture-secret\n[[ -f \"$HOME/absent\" ]] && source \"$HOME/absent\"\n");
     const executable = join(bin, "bunx");
     writeFileSync(executable, '#!/bin/sh\n[ "$HETZNER_API_TOKEN" = fixture-token ] || exit 11\n[ -z "${UNRELATED_SECRET+x}" ] || exit 12\n[ -z "${PARENT_SECRET+x}" ] || exit 13\n[ "$SSH_AUTH_SOCK" = /fixture-agent ] || exit 16\n[ "$1" = -y ] || exit 14\n[ "$2" = @jurislm/hetzner-plugin@latest ] || exit 15\ncat\n');
     chmodSync(executable, 0o700);
@@ -21,5 +21,42 @@ test("desktop launcher loads only the Hetzner credential and preserves stdio", (
     expect(new TextDecoder().decode(result.stderr)).toBe("startup-diagnostic\n");
   } finally {
     rmSync(fixtureHome, { recursive: true, force: true });
+  }
+});
+
+test("desktop launcher stops when zsh startup fails", () => {
+  const fixtureHome = mkdtempSync(join(tmpdir(), "hetzner-desktop-failure-"));
+  try {
+    const bin = join(fixtureHome, ".bun/bin");
+    mkdirSync(bin, { recursive: true });
+    writeFileSync(join(fixtureHome, ".zshenv"), "print -u2 -- startup-failure\nexport HETZNER_API_TOKEN=fixture-token\nreturn 9\n");
+    const executable = join(bin, "bunx");
+    writeFileSync(executable, "#!/bin/sh\nprintf 'unexpected-launch'\n");
+    chmodSync(executable, 0o700);
+    const result = Bun.spawnSync(["/bin/zsh", "-f", resolve("launchers/hetzner-desktop.zsh")], {
+      env: { HOME: fixtureHome, ZDOTDIR: fixtureHome, PATH: "/usr/bin:/bin" }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(result.exitCode).toBe(9);
+    expect(new TextDecoder().decode(result.stdout)).toBe("");
+    expect(new TextDecoder().decode(result.stderr)).toBe("startup-failure\n");
+  } finally {
+    rmSync(fixtureHome, { recursive: true, force: true });
+  }
+});
+
+test("desktop launcher checks startup syntax before executing exports", () => {
+  const home = mkdtempSync(join(tmpdir(), "hetzner-syntax-"));
+  try {
+    const bin = join(home, ".bun/bin");
+    mkdirSync(bin, { recursive: true });
+    writeFileSync(join(home, ".zshenv"), "export HETZNER_API_TOKEN=fixture-token\nif true; then\n");
+    writeFileSync(join(bin, "bunx"), "#!/bin/sh\nprintf unexpected-launch\n");
+    chmodSync(join(bin, "bunx"), 0o700);
+    const result = Bun.spawnSync(["/bin/zsh", "-f", resolve("launchers/hetzner-desktop.zsh")], { env: { HOME: home, ZDOTDIR: home, PATH: "/usr/bin:/bin" }, stdout: "pipe", stderr: "pipe" });
+    expect(result.exitCode).not.toBe(0);
+    expect(new TextDecoder().decode(result.stdout)).toBe("");
+    expect(new TextDecoder().decode(result.stderr)).not.toContain("fixture-token");
+  } finally {
+    rmSync(home, { recursive: true, force: true });
   }
 });
