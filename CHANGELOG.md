@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.11](https://github.com/jurislm/hetzner-plugin/compare/v2.1.10...v2.1.11) (2026-09-30)
+
+
+### Bug Fixes
+
+* align native credentials and safe plugin boundaries ([#70](https://github.com/jurislm/hetzner-plugin/issues/70)) ([ef5f0e4](https://github.com/jurislm/hetzner-plugin/commit/ef5f0e432505f210f116160863f9d4977a1dcc11))
+
 ## [2.1.10](https://github.com/jurislm/hetzner-plugin/compare/v2.1.9...v2.1.10) (2026-09-30)
 
 
