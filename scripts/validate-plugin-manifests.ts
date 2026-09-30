@@ -3,6 +3,8 @@ const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marke
 const parsed = Object.fromEntries(await Promise.all(files.map(async (file) => [file, JSON.parse(await Bun.file(file).text()) as Json])));
 const packageJson = JSON.parse(await Bun.file("package.json").text()) as Json;
 const packageVersion = String(packageJson.version);
+const repositoryUrl = "https://github.com/jurislm/hetzner-plugin";
+const officialWebsiteUrl = "https://jurislm.github.io/hetzner-plugin/";
 const portableKeys = ["$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords", "extensions"];
 const unexpectedPortableKeys = Object.keys(parsed["plugin.json"]).filter((key) => !portableKeys.includes(key));
 if (unexpectedPortableKeys.length > 0) throw new Error(`plugin.json contains non-portable fields: ${unexpectedPortableKeys.join(", ")}`);
@@ -15,16 +17,16 @@ for (const manifestInterface of [portableInterface, fallbackInterface]) {
   if (manifestInterface.category !== "Developer tools") throw new Error("Plugin interface category must match Woodpecker");
   if (JSON.stringify(manifestInterface.capabilities) !== JSON.stringify(["Read", "Write"])) throw new Error("Plugin capabilities must match Woodpecker");
   if (manifestInterface.composerIcon !== "./assets/hetzner.png" || manifestInterface.logo !== "./assets/hetzner.png") throw new Error("Plugin icons must use the shipped Hetzner PNG");
-  if (manifestInterface.websiteURL !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Plugin websiteURL must point to the public repository");
+  if (manifestInterface.websiteURL !== officialWebsiteUrl) throw new Error("Plugin websiteURL must point to the official GitHub Pages site");
 }
-if (parsed["plugin.json"].homepage !== "https://github.com/jurislm/hetzner-plugin" || parsed["plugin.json"].repository !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Portable manifest repository metadata must match Woodpecker");
-if ((parsed[".codex-plugin/plugin.json"].repository as string) !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Fallback manifest repository metadata must match Woodpecker");
+if (parsed["plugin.json"].homepage !== officialWebsiteUrl || parsed["plugin.json"].repository !== repositoryUrl) throw new Error("Portable manifest homepage and repository metadata must match their canonical URLs");
+if ((parsed[".codex-plugin/plugin.json"].repository as string) !== repositoryUrl) throw new Error("Fallback manifest repository metadata must match the public repository");
 if (parsed["mcp.json"].$schema !== "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json") throw new Error("mcp.json must use the portable Agent Plugins schema");
 if (((parsed[".cursor-plugin/marketplace.json"].owner as Json).name) !== "JurisLM") throw new Error("Cursor marketplace must include its required owner");
 const cursorMarketplacePlugins = parsed[".cursor-plugin/marketplace.json"].plugins as Json[];
 if (cursorMarketplacePlugins.some((plugin) => Object.keys(plugin).some((key) => !["name", "source", "description", "minClientVersions"].includes(key)))) throw new Error("Cursor marketplace plugin entries contain unsupported fields");
 const cursorPlugin = parsed[".cursor-plugin/plugin.json"];
-if (cursorPlugin.displayName !== "Hetzner Plugin" || (cursorPlugin.author as Json).name !== "JurisLM" || cursorPlugin.homepage !== "https://github.com/jurislm/hetzner-plugin" || cursorPlugin.repository !== "https://github.com/jurislm/hetzner-plugin") throw new Error("Cursor plugin must provide display and repository metadata");
+if (cursorPlugin.displayName !== "Hetzner Plugin" || (cursorPlugin.author as Json).name !== "JurisLM" || cursorPlugin.homepage !== officialWebsiteUrl || cursorPlugin.repository !== repositoryUrl) throw new Error("Cursor plugin must provide canonical website and repository metadata");
 for (const file of ["plugin.json", ".codex-plugin/plugin.json"]) if (parsed[file].name !== "hetzner-plugin" || parsed[file].version !== packageVersion) throw new Error(`${file} is not the portable Hetzner manifest for ${packageVersion}`);
 const server = (parsed[".mcp.json"].mcpServers as Json).hetzner as Json;
 if (server.type !== "stdio" || server.command !== "bunx" || "cwd" in server || "url" in server || "serverUrl" in server || !(server.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json must match the Woodpecker bunx stdio registration");

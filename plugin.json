@@ -1,13 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hetzner-plugin",
-  "version": "2.1.4",
+  "version": "2.1.8",
   "description": "Portable Hetzner Cloud and Storage Box MCP plugin using local stdio tools generated from official OpenAPI contracts.",
   "author": {
     "name": "JurisLM",
     "url": "https://github.com/jurislm"
   },
-  "homepage": "https://github.com/jurislm/hetzner-plugin",
+  "homepage": "https://jurislm.github.io/hetzner-plugin/",
   "repository": "https://github.com/jurislm/hetzner-plugin",
   "license": "MIT",
   "keywords": [
@@ -34,7 +34,7 @@
         ],
         "composerIcon": "./assets/hetzner.png",
         "logo": "./assets/hetzner.png",
-        "websiteURL": "https://github.com/jurislm/hetzner-plugin"
+        "websiteURL": "https://jurislm.github.io/hetzner-plugin/"
       }
     }
   }

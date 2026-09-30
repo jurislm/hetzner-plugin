@@ -1,6 +1,6 @@
 {
   "name": "@jurislm/hetzner-plugin",
-  "version": "2.1.4",
+  "version": "2.1.8",
   "description": "Portable local stdio MCP plugin for Hetzner Cloud and Storage Box APIs",
   "type": "module",
   "bin": {
@@ -8,6 +8,7 @@
   },
   "files": [
     "dist",
+    "launchers",
     "README.md",
     "LICENSE",
     "assets",

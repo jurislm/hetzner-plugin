@@ -19,6 +19,8 @@ export HETZNER_API_TOKEN="your-project-api-token"
 
 The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
 
+Read resource state before write operations. Some operations create billable resources or modify or delete live resources. Treat one-time credentials returned by explicit actions as secrets.
+
 To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `free`; the local host needs `ssh` and a private key available through `ssh-agent` or `~/.ssh`. Fingerprint verification also requires `ssh-keyscan` and `ssh-keygen`.
 
 ## Install
@@ -34,7 +36,7 @@ codex plugin add hetzner-plugin@hetzner-marketplace
 
 ### Codex desktop on macOS
 
-When Codex starts from the Dock or Finder, it does not read `~/.zshenv` or `~/.zshrc`. A token exported only by zsh is then absent from the bundled MCP process. To use a token already exported by `~/.zshenv`, keep the plugin installed and place this local override in `~/.codex/config.toml`:
+A Codex process launched from the Dock or Finder does not read zsh startup files. If your token is exported by `~/.zshenv`, copy [`launchers/hetzner-desktop.zsh`](launchers/hetzner-desktop.zsh) to `~/.codex/bin/hetzner-mcp.zsh`, then add this override to `~/.codex/config.toml`:
 
 ```toml
 [plugins."hetzner-plugin@hetzner-marketplace".mcp_servers.hetzner]
@@ -42,12 +44,17 @@ enabled = false
 
 [mcp_servers.hetzner]
 command = "/bin/zsh"
-args = ['-c', 'exec "$HOME/.bun/bin/bunx" -y @jurislm/hetzner-plugin@latest']
-enabled_tools = ["hetzner_cloud_list_servers", "hetzner_unified_list_storage_boxes", "hetzner_assert_storage_box_space"]
+args = ["-c", 'source "$HOME/.codex/bin/hetzner-mcp.zsh"']
 startup_timeout_sec = 30
 ```
 
-This launches the same published plugin through zsh without copying the token into the config file. Replace `$HOME/.bun/bin/bunx` if Bun is installed elsewhere; a Dock-launched app may not have Bun in `PATH`. The tool allowlist covers read-only acceptance. Check `codex mcp get hetzner`, then start a new Codex chat and call both list tools. Record the resolved package version, HTTP status, and returned counts. A registered tool alone does not establish API access: a missing tool means discovery did not reach the chat, `HETZNER_API_TOKEN is required` means the MCP process lacks the token, and HTTP 401 means Hetzner rejected it.
+The launcher uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, and `LANG`, and uses `$HOME/.bun/bin/bunx` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
+
+Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify actual tool availability and call `hetzner_cloud_list_servers` and `hetzner_unified_list_storage_boxes`. Record the resolved package version, HTTP status, and returned counts. A successful standalone stdio probe does not establish tool registration in an existing chat. Missing-token errors indicate a startup environment problem; HTTP 401 indicates Hetzner rejected the token.
+
+### Cursor
+
+The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`.
 
 ### Other MCP hosts
 
