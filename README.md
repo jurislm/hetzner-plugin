@@ -2,6 +2,8 @@
 
 Local stdio MCP plugin for Hetzner Cloud and Storage Box. It registers generated `hetzner_cloud_*` and `hetzner_unified_*` tools from the committed official OpenAPI snapshots, plus focused tools for servers, SSH keys, volumes, reference data, Storage Boxes, metrics, and server RAM over SSH.
 
+Follow the shared [JurisLM Plugin Architecture v1](https://github.com/jurislm/woodpecker-ci-plugin/blob/main/docs/plugin-architecture.md) for package, host configuration and acceptance boundaries.
+
 ## Scope
 
 This plugin is designed for local MCP hosts through stdio only. It does not provide a remote MCP endpoint or OAuth, and submission to the public OpenAI Plugins Directory is outside this repository's scope. Publishing the package on npm and GitHub does not make it a public-directory plugin.
@@ -17,7 +19,7 @@ Set `HETZNER_API_TOKEN` in the MCP host's environment:
 export HETZNER_API_TOKEN="your-project-api-token"
 ```
 
-The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
+The native Codex registration forwards `HETZNER_API_TOKEN` from its owning environment. The portable `mcp.json` keeps host-specific fields and credential defaults out of the package. The same token is sent to both the Cloud and Unified APIs. Hetzner tokens are project-bound, so this plugin accesses resources in the token's project.
 
 Read resource state before write operations. Some operations create billable resources or modify or delete live resources. Treat one-time credentials returned by explicit actions as secrets.
 
@@ -48,7 +50,7 @@ args = ["-f", "-c", 'source "$HOME/.codex/bin/hetzner-mcp.zsh"']
 startup_timeout_sec = 30
 ```
 
-The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, so startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and uses `$HOME/.bun/bin/bunx` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
+The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, and stops if sourcing fails. Startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and uses `$HOME/.bun/bin/bunx` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
 
 Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify actual tool availability and call `hetzner_cloud_list_servers` and `hetzner_unified_list_storage_boxes`. Record the resolved package version, HTTP status, and returned counts. A successful standalone stdio probe does not establish tool registration in an existing chat. Missing-token errors indicate a startup environment problem; HTTP 401 indicates Hetzner rejected the token.
 

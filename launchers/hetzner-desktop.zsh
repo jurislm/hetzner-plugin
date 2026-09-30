@@ -1,6 +1,6 @@
 #!/bin/zsh -f
 if [[ -r ${ZDOTDIR:-$HOME}/.zshenv ]]; then
-  source "${ZDOTDIR:-$HOME}/.zshenv" >/dev/null
+  source "${ZDOTDIR:-$HOME}/.zshenv" >/dev/null || exit $?
 fi
 if [[ -z ${HETZNER_API_TOKEN:-} ]]; then
   print -u2 -- 'HETZNER_API_TOKEN is required in the zsh startup environment'

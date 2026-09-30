@@ -98,11 +98,15 @@ export class HetznerClient {
     }
     if (!response.ok) throw new HetznerApiError(response.status, operation.method, path, `Hetzner API returned ${response.status} for ${operation.method} ${path}`);
     let data: T | null | string | BinaryEnvelope = null;
-    if (response.status !== 204) {
-      const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
-      if (contentType.includes("json")) data = await response.json() as T;
-      else if (contentType.startsWith("text/") || contentType.includes("xml")) data = await response.text();
-      else data = { encoding: "base64", contentType: contentType || "application/octet-stream", value: base64(await response.arrayBuffer()) };
+    try {
+      if (response.status !== 204) {
+        const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+        if (contentType.includes("json")) data = await response.json() as T;
+        else if (contentType.startsWith("text/") || contentType.includes("xml")) data = await response.text();
+        else data = { encoding: "base64", contentType: contentType || "application/octet-stream", value: base64(await response.arrayBuffer()) };
+      }
+    } catch {
+      throw new Error("Hetzner API returned an unreadable response body");
     }
     return { data: redactSensitive(data, oneTimeCredentialKeys(operation)), status: response.status, request: { method: operation.method, path } };
   }

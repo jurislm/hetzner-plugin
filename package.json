@@ -51,6 +51,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/bun": "1.4.2",
+    "ajv": "8.20.0",
     "eslint": "10.11.0",
     "json-schema-to-zod": "2.8.1",
     "openapi-typescript": "7.13.0",
