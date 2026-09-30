@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.10](https://github.com/jurislm/hetzner-plugin/compare/v2.1.9...v2.1.10) (2026-09-30)
+
+
+### Bug Fixes
+
+* keep shell startup output out of MCP stdout ([34e8217](https://github.com/jurislm/hetzner-plugin/commit/34e8217e2acc9c4ed17353970ec8d058f1891a70))
+* keep shell startup output out of MCP stdout ([a5c775f](https://github.com/jurislm/hetzner-plugin/commit/a5c775f3b645acc3233078565aa36de0b0c2781f))
+
 ## [2.1.9](https://github.com/jurislm/hetzner-plugin/compare/v2.1.8...v2.1.9) (2026-09-30)
 
 
