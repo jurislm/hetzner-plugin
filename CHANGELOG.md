@@ -2,6 +2,16 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.9](https://github.com/jurislm/hetzner-plugin/compare/v2.1.8...v2.1.9) (2026-09-30)
+
+
+### Bug Fixes
+
+* install zsh for publish validation ([6aed889](https://github.com/jurislm/hetzner-plugin/commit/6aed88925da27f4329777f1aaf9e6ac6ac5550eb))
+* preserve SSH agent access in desktop launcher ([406c27f](https://github.com/jurislm/hetzner-plugin/commit/406c27f1ab49d58e6a6849ab9600b4897a219440))
+* provide isolated Codex desktop credential launcher ([1307dd0](https://github.com/jurislm/hetzner-plugin/commit/1307dd0bf23c5eb5eeb47e79e7da987c5ee1699c))
+* safely launch Hetzner MCP from Codex desktop ([117d0ba](https://github.com/jurislm/hetzner-plugin/commit/117d0bac557987bbec5b141fa1424044456a83e6))
+
 ## [2.1.8](https://github.com/jurislm/hetzner-plugin/compare/v2.1.7...v2.1.8) (2026-09-29)
 
 
