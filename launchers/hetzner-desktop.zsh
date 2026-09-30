@@ -7,7 +7,7 @@ zmodload zsh/parameter
 export PATH="$HOME/.bun/bin:/usr/bin:/bin"
 for name in ${(k)parameters}; do
   case "$name" in
-    HOME|PATH|TMPDIR|LANG|HETZNER_API_TOKEN) ;;
+    HOME|PATH|TMPDIR|LANG|SSH_AUTH_SOCK|HETZNER_API_TOKEN) ;;
     *)
       if [[ ${parameters[$name]} == *export* ]]; then
         unset "$name"

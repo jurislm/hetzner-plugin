@@ -10,10 +10,10 @@ test("desktop launcher loads only the Hetzner credential and preserves stdio", (
     mkdirSync(bin, { recursive: true });
     writeFileSync(join(fixtureHome, ".zshenv"), "export HETZNER_API_TOKEN=fixture-token\nexport UNRELATED_SECRET=fixture-secret\n");
     const executable = join(bin, "bunx");
-    writeFileSync(executable, '#!/bin/sh\n[ "$HETZNER_API_TOKEN" = fixture-token ] || exit 11\n[ -z "${UNRELATED_SECRET+x}" ] || exit 12\n[ -z "${PARENT_SECRET+x}" ] || exit 13\n[ "$1" = -y ] || exit 14\n[ "$2" = @jurislm/hetzner-plugin@latest ] || exit 15\ncat\n');
+    writeFileSync(executable, '#!/bin/sh\n[ "$HETZNER_API_TOKEN" = fixture-token ] || exit 11\n[ -z "${UNRELATED_SECRET+x}" ] || exit 12\n[ -z "${PARENT_SECRET+x}" ] || exit 13\n[ "$SSH_AUTH_SOCK" = /fixture-agent ] || exit 16\n[ "$1" = -y ] || exit 14\n[ "$2" = @jurislm/hetzner-plugin@latest ] || exit 15\ncat\n');
     chmodSync(executable, 0o700);
     const result = Bun.spawnSync(["/bin/zsh", resolve("launchers/hetzner-desktop.zsh")], {
-      env: { HOME: fixtureHome, ZDOTDIR: fixtureHome, PATH: "/usr/bin:/bin", PARENT_SECRET: "fixture-parent" },
+      env: { HOME: fixtureHome, ZDOTDIR: fixtureHome, PATH: "/usr/bin:/bin", PARENT_SECRET: "fixture-parent", SSH_AUTH_SOCK: "/fixture-agent" },
       stdin: Buffer.from('{"jsonrpc":"2.0"}\n'), stdout: "pipe", stderr: "pipe",
     });
     expect(result.exitCode).toBe(0);
