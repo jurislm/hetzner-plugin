@@ -17,10 +17,10 @@ HETZNER_API_TOKEN="token" bun dist/index.js
 ## Git 分支規範
 
 ```
-develop → PR → main
+main → 隔離的 codex/* worktree → PR → main
 ```
 
-- 日常開發一律在 `.worktrees/develop` 目錄，不在 main worktree 做 feature commits
+- 日常開發使用隔離 worktree，不在 main worktree 做 feature commits
 - **嚴禁直接 push 到 main**
 - 版本號由 Release Please 自動管理，**禁止手動修改 `package.json` 版本號**
 
@@ -109,7 +109,7 @@ src/
 |------|------|------|
 | `HETZNER_API_TOKEN` | ✓ | Cloud 與 Storage Box API 共用的唯一 API token；權限限於建立 token 的 project |
 
-**注意**：MCP Server 是非互動式子進程，環境變數必須寫入 `~/.zshenv`（非 `~/.zshrc`）。
+**注意**：MCP Server 從啟動它的程序取得環境變數。zsh 可讀取 `~/.zshenv`，但從 Dock 或 Finder 啟動的 Codex 不會讀取 shell 啟動檔。macOS Codex 設定與唯讀驗收方式見 [README.md](README.md#codex-desktop-on-macos)。
 
 ## 新增工具流程
 

@@ -8,6 +8,7 @@
   },
   "files": [
     "dist",
+    "launchers",
     "README.md",
     "LICENSE",
     "assets",

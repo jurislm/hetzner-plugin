@@ -34,6 +34,24 @@ codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
 
+### Codex desktop on macOS
+
+A Codex process launched from the Dock or Finder does not read zsh startup files. If your token is exported by `~/.zshenv`, copy [`launchers/hetzner-desktop.zsh`](launchers/hetzner-desktop.zsh) to `~/.codex/bin/hetzner-mcp.zsh`, then add this override to `~/.codex/config.toml`:
+
+```toml
+[plugins."hetzner-plugin@hetzner-marketplace".mcp_servers.hetzner]
+enabled = false
+
+[mcp_servers.hetzner]
+command = "/bin/zsh"
+args = ["-c", 'source "$HOME/.codex/bin/hetzner-mcp.zsh"']
+startup_timeout_sec = 30
+```
+
+The launcher uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and uses `$HOME/.bun/bin/bunx` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
+
+Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify actual tool availability and call `hetzner_cloud_list_servers` and `hetzner_unified_list_storage_boxes`. Record the resolved package version, HTTP status, and returned counts. A successful standalone stdio probe does not establish tool registration in an existing chat. Missing-token errors indicate a startup environment problem; HTTP 401 indicates Hetzner rejected the token.
+
 ### Cursor
 
 The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`.
