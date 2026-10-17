@@ -2,6 +2,15 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.12](https://github.com/jurislm/hetzner-plugin/compare/v2.1.11...v2.1.12) (2026-10-17)
+
+
+### Bug Fixes
+
+* fill credential groups atomically from plugin env (JUR-752) ([ba92980](https://github.com/jurislm/hetzner-plugin/commit/ba92980ad16a4159c7bd7d9721f92dab5abf0148))
+* launch with bun x and self-load plugin env (JUR-752) ([8679322](https://github.com/jurislm/hetzner-plugin/commit/867932202fe2e973c5e4238c9b61286bcedb973f))
+* launch with bun x and self-load plugin env (JUR-752) ([1bfd5c4](https://github.com/jurislm/hetzner-plugin/commit/1bfd5c47c56052f1c5476a944feddcc9909ecb5b))
+
 ## [2.1.11](https://github.com/jurislm/hetzner-plugin/compare/v2.1.10...v2.1.11) (2026-09-30)
 
 
