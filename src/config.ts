@@ -1,4 +1,4 @@
-export const CONFIG_VARIABLES = ["HETZNER_API_TOKEN"] as const;
+export const CREDENTIAL_GROUPS = [["HETZNER_API_TOKEN"]] as const;
 
 export interface HetznerConfig {
   apiToken?: string;
