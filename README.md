@@ -50,7 +50,7 @@ args = ["-f", "-c", 'source "$HOME/.codex/bin/hetzner-mcp.zsh"']
 startup_timeout_sec = 30
 ```
 
-The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, and stops if sourcing fails. Startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and uses `$HOME/.bun/bin/bunx` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
+The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, and stops if sourcing fails. Startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and launches `$HOME/.bun/bin/bun x` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
 
 Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify actual tool availability and call `hetzner_cloud_list_servers` and `hetzner_unified_list_storage_boxes`. Record the resolved package version, HTTP status, and returned counts. A successful standalone stdio probe does not establish tool registration in an existing chat. Missing-token errors indicate a startup environment problem; HTTP 401 indicates Hetzner rejected the token.
 
@@ -60,7 +60,7 @@ The repository includes Cursor marketplace and plugin manifests in [`.cursor-plu
 
 ### Other MCP hosts
 
-Use the published-package stdio configuration in [`mcp.json`](mcp.json). The host must pass `HETZNER_API_TOKEN` to the `bunx` process. The server has no remote endpoint or OAuth flow.
+Use the published-package stdio configuration in [`mcp.json`](mcp.json). It launches with `bun x` (not the separate `bunx` executable, which some package-manager shims break). The host should pass `HETZNER_API_TOKEN`; when it is missing, empty, or an unsubstituted `${HETZNER_API_TOKEN}` placeholder, the server reads it from `~/.config/jurislm/plugin.env` (`KEY=value` or `export KEY=value` lines; override the path with `JURISLM_PLUGIN_ENV`). Host values always take precedence. The server has no remote endpoint or OAuth flow.
 
 ## OpenAPI tools
 

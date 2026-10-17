@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "hetzner": {
-      "command": "bunx",
-      "args": ["-y", "@jurislm/hetzner-plugin@latest"],
+      "command": "bun",
+      "args": ["x", "@jurislm/hetzner-plugin@latest"],
       "env": {
         "HETZNER_API_TOKEN": "<set-in-host-environment>"
       }

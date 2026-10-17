@@ -2,8 +2,8 @@
   "mcpServers": {
     "hetzner": {
       "type": "stdio",
-      "command": "bunx",
-      "args": ["-y", "@jurislm/hetzner-plugin@latest"],
+      "command": "bun",
+      "args": ["x", "@jurislm/hetzner-plugin@latest"],
       "env_vars": ["HETZNER_API_TOKEN"]
     }
   }

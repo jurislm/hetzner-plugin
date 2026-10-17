@@ -37,7 +37,9 @@ const cursorPlugin = parsed[".cursor-plugin/plugin.json"];
 if (cursorPlugin.displayName !== "Hetzner Plugin" || (cursorPlugin.author as Json).name !== "JurisLM" || cursorPlugin.homepage !== officialWebsiteUrl || cursorPlugin.repository !== repositoryUrl) throw new Error("Cursor plugin must provide canonical website and repository metadata");
 for (const file of ["plugin.json", ".codex-plugin/plugin.json"]) if (parsed[file].name !== "hetzner-plugin" || parsed[file].version !== packageVersion) throw new Error(`${file} is not the portable Hetzner manifest for ${packageVersion}`);
 const server = (parsed[".mcp.json"].mcpServers as Json).hetzner as Json;
-if (server.type !== "stdio" || server.command !== "bunx" || "cwd" in server || "url" in server || "serverUrl" in server || !(server.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json must match the Woodpecker bunx stdio registration");
+const launchesWithBunX = (entry: Json) => entry.command === "bun" && (entry.args as string[])[0] === "x" && !(entry.args as string[]).includes("-y");
+if (!launchesWithBunX(server)) throw new Error(".mcp.json must launch with bun x (the bunx shim is not portable)");
+if (server.type !== "stdio" || "cwd" in server || "url" in server || "serverUrl" in server || !(server.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json must match the bun x stdio registration");
 if (!isDeepStrictEqual(server.env_vars, ["HETZNER_API_TOKEN"])) throw new Error(".mcp.json must forward only HETZNER_API_TOKEN");
 const portableServers = parsed["mcp.json"].mcpServers as Record<string, Json>;
 for (const portableServer of Object.values(portableServers)) {
@@ -46,7 +48,8 @@ for (const portableServer of Object.values(portableServers)) {
 const nativeServers = Object.fromEntries(Object.entries(parsed[".mcp.json"].mcpServers as Record<string, Json>).map(([name, nativeServer]) => [name, Object.fromEntries(Object.entries(nativeServer).filter(([key]) => key !== "env_vars"))]));
 if (!isDeepStrictEqual(nativeServers, portableServers)) throw new Error("Codex and portable MCP registrations must agree on server identity, transport and launch target");
 const exampleServer = (parsed[".mcp.json.example"].mcpServers as Json).hetzner as Json;
-if (exampleServer.command !== "bunx" || !(exampleServer.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json.example must match the Woodpecker bunx registration");
+if (!launchesWithBunX(exampleServer)) throw new Error(".mcp.json.example must launch with bun x (the bunx shim is not portable)");
+if (!(exampleServer.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json.example must match the bun x registration");
 if (packageJson.private === true || (packageJson.engines as Json).bun !== ">=1.1.0") throw new Error("package must be public and require Bun >=1.1.0");
 const dependencies = packageJson.dependencies as Json;
 for (const [name, version] of Object.entries({ "@modelcontextprotocol/sdk": "1.30.0", zod: "4.6.5" })) if (dependencies[name] !== version) throw new Error(`${name} must be pinned to ${version}`);

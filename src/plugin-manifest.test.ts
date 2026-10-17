@@ -51,10 +51,21 @@ test.each(["env_vars", "env"])("portable MCP rejects %s credential settings", as
 
 test("native MCP must preserve the portable launch target", async () => {
   const result = await validate((manifests) => {
-    server(manifests[".mcp.json"]).args = ["-y", "@jurislm/hetzner-plugin@latest", "different"];
+    server(manifests[".mcp.json"]).args = ["x", "@jurislm/hetzner-plugin@latest", "different"];
   });
   expect(result.code).not.toBe(0);
   expect(result.error).toContain("registrations");
+});
+
+test.each(["mcp.json", ".mcp.json", ".mcp.json.example"])("%s must launch through bun x instead of the bunx shim", async (file) => {
+  const result = await validate((manifests) => {
+    for (const name of file === ".mcp.json.example" ? [file] : ["mcp.json", ".mcp.json"]) {
+      server(manifests[name]).command = "bunx";
+      server(manifests[name]).args = ["-y", "@jurislm/hetzner-plugin@latest"];
+    }
+  });
+  expect(result.code).not.toBe(0);
+  expect(result.error).toContain("bun x");
 });
 
 test("native MCP only forwards the supported credential", async () => {
