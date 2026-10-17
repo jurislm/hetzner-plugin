@@ -1,3 +1,5 @@
+export const CREDENTIAL_GROUPS = [["HETZNER_API_TOKEN"]] as const;
+
 export interface HetznerConfig {
   apiToken?: string;
   timeoutMs: number;

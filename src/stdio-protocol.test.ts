@@ -2,10 +2,11 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { expect, test } from "bun:test";
 
-test("serves the generated catalog through shipped local stdio", async () => {
+test("serves the generated catalog through shipped local stdio and treats an unsubstituted placeholder as missing", async () => {
   expect(await Bun.file("dist/index.js").exists()).toBe(true);
   const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined));
-  delete env.HETZNER_API_TOKEN;
+  env.HETZNER_API_TOKEN = "${HETZNER_API_TOKEN}";
+  env.JURISLM_PLUGIN_ENV = "/nonexistent/jurislm/plugin.env";
   const transport = new StdioClientTransport({
     command: "bun", args: ["dist/index.js"],
     env, stderr: "pipe",
