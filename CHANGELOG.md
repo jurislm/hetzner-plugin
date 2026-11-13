@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.13](https://github.com/jurislm/hetzner-plugin/compare/v2.1.12...v2.1.13) (2026-11-13)
+
+
+### Bug Fixes
+
+* **desktop:** start a verified installed runtime offline ([#76](https://github.com/jurislm/hetzner-plugin/issues/76)) ([dcd9e6d](https://github.com/jurislm/hetzner-plugin/commit/dcd9e6d5a99130f49edd974c84307aaab74a4c95))
+
 ## [2.1.12](https://github.com/jurislm/hetzner-plugin/compare/v2.1.11...v2.1.12) (2026-10-17)
 
 
