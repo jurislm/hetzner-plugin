@@ -23,4 +23,6 @@ for name in ${(k)parameters}; do
       ;;
   esac
 done
-exec "$HOME/.bun/bin/bun" x @jurislm/hetzner-plugin@latest
+runtime="$HOME/.local/share/jurislm/mcp/hetzner-plugin"
+"$HOME/.bun/bin/bun" --no-env-file --no-install "${${(%):-%x}:A:h}/validate-hetzner-runtime.mjs" "$runtime" @jurislm/hetzner-plugin hetzner-plugin || exit $?
+exec "$HOME/.bun/bin/bun" --no-env-file --no-install "$runtime/node_modules/@jurislm/hetzner-plugin/dist/index.js"
