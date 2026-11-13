@@ -38,7 +38,7 @@ codex plugin add hetzner-plugin@hetzner-marketplace
 
 ### Codex desktop on macOS
 
-A Codex process launched from the Dock or Finder does not read zsh startup files. If your token is exported by `~/.zshenv`, copy [`launchers/hetzner-desktop.zsh`](launchers/hetzner-desktop.zsh) to `~/.codex/bin/hetzner-mcp.zsh`, then add this override to `~/.codex/config.toml`:
+A Codex process launched from the Dock or Finder does not read zsh startup files. If your token is exported by `~/.zshenv`, copy [`launchers/hetzner-desktop.zsh`](launchers/hetzner-desktop.zsh) to `~/.codex/bin/hetzner-mcp.zsh` and copy `launchers/validate-hetzner-runtime.mjs` beside it after preparing the [installed desktop runtime](#installed-desktop-runtime), then add this override to `~/.codex/config.toml`:
 
 ```toml
 [plugins."hetzner-plugin@hetzner-marketplace".mcp_servers.hetzner]
@@ -50,7 +50,7 @@ args = ["-f", "-c", 'source "$HOME/.codex/bin/hetzner-mcp.zsh"']
 startup_timeout_sec = 30
 ```
 
-The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, and stops if sourcing fails. Startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and launches `$HOME/.bun/bin/bun x` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
+The `-f` option disables automatic user startup-file loading. The launcher explicitly sources `${ZDOTDIR:-$HOME}/.zshenv` with stdout suppressed and stderr retained, and stops if sourcing fails. Startup banners cannot corrupt MCP protocol frames. It uses the existing token without storing its value in Codex config. It removes other exported variables, retaining only `HETZNER_API_TOKEN`, `HOME`, `PATH`, `TMPDIR`, `LANG`, and `SSH_AUTH_SOCK` for the supported SSH-agent tools, and launches the validated installed entry through `$HOME/.bun/bin/bun --no-env-file --no-install` with a fixed Bun/system PATH. Adjust the Bun path in the copied launcher if necessary. The portable plugin registration remains available for hosts that already provide the token.
 
 Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify actual tool availability and call `hetzner_cloud_list_servers` and `hetzner_unified_list_storage_boxes`. Record the resolved package version, HTTP status, and returned counts. A successful standalone stdio probe does not establish tool registration in an existing chat. Missing-token errors indicate a startup environment problem; HTTP 401 indicates Hetzner rejected the token.
 
@@ -88,3 +88,14 @@ bun run check
 ## License
 
 MIT
+
+
+### Installed desktop runtime
+
+The desktop launcher requires Bun 1.4.3 or newer and a complete normal installation at `~/.local/share/jurislm/mcp/hetzner-plugin`. Copy `launchers/hetzner-desktop.zsh` and its owner-specific `launchers/validate-hetzner-runtime.mjs` together to the same launcher directory. Keep the existing launcher destination and registration; do not change required-server or tool-approval settings.
+
+Prepare each installation or update in a separate staging directory with `bun add --exact @jurislm/hetzner-plugin@<approved-version>`, then verify `bun install --frozen-lockfile`. The installation's `package.json` and `bun.lock` are the only version authority. Startup validates the declared and resolved source, installed identity and binary path, then executes the installed entry with `--no-env-file --no-install`. It never resolves `@latest`, installs dependencies or loads a working-directory `.env`.
+
+For offline recovery, retain a verified released tarball inside the runtime, for example `artifacts/hetzner-plugin-<version>.tgz`, and declare `file:artifacts/hetzner-plugin-<version>.tgz`. A complete same-platform Bun dependency cache, including transitive dependencies, is required; a release tarball alone is insufficient. First run `bun install --offline` to generate the lock, then verify a clean `bun install --offline --frozen-lockfile` rebuild. Existing locked installations use the frozen command directly. Absolute or escaping tarball paths, mutable versions, identity mismatches and tarball SHA512 drift are rejected before startup.
+
+Before selecting a replacement, run the shipped validator against its staging directory with package name `@jurislm/hetzner-plugin` and binary name `hetzner-plugin`, verify published package contents, and perform an offline stdio initialize with dummy credentials. Move the verified complete directory to the runtime path only while this MCP is stopped. Keep the previous installation for rollback. Never copy credentials into the runtime. A successful standalone initialize is not evidence of a desktop reload or provider API access; verify those separately after deployment.
