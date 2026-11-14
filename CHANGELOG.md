@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.14](https://github.com/jurislm/hetzner-plugin/compare/v2.1.13...v2.1.14) (2026-11-14)
+
+
+### Bug Fixes
+
+* tolerate removed Hetzner deprecated response fields ([#78](https://github.com/jurislm/hetzner-plugin/issues/78)) ([bc0c0f6](https://github.com/jurislm/hetzner-plugin/commit/bc0c0f62229e817ac2765998bd7af6dadac15308))
+
 ## [2.1.13](https://github.com/jurislm/hetzner-plugin/compare/v2.1.12...v2.1.13) (2026-11-13)
 
 
