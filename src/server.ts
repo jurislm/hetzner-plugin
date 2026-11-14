@@ -5,6 +5,7 @@ import { createApiRequest } from "./api.js";
 import type { HetznerConfig } from "./config.js";
 import { formatToolError } from "./errors.js";
 import { operations } from "./generated/operations.js";
+import { currentResponseSchema } from "./removed-response-fields.js";
 import { pluginVersion } from "./version.js";
 import { registerMetricsTools } from "./tools/metrics.js";
 import { registerReferenceTools } from "./tools/reference.js";
@@ -28,7 +29,7 @@ export function createServer(config: HetznerConfig, fetchImpl?: FetchLike): McpS
   }, async (input) => {
     try {
       const envelope = await client.request(operation, input as Record<string, unknown>);
-      const data = operation.responseSchema.parse(envelope.data);
+      const data = currentResponseSchema(operation).parse(envelope.data);
       const structuredContent = { ...envelope, data: redactSensitive(data, oneTimeCredentialKeys(operation)) } as unknown as Record<string, unknown>;
       return { structuredContent, content: [{ type: "text" as const, text: JSON.stringify(structuredContent) }] };
     } catch (error) {
