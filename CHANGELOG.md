@@ -2,6 +2,14 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.15](https://github.com/jurislm/hetzner-plugin/compare/v2.1.14...v2.1.15) (2026-11-16)
+
+
+### Bug Fixes
+
+* Cursor 外掛宣告 HETZNER_API_TOKEN 並改用專屬 MCP 設定 ([8ddf279](https://github.com/jurislm/hetzner-plugin/commit/8ddf2799589079b0fa8ae60991942829f6b81fa3))
+* Cursor 外掛宣告 HETZNER_API_TOKEN 並改用專屬 MCP 設定 ([205d0a5](https://github.com/jurislm/hetzner-plugin/commit/205d0a56663165493b54c9d0c904ee90eee82564))
+
 ## [2.1.14](https://github.com/jurislm/hetzner-plugin/compare/v2.1.13...v2.1.14) (2026-11-14)
 
 
