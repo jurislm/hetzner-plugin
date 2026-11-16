@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 type Json = Record<string, unknown>;
-const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marketplace.json", ".cursor-plugin/plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", "package.json"];
+const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marketplace.json", ".cursor-plugin/plugin.json", ".cursor-plugin/mcp.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example", "package.json"];
 
 async function validate(change: (manifests: Record<string, Json>) => void) {
   const directory = mkdtempSync(join(tmpdir(), "hetzner-manifests-"));
@@ -74,4 +74,33 @@ test("native MCP only forwards the supported credential", async () => {
   });
   expect(result.code).not.toBe(0);
   expect(result.error).toContain("HETZNER_API_TOKEN");
+});
+
+test("Cursor plugin declares the Hetzner token so the host can pass it", async () => {
+  const result = await validate((manifests) => { delete manifests[".cursor-plugin/plugin.json"].variables; });
+  expect(result.code).not.toBe(0);
+  expect(result.error).toContain("HETZNER_API_TOKEN");
+});
+
+test("Cursor plugin points at its own MCP config", async () => {
+  const result = await validate((manifests) => { delete manifests[".cursor-plugin/plugin.json"].mcpServers; });
+  expect(result.code).not.toBe(0);
+  expect(result.error).toContain(".cursor-plugin/mcp.json");
+});
+
+test("Cursor MCP passes the token only as a host placeholder", async () => {
+  const result = await validate((manifests) => {
+    server(manifests[".cursor-plugin/mcp.json"]).env = { HETZNER_API_TOKEN: "fixture-token" };
+  });
+  expect(result.code).not.toBe(0);
+  expect(result.error).toContain("${HETZNER_API_TOKEN}");
+});
+
+test("Cursor MCP must launch through bun x instead of the bunx shim", async () => {
+  const result = await validate((manifests) => {
+    server(manifests[".cursor-plugin/mcp.json"]).command = "bunx";
+    server(manifests[".cursor-plugin/mcp.json"]).args = ["-y", "@jurislm/hetzner-plugin@latest"];
+  });
+  expect(result.code).not.toBe(0);
+  expect(result.error).toContain("bun x");
 });

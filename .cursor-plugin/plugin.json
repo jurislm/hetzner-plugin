@@ -15,5 +15,18 @@
     "devops",
     "mcp"
   ],
-  "logo": "assets/hetzner.png"
+  "logo": "assets/hetzner.png",
+  "skills": "./skills/",
+  "mcpServers": "./.cursor-plugin/mcp.json",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "HETZNER_API_TOKEN": {
+        "type": "string",
+        "title": "Hetzner API token",
+        "description": "Hetzner Cloud API token. Optional when ~/.config/jurislm/plugin.env provides HETZNER_API_TOKEN."
+      }
+    },
+    "required": []
+  }
 }

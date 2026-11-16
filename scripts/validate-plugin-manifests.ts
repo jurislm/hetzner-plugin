@@ -2,7 +2,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import { isDeepStrictEqual } from "node:util";
 
 type Json = Record<string, unknown>;
-const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marketplace.json", ".cursor-plugin/plugin.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example"];
+const files = ["plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/marketplace.json", ".cursor-plugin/plugin.json", ".cursor-plugin/mcp.json", "mcp.json", ".mcp.json", ".mcp.json.example", ".app.json.example"];
 const parsed = Object.fromEntries(await Promise.all(files.map(async (file) => [file, JSON.parse(await Bun.file(file).text()) as Json])));
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 for (const [file, schemaFile] of [["plugin.json", "plugin.schema.json"], ["mcp.json", "mcp.schema.json"]]) {
@@ -38,6 +38,12 @@ if (cursorPlugin.displayName !== "Hetzner Plugin" || (cursorPlugin.author as Jso
 for (const file of ["plugin.json", ".codex-plugin/plugin.json"]) if (parsed[file].name !== "hetzner-plugin" || parsed[file].version !== packageVersion) throw new Error(`${file} is not the portable Hetzner manifest for ${packageVersion}`);
 const server = (parsed[".mcp.json"].mcpServers as Json).hetzner as Json;
 const launchesWithBunX = (entry: Json) => entry.command === "bun" && (entry.args as string[])[0] === "x" && !(entry.args as string[]).includes("-y");
+const cursorVariables = cursorPlugin.variables as Json | undefined;
+if (!cursorVariables || !("HETZNER_API_TOKEN" in ((cursorVariables.properties ?? {}) as Json))) throw new Error(".cursor-plugin/plugin.json must declare HETZNER_API_TOKEN in variables so Cursor hosts can pass it");
+if (cursorPlugin.mcpServers !== "./.cursor-plugin/mcp.json") throw new Error(".cursor-plugin/plugin.json must point mcpServers at ./.cursor-plugin/mcp.json");
+const cursorServer = (parsed[".cursor-plugin/mcp.json"].mcpServers as Json).hetzner as Json;
+if (!launchesWithBunX(cursorServer) || !(cursorServer.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".cursor-plugin/mcp.json must launch with bun x (the bunx shim is not portable)");
+if (!isDeepStrictEqual(cursorServer.env, { HETZNER_API_TOKEN: "${HETZNER_API_TOKEN}" })) throw new Error(".cursor-plugin/mcp.json must pass only HETZNER_API_TOKEN as the ${HETZNER_API_TOKEN} host placeholder");
 if (!launchesWithBunX(server)) throw new Error(".mcp.json must launch with bun x (the bunx shim is not portable)");
 if (server.type !== "stdio" || "cwd" in server || "url" in server || "serverUrl" in server || !(server.args as string[]).includes("@jurislm/hetzner-plugin@latest")) throw new Error(".mcp.json must match the bun x stdio registration");
 if (!isDeepStrictEqual(server.env_vars, ["HETZNER_API_TOKEN"])) throw new Error(".mcp.json must forward only HETZNER_API_TOKEN");
