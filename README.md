@@ -56,7 +56,7 @@ Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify ac
 
 ### Cursor
 
-The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`.
+The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`. The Cursor plugin registers its MCP server from [`.cursor-plugin/mcp.json`](.cursor-plugin/mcp.json) and declares `HETZNER_API_TOKEN` as a setup variable, so Cursor-compatible hosts pass the token entered at install time; when it is left empty, the server falls back to `~/.config/jurislm/plugin.env`.
 
 ### Other MCP hosts
 

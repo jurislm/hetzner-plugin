@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "hetzner": {
+      "command": "bun",
+      "args": [
+        "x",
+        "@jurislm/hetzner-plugin@latest"
+      ],
+      "env": {
+        "HETZNER_API_TOKEN": "${HETZNER_API_TOKEN}"
+      }
+    }
+  }
+}
