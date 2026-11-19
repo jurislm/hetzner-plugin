@@ -9,4 +9,10 @@ describe("loadConfig", () => {
       timeoutMs: 30_000,
     });
   });
+
+  test("treats an empty or unsubstituted ${HETZNER_API_TOKEN} placeholder as missing", () => {
+    for (const value of ["", "   ", "${HETZNER_API_TOKEN}", " ${HETZNER_API_TOKEN} "]) {
+      expect(loadConfig({ HETZNER_API_TOKEN: value })).toEqual({ timeoutMs: 30_000 });
+    }
+  });
 });
