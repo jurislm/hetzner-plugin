@@ -58,6 +58,31 @@ Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify ac
 
 The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`. The Cursor plugin registers its MCP server from [`.cursor-plugin/mcp.json`](.cursor-plugin/mcp.json) and declares `HETZNER_API_TOKEN` as a setup variable, so Cursor-compatible hosts pass the token entered at install time; when it is left empty, the server falls back to `~/.config/jurislm/plugin.env`.
 
+#### 在 Cursor 管理頁填寫安裝欄位
+
+外掛參數（`HETZNER_API_TOKEN`）改在 Cursor 管理頁 <https://cursor.com/dashboard/plugins> 的安裝欄位（Plugins → Configure）填寫，不需要再放進 `~/.config/jurislm/plugin.env`。外掛只在 `.cursor-plugin/plugin.json` 的 `variables` 宣告變數名稱，不含任何值；Cursor 會把你填的值代入 `mcp.json` 裡對應的 `${VAR}` 佔位符。
+
+- 匯入：在管理頁的 Plugins & MCPs 點 Add Marketplace，選 Import from Repo，貼上 `https://github.com/jurislm/hetzner-plugin`，再安裝外掛。
+- 欄位範例（假值，請換成自己的）：
+
+  ```text
+  HETZNER_API_TOKEN = hetzner-example-token-0000
+  ```
+
+驗證方式：
+
+1. 在新對話跑一個唯讀呼叫（例如 list servers 類工具）。回應成功代表值有傳進去；HTTP 401 表示值錯誤或已過期，缺值錯誤表示沒有傳進程序。
+2. 也可看新啟動的 MCP 程序的環境變數：值應為實際內容，而不是未代入的 `${VAR}` 佔位符。只檢查長度與是否以 `${` 開頭，不要把值貼到對話、Issue 或 PR。
+
+官方依據：[Cursor Plugins](https://cursor.com/docs/plugins)、[Plugins reference：Variables](https://cursor.com/docs/reference/plugins)。
+
+實測結果（官方文件未載明）：
+
+- 網頁管理頁的介面顯示為「Your Marketplaces」。
+- 欄位存好後不會回顯已存的值，確認方式請用下方的驗證。
+- 個人方案沒有 Refresh；要更新得先 Remove 再重新匯入。
+- 桌面 App 要用 ⌘Q 完全退出再開，才會讀到新值。
+
 ### Other MCP hosts
 
 Use the published-package stdio configuration in [`mcp.json`](mcp.json). It launches with `bun x` (not the separate `bunx` executable, which some package-manager shims break). The host should pass `HETZNER_API_TOKEN`; when it is missing, empty, or an unsubstituted `${HETZNER_API_TOKEN}` placeholder, the server reads it from `~/.config/jurislm/plugin.env` (`KEY=value` or `export KEY=value` lines; override the path with `JURISLM_PLUGIN_ENV`). Host values always take precedence. The server has no remote endpoint or OAuth flow.
