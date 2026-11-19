@@ -2,6 +2,17 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [3.0.0](https://github.com/jurislm/hetzner-plugin/compare/v2.1.16...v3.0.0) (2026-11-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **config:** 不再讀取 ~/.config/jurislm/plugin.env 與 JURISLM_PLUGIN_ENV。非 Cursor 的主機必須自行在程序環境傳入 HETZNER_API_TOKEN。
+
+### Features
+
+* **config:** 只使用 Cursor 管理頁欄位的 HETZNER_API_TOKEN，移除本機 plugin.env 備援 ([#84](https://github.com/jurislm/hetzner-plugin/issues/84)) ([868898f](https://github.com/jurislm/hetzner-plugin/commit/868898f6c287d921e9a28d8bcf996199b11261ef))
+
 ## [2.1.16](https://github.com/jurislm/hetzner-plugin/compare/v2.1.15...v2.1.16) (2026-11-19)
 
 
