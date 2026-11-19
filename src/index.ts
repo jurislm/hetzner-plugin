@@ -1,11 +1,10 @@
 #!/usr/bin/env bun
-import { CREDENTIAL_GROUPS, loadConfig } from "./config.js";
-import { withPluginEnv } from "./plugin-env.js";
+import { loadConfig } from "./config.js";
 import { createServer } from "./server.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 async function main(): Promise<void> {
-  const server = createServer(loadConfig(withPluginEnv(process.env, CREDENTIAL_GROUPS)));
+  const server = createServer(loadConfig());
   await server.connect(new StdioServerTransport());
   console.error("Hetzner plugin running via stdio");
 }

@@ -1,4 +1,4 @@
-export const CREDENTIAL_GROUPS = [["HETZNER_API_TOKEN"]] as const;
+const PLACEHOLDER = /^\$\{[^}]*\}$/u;
 
 export interface HetznerConfig {
   apiToken?: string;
@@ -6,6 +6,7 @@ export interface HetznerConfig {
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): HetznerConfig {
-  const apiToken = env.HETZNER_API_TOKEN?.trim();
+  const value = env.HETZNER_API_TOKEN?.trim();
+  const apiToken = value && !PLACEHOLDER.test(value) ? value : undefined;
   return { ...(apiToken ? { apiToken } : {}), timeoutMs: 30_000 };
 }

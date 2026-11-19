@@ -83,7 +83,7 @@ export class HetznerClient {
       else url.searchParams.set(parameter.name, stringifyParameter(value));
     }
     const token = this.config.apiToken;
-    if (!token) throw new HetznerApiError(0, operation.method, path, "HETZNER_API_TOKEN is required for Hetzner API operations");
+    if (!token) throw new HetznerApiError(0, operation.method, path, "HETZNER_API_TOKEN is required for Hetzner API operations. 請到 Cursor 管理頁外掛設定填 HETZNER_API_TOKEN");
     const headers = new Headers({ accept: "application/json, text/plain, */*", authorization: `Bearer ${token}` });
     const init: RequestInit = { method: operation.method, headers, signal: AbortSignal.timeout(this.config.timeoutMs) };
     if (input.body !== undefined && !["GET", "HEAD"].includes(operation.method)) {
