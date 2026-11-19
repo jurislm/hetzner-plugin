@@ -24,7 +24,7 @@
       "HETZNER_API_TOKEN": {
         "type": "string",
         "title": "Hetzner API token",
-        "description": "Hetzner Cloud API token. Optional when ~/.config/jurislm/plugin.env provides HETZNER_API_TOKEN."
+        "description": "Hetzner Cloud API token. Fill it in on the Cursor dashboard plugin settings page."
       }
     },
     "required": []

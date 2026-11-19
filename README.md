@@ -56,11 +56,11 @@ Check `codex mcp get hetzner`, then restart Codex and open a new chat. Verify ac
 
 ### Cursor
 
-The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`. The Cursor plugin registers its MCP server from [`.cursor-plugin/mcp.json`](.cursor-plugin/mcp.json) and declares `HETZNER_API_TOKEN` as a setup variable, so Cursor-compatible hosts pass the token entered at install time; when it is left empty, the server falls back to `~/.config/jurislm/plugin.env`.
+The repository includes Cursor marketplace and plugin manifests in [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) and [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Add this repository as a marketplace in Cursor, then install `hetzner-plugin`. The Cursor plugin registers its MCP server from [`.cursor-plugin/mcp.json`](.cursor-plugin/mcp.json) and declares `HETZNER_API_TOKEN` as a setup variable, so Cursor passes the token entered on the dashboard at install time. The server reads only that value; when it is empty or still an unsubstituted `${HETZNER_API_TOKEN}` placeholder, tool calls fail with an error asking you to fill `HETZNER_API_TOKEN` in the Cursor dashboard plugin settings.
 
 #### 在 Cursor 管理頁填寫安裝欄位
 
-外掛參數（`HETZNER_API_TOKEN`）改在 Cursor 管理頁 <https://cursor.com/dashboard/plugins> 的安裝欄位（Plugins → Configure）填寫，不需要再放進 `~/.config/jurislm/plugin.env`。外掛只在 `.cursor-plugin/plugin.json` 的 `variables` 宣告變數名稱，不含任何值；Cursor 會把你填的值代入 `mcp.json` 裡對應的 `${VAR}` 佔位符。
+外掛參數（`HETZNER_API_TOKEN`）改在 Cursor 管理頁 <https://cursor.com/dashboard/plugins> 的安裝欄位（Plugins → Configure）填寫。外掛不再讀取 `~/.config/jurislm/plugin.env` 或其他本機檔案；欄位為空或仍是未代入的 `${HETZNER_API_TOKEN}` 時，呼叫工具會回報「請到 Cursor 管理頁外掛設定填 HETZNER_API_TOKEN」。外掛只在 `.cursor-plugin/plugin.json` 的 `variables` 宣告變數名稱，不含任何值；Cursor 會把你填的值代入 `mcp.json` 裡對應的 `${VAR}` 佔位符。
 
 - 匯入：在管理頁的 Plugins & MCPs 點 Add Marketplace，選 Import from Repo，貼上 `https://github.com/jurislm/hetzner-plugin`，再安裝外掛。
 - 欄位範例（假值，請換成自己的）：
@@ -85,7 +85,7 @@ The repository includes Cursor marketplace and plugin manifests in [`.cursor-plu
 
 ### Other MCP hosts
 
-Use the published-package stdio configuration in [`mcp.json`](mcp.json). It launches with `bun x` (not the separate `bunx` executable, which some package-manager shims break). The host should pass `HETZNER_API_TOKEN`; when it is missing, empty, or an unsubstituted `${HETZNER_API_TOKEN}` placeholder, the server reads it from `~/.config/jurislm/plugin.env` (`KEY=value` or `export KEY=value` lines; override the path with `JURISLM_PLUGIN_ENV`). Host values always take precedence. The server has no remote endpoint or OAuth flow.
+Use the published-package stdio configuration in [`mcp.json`](mcp.json). It launches with `bun x` (not the separate `bunx` executable, which some package-manager shims break). The host must pass `HETZNER_API_TOKEN` in the server process environment. The server reads no local file (`~/.config/jurislm/plugin.env` and `JURISLM_PLUGIN_ENV` are no longer supported); when the variable is missing, empty, or an unsubstituted `${HETZNER_API_TOKEN}` placeholder, tool calls fail with a missing-token error. The server has no remote endpoint or OAuth flow.
 
 ## OpenAPI tools
 

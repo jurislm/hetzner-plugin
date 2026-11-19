@@ -75,7 +75,7 @@ describe("HetznerClient", () => {
     let calls = 0;
     const client = new HetznerClient({ timeoutMs: 30_000 }, async () => { calls++; return new Response(); });
     await expect(client.request({ source: "unified", method: "GET", path: "/storage_boxes", parameters: [] }, {})).rejects.toMatchObject({
-      message: "HETZNER_API_TOKEN is required for Hetzner API operations",
+      message: "HETZNER_API_TOKEN is required for Hetzner API operations. 請到 Cursor 管理頁外掛設定填 HETZNER_API_TOKEN",
     });
     expect(calls).toBe(0);
   });
