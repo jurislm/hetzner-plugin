@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [2.1.16](https://github.com/jurislm/hetzner-plugin/compare/v2.1.15...v2.1.16) (2026-11-19)
+
+
+### Documentation
+
+* README 補上 Cursor 管理頁安裝欄位說明 ([#82](https://github.com/jurislm/hetzner-plugin/issues/82)) ([318b89e](https://github.com/jurislm/hetzner-plugin/commit/318b89e2c53163baba5c0e1fff017c0a155247b3))
+
 ## [2.1.15](https://github.com/jurislm/hetzner-plugin/compare/v2.1.14...v2.1.15) (2026-11-16)
 
 
