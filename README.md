@@ -76,6 +76,13 @@ The repository includes Cursor marketplace and plugin manifests in [`.cursor-plu
 
 官方依據：[Cursor Plugins](https://cursor.com/docs/plugins)、[Plugins reference：Variables](https://cursor.com/docs/reference/plugins)。
 
+實測結果（官方文件未載明）：
+
+- 網頁管理頁的介面顯示為「Your Marketplaces」。
+- 欄位存好後不會回顯已存的值，確認方式請用下方的驗證。
+- 個人方案沒有 Refresh；要更新得先 Remove 再重新匯入。
+- 桌面 App 要用 ⌘Q 完全退出再開，才會讀到新值。
+
 ### Other MCP hosts
 
 Use the published-package stdio configuration in [`mcp.json`](mcp.json). It launches with `bun x` (not the separate `bunx` executable, which some package-manager shims break). The host should pass `HETZNER_API_TOKEN`; when it is missing, empty, or an unsubstituted `${HETZNER_API_TOKEN}` placeholder, the server reads it from `~/.config/jurislm/plugin.env` (`KEY=value` or `export KEY=value` lines; override the path with `JURISLM_PLUGIN_ENV`). Host values always take precedence. The server has no remote endpoint or OAuth flow.
