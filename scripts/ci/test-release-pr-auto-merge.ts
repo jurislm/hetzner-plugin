@@ -36,6 +36,7 @@ async function expectRejects(run: () => Promise<unknown>, expected: string): Pro
 const VERSION = "1.6.0";
 const BASE_SHA = "base-sha";
 const HEAD_SHA = "head-sha";
+const RUN_SHA = "a".repeat(40);
 const RELEASE_BRANCH = "release-please--branches--main--components--hetzner-plugin";
 const RELEASE_BODY =
   ":robot: I have created a release *beep* *boop*\n\nThis PR was generated with [Release Please](https://github.com/googleapis/release-please).";
@@ -173,13 +174,15 @@ async function testMergeAndNoOp(): Promise<void> {
       assert(init?.redirect === "error", "requests must reject redirects");
       productionPath.push(url.pathname);
       if (url.pathname === "/repositories/1373042968") return jsonResponse(releaseRepository(owner));
-      assert(url.pathname === `/repos/${owner}/hetzner-plugin/pulls`, "must use canonical pull path");
+      if (url.pathname === "/repositories/1373042968/git/ref/heads/main")
+        return jsonResponse({ ref: "refs/heads/main", object: { type: "commit", sha: RUN_SHA } });
+      assert(url.pathname === "/repositories/1373042968/pulls", "must use pinned pull path");
       assert(url.searchParams.get("head") === `${owner}:${RELEASE_BRANCH}`, "must use canonical head owner");
       return jsonResponse([]);
     }, { preconnect: () => {} }) as typeof fetch;
     await runReleasePrAutoMerge({ token: "token", expectedBaseSha: BASE_SHA, fetchImpl: stub });
     for (const mode of ["github-release", "release-pr"]) {
-      await runReleasePlease(mode, marker, stub, async (args) => {
+      await runReleasePlease(mode, marker, RUN_SHA, stub, async (args) => {
         const path = args[3]?.slice("--token=".length) ?? "";
         assert(args[3]?.startsWith("--token=") && isAbsolute(path), "CLI token option must contain a plain path");
         assert(args.every((arg) => !arg.includes(marker)), "credential must not be in CLI arguments");
@@ -192,7 +195,7 @@ async function testMergeAndNoOp(): Promise<void> {
       });
       await expectRejects(() => stat(dirname(tokenPaths.at(-1)!)), "ENOENT");
     }
-    assert(productionPath.length === 4, "expected metadata resolution before all consumers");
+    assert(productionPath.length === 6, "expected metadata resolution before all consumers");
     for (const [index, mode] of ["github-release", "release-pr"].entries()) {
       const expectedArgs = [
         "bunx", "release-please", mode, `--token=${tokenPaths[index]}`,
@@ -204,7 +207,7 @@ async function testMergeAndNoOp(): Promise<void> {
     let failedDirectory = "";
     await expectRejects(async () => {
       try {
-        await runReleasePlease("github-release", marker, stub, async (args) => {
+        await runReleasePlease("github-release", marker, RUN_SHA, stub, async (args) => {
           failedDirectory = dirname(args[3]!.slice("--token=".length));
           throw new Error(marker);
         });
@@ -234,7 +237,7 @@ async function testMergeAndNoOp(): Promise<void> {
       { preconnect: () => {} }) as typeof fetch;
     await expectRejects(() => runReleasePrAutoMerge({ token: "token", expectedBaseSha: BASE_SHA, fetchImpl: wrong }),
       "repository identity mismatch");
-    await expectRejects(() => runReleasePlease("github-release", "token", wrong,
+    await expectRejects(() => runReleasePlease("github-release", "token", RUN_SHA, wrong,
       async () => { throw new Error("must not launch"); }), "repository identity mismatch");
     assert(calls === 2, "invalid identity must stop both lanes after only the identity lookup");
   }
@@ -244,9 +247,38 @@ async function testMergeAndNoOp(): Promise<void> {
     return Response.redirect("https://api.github.com/repos/foreign/hetzner-plugin", 301);
   }, { preconnect: () => {} }) as typeof fetch;
   await expectRejects(() => runReleasePrAutoMerge({ token: "token", expectedBaseSha: BASE_SHA, fetchImpl: redirect }), "status 301");
-  await expectRejects(() => runReleasePlease("github-release", "token", redirect,
+  await expectRejects(() => runReleasePlease("github-release", "token", RUN_SHA, redirect,
     async () => { throw new Error("must not launch"); }), "repository lookup failed");
   assert(redirectCalls === 2, "redirect must not lead to any additional request");
+
+  for (const invalidMain of [
+    jsonResponse({ ref: "refs/heads/main", object: { type: "commit", sha: "b".repeat(40) } }),
+    jsonResponse({ ref: "refs/heads/other", object: { type: "commit", sha: RUN_SHA } }),
+    jsonResponse({ ref: "refs/heads/main", object: { type: "tag", sha: RUN_SHA } }),
+    Response.redirect("https://api.github.com/repos/foreign/hetzner-plugin/git/ref/heads/main", 301),
+  ]) {
+    const calls: string[] = [];
+    const readback = Object.assign(async (input: Request | URL | string, init?: RequestInit) => {
+      assert(init?.redirect === "error", "main readback must reject redirects");
+      const path = new URL(String(input)).pathname;
+      calls.push(path);
+      return calls.length === 1 ? jsonResponse(releaseRepository()) : invalidMain;
+    }, { preconnect: () => {} }) as typeof fetch;
+    let launched = false;
+    await expectRejects(() => runReleasePlease("github-release", "token", RUN_SHA, readback,
+      async () => { launched = true; return 0; }), "GitHub main");
+    assert(!launched && JSON.stringify(calls) === JSON.stringify([
+      "/repositories/1373042968", "/repositories/1373042968/git/ref/heads/main",
+    ]), "write must be blocked by invalid or stale pinned main");
+  }
+  let missingShaCalls = 0;
+  const missingShaFetch = Object.assign(async () => {
+    missingShaCalls++;
+    return jsonResponse(releaseRepository());
+  }, { preconnect: () => {} }) as typeof fetch;
+  await expectRejects(() => runReleasePlease("release-pr", "token", undefined, missingShaFetch,
+    async () => { throw new Error("must not launch"); }), "CI commit SHA");
+  assert(missingShaCalls === 0, "a missing SHA must not cause a lookup or launch");
 
   const marker = "synthetic-stdout-stderr-credential";
   const logs: string[] = [];
@@ -420,9 +452,9 @@ function fakeRepo(options: FakeRepoOptions = {}) {
   const fetchImpl = Object.assign(async (input: string | URL | Request, init?: RequestInit) => {
     const url = new URL(String(input));
     const method = init?.method ?? "GET";
-    const path = url.pathname.replace("/repos/jurislm/hetzner-plugin", "");
+    const path = url.pathname.replace("/repositories/1373042968", "");
     const body = typeof init?.body === "string" ? init.body : "";
-    if (path === "/repositories/1373042968") return jsonResponse(releaseRepository());
+    if (path === "") return jsonResponse(releaseRepository());
     requests.push({ method, path, body });
     const head = (current.head as { sha: string }).sha;
     if (method === "GET" && path === "/pulls") return jsonResponse([current]);
