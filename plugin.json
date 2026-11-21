@@ -5,10 +5,10 @@
   "description": "Portable Hetzner Cloud and Storage Box MCP plugin using local stdio tools generated from official OpenAPI contracts.",
   "author": {
     "name": "JurisLM",
-    "url": "https://github.com/jurislm"
+    "url": "https://github.com/r-seriesx"
   },
-  "homepage": "https://jurislm.github.io/hetzner-plugin/",
-  "repository": "https://github.com/jurislm/hetzner-plugin",
+  "homepage": "https://r-seriesx.github.io/hetzner-plugin/",
+  "repository": "https://github.com/r-seriesx/hetzner-plugin",
   "license": "MIT",
   "keywords": [
     "hetzner",
@@ -34,7 +34,7 @@
         ],
         "composerIcon": "./assets/hetzner.png",
         "logo": "./assets/hetzner.png",
-        "websiteURL": "https://jurislm.github.io/hetzner-plugin/"
+        "websiteURL": "https://r-seriesx.github.io/hetzner-plugin/"
       }
     }
   }

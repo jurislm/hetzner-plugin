@@ -2,7 +2,7 @@
 
 Local stdio MCP plugin for Hetzner Cloud and Storage Box. It registers generated `hetzner_cloud_*` and `hetzner_unified_*` tools from the committed official OpenAPI snapshots, plus focused tools for servers, SSH keys, volumes, reference data, Storage Boxes, metrics, and server RAM over SSH.
 
-Follow the shared [JurisLM Plugin Architecture v1](https://github.com/jurislm/woodpecker-ci-plugin/blob/main/docs/plugin-architecture.md) for package, host configuration and acceptance boundaries.
+Follow the shared [JurisLM Plugin Architecture v1](https://github.com/r-seriesx/woodpecker-ci-plugin/blob/main/docs/plugin-architecture.md) for package, host configuration and acceptance boundaries.
 
 ## Scope
 
@@ -32,7 +32,7 @@ To use `hetzner_get_server_ram`, the server needs a reachable public IPv4 and `f
 Use the repository root as the marketplace source and leave the sparse path empty. The supported manifest is `.agents/plugins/marketplace.json`:
 
 ```sh
-codex plugin marketplace add https://github.com/jurislm/hetzner-plugin
+codex plugin marketplace add https://github.com/r-seriesx/hetzner-plugin
 codex plugin add hetzner-plugin@hetzner-marketplace
 ```
 
@@ -62,7 +62,7 @@ The repository includes Cursor marketplace and plugin manifests in [`.cursor-plu
 
 外掛參數（`HETZNER_API_TOKEN`）改在 Cursor 管理頁 <https://cursor.com/dashboard/plugins> 的安裝欄位（Plugins → Configure）填寫。外掛不再讀取 `~/.config/jurislm/plugin.env` 或其他本機檔案；欄位為空或仍是未代入的 `${HETZNER_API_TOKEN}` 時，呼叫工具會回報「請到 Cursor 管理頁外掛設定填 HETZNER_API_TOKEN」。外掛只在 `.cursor-plugin/plugin.json` 的 `variables` 宣告變數名稱，不含任何值；Cursor 會把你填的值代入 `mcp.json` 裡對應的 `${VAR}` 佔位符。
 
-- 匯入：在管理頁的 Plugins & MCPs 點 Add Marketplace，選 Import from Repo，貼上 `https://github.com/jurislm/hetzner-plugin`，再安裝外掛。
+- 匯入：在管理頁的 Plugins & MCPs 點 Add Marketplace，選 Import from Repo，貼上 `https://github.com/r-seriesx/hetzner-plugin`，再安裝外掛。
 - 欄位範例（假值，請換成自己的）：
 
   ```text

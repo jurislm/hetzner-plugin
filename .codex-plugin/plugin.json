@@ -4,9 +4,9 @@
   "description": "Codex compatibility manifest for local stdio Hetzner tools; the root portable plugin manifest is canonical.",
   "author": {
     "name": "JurisLM",
-    "url": "https://github.com/jurislm"
+    "url": "https://github.com/r-seriesx"
   },
-  "repository": "https://github.com/jurislm/hetzner-plugin",
+  "repository": "https://github.com/r-seriesx/hetzner-plugin",
   "license": "MIT",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
@@ -22,7 +22,7 @@
     ],
     "composerIcon": "./assets/hetzner.png",
     "logo": "./assets/hetzner.png",
-    "websiteURL": "https://jurislm.github.io/hetzner-plugin/",
+    "websiteURL": "https://r-seriesx.github.io/hetzner-plugin/",
     "defaultPrompt": "List my Hetzner Cloud servers."
   }
 }

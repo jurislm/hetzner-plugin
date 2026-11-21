@@ -11,8 +11,8 @@ for (const [file, schemaFile] of [["plugin.json", "plugin.schema.json"], ["mcp.j
 }
 const packageJson = JSON.parse(await Bun.file("package.json").text()) as Json;
 const packageVersion = String(packageJson.version);
-const repositoryUrl = "https://github.com/jurislm/hetzner-plugin";
-const officialWebsiteUrl = "https://jurislm.github.io/hetzner-plugin/";
+const repositoryUrl = "https://github.com/r-seriesx/hetzner-plugin";
+const officialWebsiteUrl = "https://r-seriesx.github.io/hetzner-plugin/";
 const portableKeys = ["$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords", "extensions"];
 const unexpectedPortableKeys = Object.keys(parsed["plugin.json"]).filter((key) => !portableKeys.includes(key));
 if (unexpectedPortableKeys.length > 0) throw new Error(`plugin.json contains non-portable fields: ${unexpectedPortableKeys.join(", ")}`);
