@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
 
-const repositoryUrl = "https://github.com/jurislm/hetzner-plugin";
-const websiteUrl = "https://jurislm.github.io/hetzner-plugin/";
+const repositoryUrl = "https://github.com/r-seriesx/hetzner-plugin";
+const websiteUrl = "https://r-seriesx.github.io/hetzner-plugin/";
 const codexInstallCommands = [
-  "codex plugin marketplace add https://github.com/jurislm/hetzner-plugin",
+  "codex plugin marketplace add https://github.com/r-seriesx/hetzner-plugin",
   "codex plugin add hetzner-plugin@hetzner-marketplace",
 ].join("\n");
 
