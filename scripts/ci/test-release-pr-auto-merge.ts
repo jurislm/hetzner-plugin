@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
-import { readFile, stat } from "node:fs/promises";
-import { dirname, isAbsolute } from "node:path";
+import { copyFile, mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, isAbsolute, join } from "node:path";
 import { runReleasePlease, spawnReleasePlease } from "./run-release-please";
 import {
   runReleasePrAutoMerge,
@@ -173,7 +174,7 @@ async function testMergeAndNoOp(): Promise<void> {
       const url = new URL(String(input));
       assert(init?.redirect === "error", "requests must reject redirects");
       productionPath.push(url.pathname);
-      if (url.pathname === "/repositories/1373042968") return jsonResponse(releaseRepository(owner));
+      if (["/repositories/1373042968", `/repos/${owner}/hetzner-plugin`].includes(url.pathname)) return jsonResponse(releaseRepository(owner));
       if (url.pathname === "/repositories/1373042968/git/ref/heads/main")
         return jsonResponse({ ref: "refs/heads/main", object: { type: "commit", sha: RUN_SHA } });
       assert(url.pathname === "/repositories/1373042968/pulls", "must use pinned pull path");
@@ -195,7 +196,7 @@ async function testMergeAndNoOp(): Promise<void> {
       });
       await expectRejects(() => stat(dirname(tokenPaths.at(-1)!)), "ENOENT");
     }
-    assert(productionPath.length === 6, "expected metadata resolution before all consumers");
+    assert(productionPath.length === 8, "expected metadata resolution before all consumers");
     for (const [index, mode] of ["github-release", "release-pr"].entries()) {
       const expectedArgs = [
         "bunx", "release-please", mode, `--token=${tokenPaths[index]}`,
@@ -262,14 +263,34 @@ async function testMergeAndNoOp(): Promise<void> {
       assert(init?.redirect === "error", "main readback must reject redirects");
       const path = new URL(String(input)).pathname;
       calls.push(path);
-      return calls.length === 1 ? jsonResponse(releaseRepository()) : invalidMain;
+      return calls.length <= 2 ? jsonResponse(releaseRepository()) : invalidMain;
     }, { preconnect: () => {} }) as typeof fetch;
     let launched = false;
     await expectRejects(() => runReleasePlease("github-release", "token", RUN_SHA, readback,
       async () => { launched = true; return 0; }), "GitHub main");
     assert(!launched && JSON.stringify(calls) === JSON.stringify([
-      "/repositories/1373042968", "/repositories/1373042968/git/ref/heads/main",
+      "/repositories/1373042968", "/repos/jurislm/hetzner-plugin", "/repositories/1373042968/git/ref/heads/main",
     ]), "write must be blocked by invalid or stale pinned main");
+  }
+  for (const reclaimedResponse of [
+    jsonResponse({ ...releaseRepository(), id: 999, owner: { id: 999, login: "jurislm", type: "Organization" } }),
+    Response.redirect("https://api.github.com/repos/r-seriesx/hetzner-plugin", 301),
+  ]) {
+    const slugCalls: string[] = [];
+    const reclaimed = Object.assign(async (input: Request | URL | string, init?: RequestInit) => {
+      assert(init?.redirect === "error", "slug readback must reject redirects");
+      const path = new URL(String(input)).pathname;
+      slugCalls.push(path);
+      if (path === "/repositories/1373042968") return jsonResponse(releaseRepository());
+      if (path === "/repos/jurislm/hetzner-plugin") return reclaimedResponse;
+      return jsonResponse({ ref: "refs/heads/main", object: { type: "commit", sha: RUN_SHA } });
+    }, { preconnect: () => {} }) as typeof fetch;
+    let launched = false;
+    await expectRejects(() => runReleasePlease("release-pr", "token", RUN_SHA, reclaimed,
+      async () => { launched = true; return 0; }), "repository");
+    assert(!launched && JSON.stringify(slugCalls) === JSON.stringify([
+      "/repositories/1373042968", "/repos/jurislm/hetzner-plugin",
+    ]), "reclaimed slug or redirect must stop before reading main or launching release");
   }
   let missingShaCalls = 0;
   const missingShaFetch = Object.assign(async () => {
@@ -527,6 +548,23 @@ async function testBehindReleasePr(): Promise<void> {
 }
 
 testCandidateAndContents();
+async function testCleanLauncher(): Promise<void> {
+  const checkout = await mkdtemp(join(tmpdir(), "hetzner-clean-release-test-"));
+  try {
+    for (const basename of ["run-release-please.ts", "ci-metadata.ts", "release-repository.ts"]) {
+      await copyFile(join(import.meta.dir, basename), join(checkout, basename));
+    }
+    const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", "run",
+      join(checkout, "run-release-please.ts"), "github-release"],
+      { cwd: checkout, env: {}, stdout: "pipe", stderr: "pipe" });
+    const [code, stderr] = await Promise.all([child.exited, new Response(child.stderr).text()]);
+    assert(code === 1 && stderr.trim() === "GITHUB_API_TOKEN is required",
+      "clean release runner must load exact launcher imports without dependencies");
+  } finally {
+    await rm(checkout, { recursive: true, force: true });
+  }
+}
+await testCleanLauncher();
 await testMergeAndNoOp();
 await testFailureGuards();
 await testBehindReleasePr();

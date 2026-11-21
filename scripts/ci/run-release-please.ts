@@ -1,9 +1,12 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { z } from "zod";
 import { ciMetadataValue } from "./ci-metadata";
 import { parseReleaseRepository, releaseRepoId } from "./release-repository";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 export async function runReleasePlease(
   mode: string | undefined,
@@ -18,7 +21,7 @@ export async function runReleasePlease(
   async function readGitHub(path: string, error: string): Promise<unknown> {
     let response: Response;
     try {
-      response = await request(`https://api.github.com/repositories/${releaseRepoId}${path}`, {
+      response = await request(`https://api.github.com${path}`, {
         headers: {
           Accept: "application/vnd.github+json",
           Authorization: `Bearer ${token}`,
@@ -33,17 +36,21 @@ export async function runReleasePlease(
     if (!response.ok || response.redirected) throw new Error(error);
     return response.json().catch(() => null);
   }
-  const repository = parseReleaseRepository(await readGitHub("", "GitHub repository lookup failed"));
+  const repositoryPath = `/repositories/${releaseRepoId}`;
+  const repository = parseReleaseRepository(await readGitHub(repositoryPath, "GitHub repository lookup failed"));
   let temporary: string | undefined;
   try {
     temporary = await mkdtemp(join(tmpdir(), "hetzner-release-"));
     const tokenPath = join(temporary, "token");
     await writeFile(tokenPath, token, { flag: "wx", mode: 0o600 });
-    const liveMain = z.object({
-      ref: z.literal("refs/heads/main"),
-      object: z.object({ type: z.literal("commit"), sha: z.literal(expectedSha) }),
-    }).safeParse(await readGitHub("/git/ref/heads/main", "GitHub main readback failed"));
-    if (!liveMain.success) throw new Error("GitHub main does not match the triggering CI commit");
+    const canonical = parseReleaseRepository(await readGitHub(
+      `/repos/${repository.fullName}`, "GitHub canonical repository lookup failed",
+    ));
+    if (canonical.fullName !== repository.fullName) throw new Error("GitHub canonical repository identity changed");
+    const liveMain = await readGitHub(`${repositoryPath}/git/ref/heads/main`, "GitHub main readback failed");
+    if (!isRecord(liveMain) || liveMain.ref !== "refs/heads/main" || !isRecord(liveMain.object) ||
+      liveMain.object.type !== "commit" || liveMain.object.sha !== expectedSha)
+      throw new Error("GitHub main does not match the triggering CI commit");
     try {
       const code = await run([
         "bunx", "release-please", mode,
