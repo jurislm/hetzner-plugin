@@ -2,6 +2,16 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [3.0.1](https://github.com/jurislm/hetzner-plugin/compare/v3.0.0...v3.0.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* **ci:** bind Hetzner releases to verified GitHub identity (JUR-1111) ([cfd6299](https://github.com/jurislm/hetzner-plugin/commit/cfd6299450542fd2202b114e688447fe7252fc6a))
+* **ci:** bind Hetzner releases to verified GitHub identity (JUR-1111) ([37666cb](https://github.com/jurislm/hetzner-plugin/commit/37666cb51106a2cecbf1653e3805d2b3041e279b))
+* **ci:** reject stale Hetzner release runs before mutation ([64f7881](https://github.com/jurislm/hetzner-plugin/commit/64f7881664f13cb005bb386073c1aae477f0ac71))
+* **ci:** validate the Hetzner release slug before spawning ([560b850](https://github.com/jurislm/hetzner-plugin/commit/560b8502cc056c5dd0b3e406e6d344dfe65b786e))
+
 ## [3.0.0](https://github.com/jurislm/hetzner-plugin/compare/v2.1.16...v3.0.0) (2026-11-19)
 
 
