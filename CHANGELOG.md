@@ -2,6 +2,13 @@
 
 This plugin starts from the `@jurislm/hetzner-mcp@1.5.0` capability baseline.
 
+## [3.0.2](https://github.com/r-seriesx/hetzner-plugin/compare/v3.0.1...v3.0.2) (2026-11-21)
+
+
+### Documentation
+
+* update public links to r-seriesx (JUR-1111) ([#88](https://github.com/r-seriesx/hetzner-plugin/issues/88)) ([7ef6a89](https://github.com/r-seriesx/hetzner-plugin/commit/7ef6a897d899786a03d1a0dfcbfd689ee9387ef2))
+
 ## [3.0.1](https://github.com/jurislm/hetzner-plugin/compare/v3.0.0...v3.0.1) (2026-11-21)
 
 
